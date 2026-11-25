@@ -1,0 +1,52 @@
+{
+ "plate_01_CH_PETG.3mf": {
+  "minutes": 447,
+  "grams": 284.1,
+  "problems": []
+ },
+ "plate_02_SU_PETG.3mf": {
+  "minutes": 384,
+  "grams": 211.7,
+  "problems": []
+ },
+ "plate_03_ST_PETG.3mf": {
+  "minutes": 33,
+  "grams": 15.3,
+  "problems": []
+ },
+ "plate_04_DT_PETG_1.3mf": {
+  "minutes": 625,
+  "grams": 321.0,
+  "problems": []
+ },
+ "plate_04_DT_PETG_2.3mf": {
+  "minutes": 41,
+  "grams": 21.3,
+  "problems": []
+ },
+ "plate_05_CG_PETG_1.3mf": {
+  "minutes": 464,
+  "grams": 211.9,
+  "problems": []
+ },
+ "plate_05_CG_PETG_2.3mf": {
+  "minutes": 682,
+  "grams": 278.5,
+  "problems": []
+ },
+ "plate_06_SH_PLA_1.3mf": {
+  "minutes": 288,
+  "grams": 169.0,
+  "problems": []
+ },
+ "plate_06_SH_PLA_2.3mf": {
+  "minutes": 247,
+  "grams": 158.0,
+  "problems": []
+ },
+ "plate_07_LT_PLA_translucent.3mf": {
+  "minutes": 26,
+  "grams": 7.3,
+  "problems": []
+ }
+}

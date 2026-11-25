@@ -1,0 +1,32 @@
+{
+ "plate_01_Front_suspension_and_steering_1.3mf": {
+  "minutes": 571,
+  "grams": 238.0,
+  "problems": []
+ },
+ "plate_01_Front_suspension_and_steering_2.3mf": {
+  "minutes": 193,
+  "grams": 97.7,
+  "problems": []
+ },
+ "plate_01_Front_suspension_and_steering_3.3mf": {
+  "minutes": 22,
+  "grams": 15.1,
+  "problems": []
+ },
+ "plate_02_Drivetrain_and_wheels_1.3mf": {
+  "minutes": 619,
+  "grams": 321.8,
+  "problems": []
+ },
+ "plate_02_Drivetrain_and_wheels_2.3mf": {
+  "minutes": 76,
+  "grams": 39.0,
+  "problems": []
+ },
+ "plate_03_Stops_and_pads.3mf": {
+  "minutes": 13,
+  "grams": 4.5,
+  "problems": []
+ }
+}

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="310" viewBox="0 0 680 310"><style>.ts{font:12px Helvetica,Arial,sans-serif;fill:#444441}.leader{stroke:#888780;stroke-width:0.5;stroke-dasharray:3 2}</style><rect width="680" height="310" fill="#F7F6F2"/>
+<line x1="40" y1="250" x2="640" y2="250" stroke="#888780" stroke-width="1"/>
+<polygon points="149,225 149,219 542,206 542,213" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<polygon points="130,209 149,219 149,225" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="340" y="189" width="85" height="22" rx="2" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="288" y="180" width="42" height="30" rx="6" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="245" y="193" width="37" height="18" rx="2" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<polygon points="448,172 448,196 545,196 552,182 470,170" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.5"/>
+<line x1="506" y1="166" x2="515" y2="103" stroke="#888780" stroke-width="6" stroke-linecap="round"/>
+<polygon points="64,153 77,139 146,113 214,115 205,139 150,139 112,150 97,183 80,183" fill="#7F8A6B" opacity="0.8"/>
+<polygon points="64,153 77,139 84,142 71,157" fill="#E24B4A"/>
+<polygon points="205,135 443,85 396,150 353,205 263,205 250,168" fill="#7F8A6B" opacity="0.55"/>
+<polygon points="569,101 615,110 610,88 576,81" fill="#7F8A6B" opacity="0.8"/>
+<g fill="none" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="160,131 227,110 335,60 390,56 524,101 576,110"/><polyline points="226,213 226,135 160,131"/><polyline points="226,135 440,128 524,101"/>
+<line x1="390" y1="56" x2="416" y2="135"/><line x1="374" y1="212" x2="374" y2="132"/><line x1="227" y1="110" x2="226" y2="135"/></g>
+<polygon points="235,193 223,182 197,177 173,189 145,196 145,203 169,207 214,205" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="145" y1="200" x2="143" y2="154" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+<line x1="232" y1="148" x2="143" y2="154" stroke="#5F5E5A" stroke-width="3" stroke-linecap="round"/>
+<line x1="254" y1="200" x2="254" y2="184" stroke="#D85A30" stroke-width="3" stroke-linecap="round"/>
+<line x1="254" y1="184" x2="164" y2="190" stroke="#D85A30" stroke-width="2"/>
+<line x1="235" y1="193" x2="245" y2="159" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+<line x1="245" y1="159" x2="328" y2="157" stroke="#D85A30" stroke-width="7" stroke-linecap="round"/>
+<circle cx="245" cy="159" r="5" fill="#D85A30"/>
+<circle cx="145" cy="199.5" r="50.6" fill="#888780" opacity="0.3" stroke="#5F5E5A" stroke-width="1"/>
+<circle cx="553" cy="187" r="63" fill="#888780" opacity="0.3" stroke="#5F5E5A" stroke-width="1"/>
+<circle cx="235" cy="193" r="3" fill="#5F5E5A"/>
+<line class="leader" x1="60" y1="36" x2="72" y2="138"/><text class="ts" x="40" y="28">Nose blade, light strip</text>
+<line class="leader" x1="275" y1="36" x2="280" y2="150"/><text class="ts" x="200" y="28">Spring in the open cockpit</text>
+<line class="leader" x1="440" y1="36" x2="365" y2="55"/><text class="ts" x="380" y="28">Cage roof 25 mm lower</text>
+<line class="leader" x1="575" y1="36" x2="592" y2="82"/><text class="ts" x="550" y="28">Tail pod</text>
+<line class="leader" x1="120" y1="276" x2="185" y2="206"/><text class="ts" x="50" y="292">Old truss arm + upper link</text>
+<line class="leader" x1="300" y1="276" x2="262" y2="162"/><text class="ts" x="240" y="292">New lever, beam, centre shock</text>
+<line class="leader" x1="500" y1="276" x2="384" y2="212"/><text class="ts" x="450" y="292">Heavy parts on the deck</text>
+<text class="ts" x="40" y="306">Concept sketch of 23 Nov 2026: orange new, light grey borrowed, olive body, dark grey cage.</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="310" viewBox="0 0 680 310"><style>.ts{font:12px Helvetica,Arial,sans-serif;fill:#444441}</style><rect width="680" height="310" fill="#F7F6F2"/>
+<line x1="20" y1="260" x2="660" y2="260" stroke="#888780" stroke-width="1"/>
+<g transform="translate(170,260) scale(0.8,-0.8) translate(0,15.6)"><rect x="113" y="-15.6" width="62" height="112.4" rx="14" fill="#888780" opacity="0.35" stroke="#5F5E5A"/>
+<rect x="-175" y="-15.6" width="62" height="112.4" rx="14" fill="#888780" opacity="0.35" stroke="#5F5E5A"/>
+<rect x="-54.5" y="12.6" width="109" height="6.4" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="-23" y="24" width="46" height="24" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="34" y="26" width="26.5" height="20" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="-60.5" y="26" width="26.5" height="20" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<polygon points="-60,60 60,60 66,110 -66,110" fill="#7F8A6B" opacity="0.45"/>
+<rect x="-65" y="100" width="130" height="8" fill="#E24B4A"/>
+<polygon points="80,137 93,112 93,34 62,14 58,14 86,38 86,110" fill="#7F8A6B"/>
+<polygon points="-80,137 -93,112 -93,34 -62,14 -58,14 -86,38 -86,110" fill="#7F8A6B"/>
+<line x1="-80" y1="137" x2="80" y2="137" stroke="#7F8A6B" stroke-width="4"/>
+<g fill="none" stroke="#5F5E5A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="45,25 45,112 56,117 -56,117 -45,112 -45,25"/><polyline points="82,140 56,117 30,200 -30,200 -56,117 -82,140"/></g>
+<rect x="66" y="30" width="23.5" height="32" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="-89.5" y="30" width="23.5" height="32" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="100" y="30" width="11" height="66" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="-111" y="30" width="11" height="66" fill="#D3D1C7" stroke="#5F5E5A"/>
+<line x1="68.5" y1="98" x2="105" y2="91" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+<line x1="-68.5" y1="98" x2="-105" y2="91" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+<line x1="62" y1="47.5" x2="62" y2="86" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+<line x1="-62" y1="47.5" x2="-62" y2="86" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+<line x1="-62" y1="86" x2="62" y2="86" stroke="#D85A30" stroke-width="7" stroke-linecap="round"/>
+<circle cx="0" cy="86" r="9" fill="#D85A30"/></g>
+<g transform="translate(500,260) scale(0.8,-0.8) rotate(10) translate(0,15.6)"><rect x="113" y="-40.5" width="62" height="112.4" rx="14" fill="#888780" opacity="0.35" stroke="#5F5E5A"/>
+<rect x="-175" y="10.3" width="62" height="112.4" rx="14" fill="#888780" opacity="0.35" stroke="#5F5E5A"/>
+<rect x="-54.5" y="12.6" width="109" height="6.4" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="-23" y="24" width="46" height="24" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="34" y="26" width="26.5" height="20" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="-60.5" y="26" width="26.5" height="20" fill="#B4B2A9" stroke="#5F5E5A" stroke-width="0.6"/>
+<polygon points="-60,60 60,60 66,110 -66,110" fill="#7F8A6B" opacity="0.45"/>
+<rect x="-65" y="100" width="130" height="8" fill="#E24B4A"/>
+<polygon points="80,137 93,112 93,34 62,14 58,14 86,38 86,110" fill="#7F8A6B"/>
+<polygon points="-80,137 -93,112 -93,34 -62,14 -58,14 -86,38 -86,110" fill="#7F8A6B"/>
+<line x1="-80" y1="137" x2="80" y2="137" stroke="#7F8A6B" stroke-width="4"/>
+<g fill="none" stroke="#5F5E5A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<polyline points="45,25 45,112 56,117 -56,117 -45,112 -45,25"/><polyline points="82,140 56,117 30,200 -30,200 -56,117 -82,140"/></g>
+<rect x="66" y="5" width="23.5" height="57" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="-89.5" y="30" width="23.5" height="58" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="100" y="5" width="11" height="66" fill="#D3D1C7" stroke="#5F5E5A"/>
+<rect x="-111" y="56" width="11" height="66" fill="#D3D1C7" stroke="#5F5E5A"/>
+<line x1="68.5" y1="98" x2="105" y2="66" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+<line x1="-68.5" y1="98" x2="-105" y2="117" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+<line x1="62" y1="47.5" x2="62" y2="86" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+<line x1="-62" y1="47.5" x2="-62" y2="86" stroke="#D85A30" stroke-width="5" stroke-linecap="round"/>
+<line x1="-62" y1="86" x2="62" y2="86" stroke="#D85A30" stroke-width="7" stroke-linecap="round"/>
+<circle cx="0" cy="86" r="9" fill="#D85A30"/></g>
+<text class="ts" x="170" y="286" text-anchor="middle">Upright: 28 mm under the deck</text>
+<text class="ts" x="500" y="286" text-anchor="middle">10 deg lean: 18 mm at the deck edge</text>
+<text class="ts" x="20" y="304">Concept sketch of 23 Nov 2026. The tucked sill shown is not needed: the built body's lower edge is already inboard.</text>
+</svg>
