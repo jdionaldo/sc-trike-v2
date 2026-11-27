@@ -37,7 +37,8 @@ DOWEL_R = D['tail_pin']['d'] / 2                      # D8 heave stop dowel
 PLATE_X = (14.4, 17.4)                                # carrier clevis plates |x| 14.4 .. 17.4 (helper: 9.4 .. 12.4). Redesign round: the hub between them is the
                                                       # section every stop moment passes; at 16.8 mm long it read safety 0.57 in the one-wheel case
 HUB_LEN2 = 2 * (PLATE_X[0] - 1.0)                     # carrier hub length, 1 mm to each plate (shim washers): 26.8
-TAIL_W2 = HUB_LEN2 - 2.0                              # tail web and boss width: 24.8
+TAIL_W2 = HUB_LEN2 - 0.6                              # tail web, boss and block width: 26.2 (24.8 until NOTES 57: its end face met the hub 1 mm short of
+                                                      # the hub's end, an inside step that peaked; 1.1 mm to the pad block slot walls at x 14.2)
 PIN_BOSS_UP2 = 8.0                                    # yaw pin boss height above the yaw arm (helper: 4.0): pin engagement 20 mm instead of 16
 POST_X2 = (25.5, 39.5)                                # yaw pad posts and their cross pieces, 14 wide (helper: 29.5 .. 39.5; FEM 1.43 at the post roots)
 PUCK_R, PUCK_H = 4.2, 3.4                             # puck radius (0.8 mm wall round the ball), half height along M (the fork's slot is 7.0 wide)
@@ -45,15 +46,26 @@ SLOT_END = 0.8                                        # end wall of the fork's s
 FORK_OUT = 0.2                                        # fork past its nominal outer end (was 1.2: 0.56 mm to the lever blade at lean + bump)
 SLOT_H = 3.5
 FORK_M = 7.7                                          # fork half size along M: slot 3.5 + plate 4.2 (helper's envelope 6.5 = 3 mm plates; cantilever bending needs 4.2)
-PIN_BOSS_R2 = 9.0                                     # yaw pin boss radius (helper: 7.0; FEM peak 19.2 MPa at the boss / arm top with 3 mm of wall)
+PIN_BOSS_R2 = 11.0                                    # yaw pin boss radius (helper: 7.0; 9.0 until NOTES 57: the pin's flush end pried the boss's top rim)
+PIN_BOSS_CAP = 2.5                                    # mm of boss over the yaw pin's sleeve and the pin's upper end: blind bore, the pin goes in from below
+# Yaw pin sleeve (owner's decision "Metal sleeves", orchestrator 1(a), NOTES 57): one bought SKF PSM 8-12-12 A51, oil-filled sintered bronze, ID 8,
+# OD 12, length 12, 5 g (123bearing.com, opened 2026-11-25, USD 7.67), pressed into the top 12 mm of the yaw pin's bore; the D8 pin pressed into it.
+SLEEVE = ('SKF PSM 8-12-12 A51', 8.0, 12.0, 12.0)    # name, ID, OD, length
+SLEEVE_PRESS_BORE = 11.9                              # mm printed bore for the 12.0 sleeve (ASSUMED press fit in PETG, ream / coupon); modelled at 12.0
+# (NOTES 60, item 1(b)) two more of the same sleeves in the carrier's tail boss, one pressed in from each end (printed bore 11.9, modelled 12.0),
+# the D8 heave stop dowel running in them; 2.2 mm of D8 bore between them locates both. The tail moved to r 10.4 for them (tools/beam_kin.py).
+TAIL_SLEEVE = SLEEVE
+HUB_DROP = 1.0                                        # extra carrier hub wall under the pin only (NOTES 57 attempt 2)
 CPIN_R, HUB_R2 = 3.0, 8.5                             # carrier pin D6 in a hub r 8.5 (helper: M3 in r 6). FEM with M3: 19.6 MPa at the bore (898 N on 3 x 16.8 mm)
 ARM_YOKE_W = HUB_LEN2                                     # carrier arm to the yoke, width along x (helper: 10.8). The yaw stops put 8.6 N m about N through this arm
                                                       # to the hub: FEM 57.7 MPa at 10.8 wide; 16.8 is the hub's length between the clevis plates
 FORK_ROOT = 3.5                                       # solid fork root inboard of the nominal fork, full section
 BUMP_DEG, DROOP_DEG = 15.46, 9.28                     # carrier angle at the heave stops (two-wheel +12 / -8 mm)
-SADDLE_T = D['tail_pin']['tpu_t']
+SADDLE_T = D['tail_pin']['tpu_t']                    # (NOTES 64) bump saddle, 4 mm: the 0.20 m landing basis (123 N) counts on it
+SADDLE_T_DROOP = 2.0                                  # (NOTES 64) droop saddle stays 2 mm: a deeper droop pocket's floor met the carrier's lower arms at the bump stop
 PAD_X = (PLATE_X[1] + 1.0, 35.4)                      # TPU saddles |x| 18.4 .. 35.4 (17 mm: 338 N on D8 x 17 = 2.5 MPa, TPU 5 MPa ASSUMED)
-BLOCK_Y = (-50.3, -33.6)                             # front face: 1 mm swept to the carrier's rear post piece at full bump
+BLOCK_Y = (-50.3, -31.7)                             # front face: 1 mm swept to the carrier's rear post piece at full bump; rear face -33.6 -> -31.7
+                                                      # (NOTES 60, 1(b)): it follows the dowel's arc slot back 1.9 mm, so its rear wall stays 4.35
 BLOCK_Z0 = 89.0
 SLOT_CLEAR = 0.15                                     # radial clearance of the D8 dowel in the pad blocks' arc slot (slot 8.3 wide, reamed or filed to fit)
 HUB_CLEAR = 0.2                                       # radial clearance of the D6 carrier pin in the carrier's hub bore (bore 6.3)
@@ -61,8 +73,15 @@ HUB_CLEAR = 0.2                                       # radial clearance of the 
 #   dowel in its slots: SLOT_CLEAR / 26.9 mm (half the base between the pad blocks) = 0.32 deg
 #   hub on its pin:     2 x HUB_CLEAR / 26.8 mm (hub length)                         = 0.86 deg
 # so the dowel bears first with a factor of 2.7 (required: dowel <= half the hub). PRINT AND ASSEMBLY REQUIREMENT: slot 8.3 +0.1/0, hub bore 6.4 +0.1/0.
-LUMP_Y, LUMP_Z1 = 10.0, 100.0                         # strut root lump behind each pad block: depth along y, top z
+FLOOR_Z = 87.5                                        # (NOTES 60, 64) underside of the floor under the droop pockets (pad blocks and clevis plates); NOTES 64: the droop saddle stays 2 mm (84.7 for a 4 mm one met the carrier's arms at the bump stop)
+LUMP_FRONT = 1.9                                     # (NOTES 60) mm the lump reaches ahead of the block's rear face (its HEAD front, y -33.6)
+LUMP_Y, LUMP_Z1 = 10.0, 100.0                        # strut root lump behind each pad block: depth along y, top z
 ASSERT_NAMES = ('Beam carrier', 'Balance beam')
+# (NOTES 60) the carrier tail interface for a machined carrier lives in parts/swap_interface.py: it must match what is built here
+from parts import swap_interface as _I
+assert all(abs(a - b) < 1e-6 for a, b in zip(PC[1:], _I.CT_PIVOT_AXIS)) and all(abs(a - b) < 1e-6 for a, b in zip(TAIL[1:], _I.CT_TAIL_AXIS))
+assert (2 * DOWEL_R, SLOT_CLEAR, PLATE_X, PAD_X, BLOCK_Y) == (_I.CT_DOWEL[1], _I.CT_SLOT_CLEAR, _I.CT_PLATE_X, _I.CT_SADDLE_X, _I.CT_PAD_BLOCK_Y), 'swap_interface CT_*'
+assert TAIL_SLEEVE == (_I.CT_SLEEVE[0],) + _I.CT_SLEEVE[1:] and abs(TAIL_W2 / 2 - _I.CT_BOSS_X) < 1e-6, 'swap_interface CT_* (sleeve, boss)'
 
 
 def _v(a):
@@ -105,14 +124,17 @@ def beam_carrier():
     ws, db = tp['d'] / 2 + tp['wall_side'], tp['d'] / 2 + tp['wall_bottom']
     drop = os.environ.get('FUGU_GUARD_DEMO') == 'drop_post'      # demonstration of the build guard only: leaves out one yaw pad post
     solids = [_cyl((-HUB_LEN2 / 2, PC[1], PC[2]), (1, 0, 0), HUB_R2, HUB_LEN2),                            # hub on the carrier pin
+              # (NOTES 57, attempt 2) 1 mm more ring under the pin: a cylinder HUB_DROP lower and HUB_DROP larger, tangent to the hub's top (z 107.0,
+              # 1.45 mm under the spine bridge, unchanged; +0.03 at the 15.5 deg bump stop): the two-wheel case peaked at the hub's bottom (1.98)
+              _cyl((-HUB_LEN2 / 2, PC[1], PC[2] - HUB_DROP), (1, 0, 0), HUB_R2 + HUB_DROP, HUB_LEN2),
               _bar((PC[1], PC[2]), (yoke_top.y, yoke_top.z), ARM_YOKE_W, cs['arm_c'][1], cs['arm_c'][2]),            # arm to the yoke
               _bar((PC[1], PC[2]), s_root, cs['arm_s'][0], cs['arm_s'][1]),                                          # arm to the shock fork
               _cyl((-cs['s_fork_half'], S[1], S[2]), (1, 0, 0), cs['s_fork_r'], 2 * cs['s_fork_half']),              # shock fork
               _bar((PC[1], PC[2]), (TAIL[1], TAIL[2]), TAIL_W2, 12.0),                                        # tail web, as wide as the boss: it hands the yaw moment to the dowel
-              _cyl((-TAIL_W2 / 2, TAIL[1], TAIL[2]), (1, 0, 0), tp['d'] / 2 + tp['wall_top'], TAIL_W2),              # tail boss round the dowel
+              _cyl((-TAIL_W2 / 2, TAIL[1], TAIL[2]), (1, 0, 0), tp.get('bore_d', tp['d']) / 2 + tp['wall_top'], TAIL_W2),              # tail boss round the dowel
               _box(-TAIL_W2 / 2, TAIL_W2 / 2, TAIL[1] - ws, TAIL[1] + tp['d'] / 2, TAIL[2] - db, TAIL[2]),          # and its block under the dowel
               _lbox(pl, -ya['x_half'], ya['x_half'], -ya['m_half'], ya['m_half'], n0, n1),                           # yaw arm 12 x 20
-              _ncyl(pl, PIN_BOSS_R2, n1, n1 + PIN_BOSS_UP2)]                                                    # yaw pin boss
+              _ncyl(pl, PIN_BOSS_R2, n1, n1 + PIN_BOSS_UP2 + PIN_BOSS_CAP)]                                     # yaw pin boss with its cap
     for sx in (1, -1):
         x0, x1 = (POST_X2[0], POST_X2[1]) if sx > 0 else (-POST_X2[1], -POST_X2[0])
         for m0, m1 in (yp['m_front'], yp['m_rear']):
@@ -121,9 +143,12 @@ def beam_carrier():
             solids.append(_lbox(pl, x0, x1, m0, m1, yp['n'][0], n0 + 0.5))                                           # yaw pad posts
         solids.append(_lbox(pl, x0, x1, yp['m_front'][0], yp['m_rear'][1], n0, n1))     # cross piece that carries both posts of a side on the yaw arm (mine)
     s = _fuse(*solids)
-    s = s.cut(_ncyl(pl, YAW_R, n0 - 0.01, n1 + PIN_BOSS_UP2 + 1.0))                     # D8 yaw pin, pressed into arm and boss (16 mm)
+    s = s.cut(_ncyl(pl, YAW_R, n0 - 0.01, n1 + PIN_BOSS_UP2))                           # D8 yaw pin, pressed into arm and boss (20 mm), blind under the cap
+    s = s.cut(_ncyl(pl, SLEEVE[2] / 2, n1 + PIN_BOSS_UP2 - SLEEVE[3], n1 + PIN_BOSS_UP2))   # the bronze sleeve in the bore's top 12 mm
     s = s.cut(_cyl((-20.0, PC[1], PC[2]), (1, 0, 0), CPIN_R + HUB_CLEAR, 40.0))                      # carrier pin, a loose running fit on purpose (HUB_CLEAR)
     s = s.cut(_cyl((-20.0, TAIL[1], TAIL[2]), (1, 0, 0), DOWEL_R, 40.0))                      # heave stop dowel
+    for sx in (1, -1):                                                                          # (NOTES 60) a bronze sleeve pressed in from each end
+        s = s.cut(_cyl((sx * (TAIL_W2 / 2 + 1.0), TAIL[1], TAIL[2]), (-sx, 0, 0), TAIL_SLEEVE[2] / 2, TAIL_SLEEVE[3] + 1.0))
     w = k.SHOCK_EYE_W / 2 + 0.2
     # fork slot for the shock's front eye: round the eye and open to the rear for the shaft's swing only (a 18 x 18 box first notched the
     # underside of the arm to the yoke beside the hub: FEM 32.7 MPa there)
@@ -180,22 +205,32 @@ def yaw_pads():
 
 def _dowel_path(r, a0=-DROOP_DEG, a1=BUMP_DEG, x0=-60.0, x1=60.0, step=2.5):
     """Space swept by a cylinder of radius r on the dowel's arc between the carrier angles a0 and a1, from x0 to x1."""
-    n = max(2, int(math.ceil((a1 - a0) / step)) + 1)
-    s = None
-    for i in range(n):
-        y, z = _rot_tail(a0 + (a1 - a0) * i / (n - 1))
-        c = _cyl((x0, y, z), (1, 0, 0), r, x1 - x0)
-        s = c if s is None else s.fuse(c)
+    # (NOTES 60) exact: a ring sector about PC plus a round end at each angle. The union of cylinders at `step` that stood here left
+    # 0.003 .. 0.27 mm scallop edges in the slot walls once the tail moved to r 10.4, and the cage no longer meshed (gmsh curve 1491).
+    R = math.hypot(TAIL[1] - PC[1], TAIL[2] - PC[2])
+    ring = _cyl((x0, PC[1], PC[2]), (1, 0, 0), R + r, x1 - x0).cut(_cyl((x0 - 1.0, PC[1], PC[2]), (1, 0, 0), R - r, x1 - x0 + 2.0))
+    pts = [(PC[1], PC[2])]
+    for i in range(9):
+        y, z = _rot_tail(a0 + (a1 - a0) * i / 8)
+        pts.append((PC[1] + 3.0 * (y - PC[1]), PC[2] + 3.0 * (z - PC[2])))
+    wedge = cq.Workplane('YZ').workplane(offset=x0).polyline(pts).close().extrude(x1 - x0).val()
+    s = ring.intersect(wedge)
+    for a in (a0, a1):
+        y, z = _rot_tail(a)
+        s = s.fuse(_cyl((x0, y, z), (1, 0, 0), r, x1 - x0))
     return s.clean()
 
 
 def carrier_clevis(top_z):
     """Clevis of the beam carrier under the spine's front cross tube: plates at |x| 9.4 .. 12.4, a bar under the tube, arc slots for the dowel."""
     y0, y1, z0 = -56.6, -33.6, 89.9
-    s = _fuse(_box(PLATE_X[0], PLATE_X[1], y0, y1, z0, top_z), _box(-PLATE_X[1], -PLATE_X[0], y0, y1, z0, top_z),
+    # (NOTES 60) the plates (not the bar) run back to the pad block's rear face (y -31.7): with the window, 0.8 mm was left behind the bump pocket
+    s = _fuse(_box(PLATE_X[0], PLATE_X[1], y0, BLOCK_Y[1], z0, top_z), _box(-PLATE_X[1], -PLATE_X[0], y0, BLOCK_Y[1], z0, top_z),
               _box(-PLATE_X[1], PLATE_X[1], y0, y1, top_z - 3.0, top_z))
     s = s.cut(_cyl((-20.0, PC[1], PC[2]), (1, 0, 0), CPIN_R + 0.05, 40.0))
-    return s.cut(_dowel_path(DOWEL_R + 0.6, -DROOP_DEG - 1.5, BUMP_DEG + 1.5))
+    # (NOTES 60) the plates get the pad block's own window (was a wider slot, DOWEL_R + 0.6 and 1.5 deg more each way): the two outlines
+    # on the plane the plates share with the pad blocks (x 17.4) left 0.05 .. 0.29 mm edges and the cage did not mesh
+    return s.cut(_window(-PLATE_X[1] - 0.5, PLATE_X[1] + 0.5))
 
 
 def pad_block(sx=1, top_z=111.5):
@@ -208,21 +243,65 @@ def pad_block(sx=1, top_z=111.5):
     # root lump behind the dowel window for the stop strut (model.py): the strut must not run through the window (attempt 3 did: 68 mm3 into the dowel)
     # (redesign round, C) the lump is flush with the block's underside and as wide as the block, with a wedge up the block's rear face and one
     # along its top: the corner where a narrower lump met the block was the cage's peak (20.5 MPa)
-    s = s.fuse(_box(PLATE_X[1], 40.0, BLOCK_Y[1], BLOCK_Y[1] + LUMP_Y, BLOCK_Z0, LUMP_Z1))
+    # (NOTES 60) the lump keeps its front at y -33.6 (HEAD) when the block's rear face moves to -31.7: the stop strut (model.py, root y -28.5)
+    # then still ends 1.8 mm inside it; flush with the moved face, the strut's corner was 0.1 mm from it and left 0.04 mm2 faces (cage did not mesh)
+    s = s.fuse(_box(PLATE_X[1], 40.0, BLOCK_Y[1] - LUMP_FRONT, BLOCK_Y[1] + LUMP_Y, BLOCK_Z0, LUMP_Z1))
     s = s.fuse(_prism([(BLOCK_Y[1], LUMP_Z1), (BLOCK_Y[1], LUMP_Z1 + 6.0), (BLOCK_Y[1] + 6.0, LUMP_Z1)], PLATE_X[1], PAD_X[1] + 1.0))
+    # (NOTES 49, attempt 1) the two settled peaks of the cage stop case (1.02 at the ear's underside on the post, 1.05 at the lump's underside):
+    # a 45 deg gusset under the ear against the post (1.1 mm clear of the dowel's end at x 37.5) and a keel under the block's rear and the lump,
+    # 4 mm deeper, sloping from the block's underside back to the lump (the dowel window is cut after, so nothing enters its path)
+    s = s.fuse(cq.Workplane('XZ').polyline([(38.6, 106.8), (41.0, 106.8), (41.0, 104.4)]).close().extrude(-8.8).val().translate(V(0, -52.4, 0)))
+    # attempt 2: the keel only as wide as the block (attempt 1 ran it out to x 40 and started it at y -38 with a 42 deg ramp: a new notch, 0.77),
+    # its front a long 18 deg ramp from y -46
+    s = s.fuse(_prism([(BLOCK_Y[1] - 12.4, BLOCK_Z0), (BLOCK_Y[1] + LUMP_Y, BLOCK_Z0), (BLOCK_Y[1] + LUMP_Y, BLOCK_Z0 - 4.0), (BLOCK_Y[1], BLOCK_Z0 - 4.0)], PLATE_X[1], PAD_X[1] + 1.0))
     # (redesign round, A1') window = a CLOSE arc slot for the dowel (radial clearance SLOT_CLEAR) plus the two saddle pockets beyond the contact
     # lines: the slot walls guide the dowel across its arc, so the yaw stop moment of the carrier (8.6 N m) leaves through the dowel on the
     # 48.8 mm base of the two pad blocks instead of through the 16.8 mm hub
-    s = s.cut(_dowel_path(DOWEL_R + SLOT_CLEAR, x0=0.0, x1=60.0))
-    for deg, up in ((BUMP_DEG, 1.0), (-DROOP_DEG, -1.0)):
-        s = s.cut(_end_half(deg, up, DOWEL_R + SADDLE_T, 0.0, 60.0))
+    # (NOTES 60) floor under the droop pocket: since 1(b) its bottom is at z 89.84, and the plates (z 89.9) and block (89.0) were 0.06 / 0.84
+    # mm under it. To z 87.5 (2.3 mm); flush with the plates' rear face (y -33.6), inside the keel behind the block (y -34.0)
+    # its front at y -44.6 (the pocket dips under z 90 only between y -42.1 and -39.0): from -47.6 its front lower corner left the beam carrier
+    # 0.62 mm at the bump stop (bridge rule 1.00)
+    s = s.fuse(_box(PLATE_X[0], PLATE_X[1], -44.6, -33.6, FLOOR_Z, BLOCK_Z0 + 1.0)).fuse(_box(PLATE_X[1], PAD_X[1] + 1.0, -44.6, -34.0, FLOOR_Z, BLOCK_Z0 + 1.0))
+    # (NOTES 60) the window stops at x 38 (dowel end 37.5): to x 60 its pocket met the ear gusset's corner at x 41 in a 0.05 mm edge
+    # (NOTES 64) the saddle pockets end at |x| 35.9 inside the block (|x| 36.4): a 1.2 mm pad on the block's outer face over each pocket keeps
+    # that end wall at 1.7 mm (0.5 without it)
+    bb = [_pocket(deg, up, PAD_X[1], PAD_X[1] + 0.5).BoundingBox() for deg, up in ((BUMP_DEG, 1.0), (-DROOP_DEG, -1.0))]
+    s = s.fuse(_box(PAD_X[1] + 1.0, PAD_X[1] + 2.2, min(b.ymin for b in bb) - 1.2, max(b.ymax for b in bb) + 1.2, BLOCK_Z0, max(b.zmax for b in bb) + 1.2))
+    s = s.cut(_window(0.0, 38.0))
     return _mir(s, sx)
+
+
+def _window(x0, x1):
+    """Dowel window: the close arc slot plus the two saddle pockets beyond the contact lines (pad blocks and, since NOTES 60, clevis plates)."""
+    s = _dowel_path(DOWEL_R + SLOT_CLEAR, x0=x0, x1=x1)
+    for deg, up in ((BUMP_DEG, 1.0), (-DROOP_DEG, -1.0)):      # (NOTES 64) the pockets end 0.5 mm past the saddle (|x| 35.9): the slot alone runs
+        s = s.fuse(_pocket(deg, up, x0, min(x1, PAD_X[1] + 0.5)))  # on to the dowel's end (to x 38 the deeper bump pocket cut into the ear's underside)
+    return s
+
+
+SADDLE_CUT = 3.0     # mm (NOTES 64) the saddle starts this far ahead of the dowel's centre: its sides stay 1.5 mm thick (no feather beside the dowel)
+
+
+def _pocket(deg, up, x0, x1):
+    """(NOTES 64, 4 mm saddle) saddle pocket: the slot's own width (DOWEL_R + SLOT_CLEAR) carried on along the motion until the saddle is
+    SADDLE_T thick ahead of the dowel, a stadium beyond the contact line. (A half disc of DOWEL_R + SADDLE_T, as for the 2 mm saddle, left
+    0.8 mm of wall behind the bump pocket at 4 mm.)"""
+    y, z = _rot_tail(deg)
+    a = math.radians(deg) + math.atan2(TAIL[2] - PC[2], TAIL[1] - PC[1])
+    ty, tz = -math.sin(a) * up, math.cos(a) * up
+    r = DOWEL_R + SLOT_CLEAR
+    depth = (SADDLE_T if up > 0 else SADDLE_T_DROOP) - SLOT_CLEAR      # centre of the pocket's end arc beyond the dowel's centre
+    cy, cz = y + ty * depth / 2.0, z + tz * depth / 2.0
+    st = cq.Workplane('YZ').workplane(offset=x0).center(cy, cz).slot2D(depth + 2 * r, 2 * r, math.degrees(math.atan2(tz, ty))).extrude(x1 - x0).val()
+    return st.intersect(_end_half(deg, up, 3 * r, x0, x1))
 
 
 def _end_half(deg, up, r, x0, x1):
     """Half cylinder of radius r round the dowel at carrier angle deg, on the side beyond the contact (up = +1 bump, -1 droop), from x0 to x1."""
     y, z = _rot_tail(deg)
-    a = math.radians(deg)
+    # (NOTES 60) the face is square to the motion: the tail's own angle about PC counts (5.5 deg below PC's horizontal since 1(b)).
+    # With deg alone the faces sat 5.5 deg off the radius and left a 0.28 mm fin against the slot's end in the pad blocks.
+    a = math.radians(deg) + math.atan2(TAIL[2] - PC[2], TAIL[1] - PC[1])
     ty, tz = -math.sin(a) * up, math.cos(a) * up
     keep = cq.Solid.makeBox(x1 - x0 + 10.0, 20.0, 20.0, V(x0 - 5.0, -10.0, 0.0))
     keep = keep.moved(cq.Location(cq.Plane(origin=(0, y, z), xDir=(1, 0, 0), normal=(0, ty, tz))))
@@ -230,11 +309,14 @@ def _end_half(deg, up, r, x0, x1):
 
 
 def saddles(sx=1):
-    """TPU saddles in the pad block's pockets: half rings 2 mm thick around the dowel at the bump stop (above it) and at the droop stop (below)."""
+    """TPU saddles in the pad block's pockets: 4 mm thick ahead of the dowel (NOTES 64), concave to it, at the bump stop (above) and the droop stop (below)."""
     out = []
     for nm, deg, up in (('bump', BUMP_DEG, 1.0), ('droop', -DROOP_DEG, -1.0)):
         y, z = _rot_tail(deg)
-        ring = _end_half(deg, up, DOWEL_R + SADDLE_T, PAD_X[0], PAD_X[1]).cut(_cyl((PAD_X[0] - 1.0, y, z), (1, 0, 0), DOWEL_R, PAD_X[1] - PAD_X[0] + 2.0))
+        a = math.radians(deg) + math.atan2(TAIL[2] - PC[2], TAIL[1] - PC[1])
+        ty, tz = -math.sin(a) * up, math.cos(a) * up
+        beyond = _end_half(deg, up, 3 * (DOWEL_R + SLOT_CLEAR), PAD_X[0], PAD_X[1]).translate(V(0, ty * SADDLE_CUT, tz * SADDLE_CUT))
+        ring = _pocket(deg, up, PAD_X[0], PAD_X[1]).intersect(beyond).cut(_cyl((PAD_X[0] - 1.0, y, z), (1, 0, 0), DOWEL_R, PAD_X[1] - PAD_X[0] + 2.0))
         out.append(('Heave saddle %s %d' % (nm, sx), _mir(ring, sx)))
     return out
 
@@ -248,8 +330,9 @@ def rear_clevis(top_z):
 
 
 def shock_parts():
-    """Heave shock (bought, ASSUMED 1/10 class: 68 mm eye to eye at ride height, spring OD 16.5, eye width 6). The lower spring retainer rides on
-    the shaft 14 mm behind the front eye (REQUIREMENT on the bought shock, a spacer if needed); body and spring are anchored at the rear eye."""
+    """Heave shock (bought: RC4WD Ultimate Scale Shock 70 mm, internal spring, body D8.8, shaft D3; 68 mm eye to eye at ride height, eye width 6;
+    tools/arm_stops.py SHOCK_GEOM, NOTES 60). The shaft runs from the front eye to the body's front end 18 mm behind it (the 2 mm disc there is
+    the body's seal cap); the body is anchored at the rear eye."""
     g = st.SHOCK_GEOM
     a, b = V(*S), V(*E)
     u = (b - a).normalized()
@@ -262,6 +345,25 @@ def shock_parts():
     return body, shaft
 
 
+DOWEL_SLOT_X = (14.4, 36.4)          # |x| over which the cage's pad block slot walls hold the dowel front and back (probed on the built cage: 14.2 .. 36.5)
+
+
+def _dowel():
+    """Heave stop dowel D8 x 75. FEM only (environment FUGU_FEM_DOWEL_SEG=1): the same cylinder with its face split at |x| = DOWEL_SLOT_X, so a load
+    case can hold the dowel where the slot walls really bear on it (one solid, same volume; the build never sets the switch)."""
+    ln = D['tail_pin']['len']
+    full = _cyl((-ln / 2, TAIL[1], TAIL[2]), (1, 0, 0), DOWEL_R, ln)
+    if os.environ.get('FUGU_FEM_DOWEL_SEG') != '1':
+        return full
+    cuts = [-ln / 2, -DOWEL_SLOT_X[1], -DOWEL_SLOT_X[0], DOWEL_SLOT_X[0], DOWEL_SLOT_X[1], ln / 2]
+    s = None
+    for a, b in zip(cuts, cuts[1:]):
+        c = _cyl((a, TAIL[1], TAIL[2]), (1, 0, 0), DOWEL_R, b - a)
+        s = c if s is None else s.fuse(c)            # no clean(): the faces stay split at the cuts
+    assert s.isValid() and len(s.Solids()) == 1 and abs(s.Volume() - full.Volume()) < 1e-3, 'segmented dowel'
+    return s
+
+
 def hardware():
     """Steel parts of the guide (bought): carrier pin, yaw pin with its clip, heave stop dowel, shock pins."""
     pl = _pc()
@@ -270,7 +372,10 @@ def hardware():
     return [('Carrier pin', _cyl((-PLATE_X[1], PC[1], PC[2]), (1, 0, 0), CPIN_R, 2 * PLATE_X[1])),
             ('Beam yaw pin', _ncyl(pl, YAW_R, -bk.BEAM_R - 0.5, n1)),
             ('Beam yaw pin clip', _ncyl(pl, st.CARRIER_SECTIONS['clip_r'] + 2.0, -bk.BEAM_R - 0.5 - st.CARRIER_SECTIONS['clip_h'], -bk.BEAM_R - 0.5)),
-            ('Heave stop dowel', _cyl((-D['tail_pin']['len'] / 2, TAIL[1], TAIL[2]), (1, 0, 0), DOWEL_R, D['tail_pin']['len'])),
+            ('Heave stop dowel', _dowel()),
+            *[('Tail sleeve %d' % sx, _cyl((sx * TAIL_W2 / 2, TAIL[1], TAIL[2]), (-sx, 0, 0), TAIL_SLEEVE[2] / 2, TAIL_SLEEVE[3])
+               .cut(_cyl((sx * (TAIL_W2 / 2 + 1.0), TAIL[1], TAIL[2]), (-sx, 0, 0), TAIL_SLEEVE[1] / 2, TAIL_SLEEVE[3] + 2.0))) for sx in (1, -1)],
+            ('Yaw pin sleeve', _ncyl(pl, SLEEVE[2] / 2, n1 - SLEEVE[3], n1).cut(_ncyl(pl, SLEEVE[1] / 2, n1 - SLEEVE[3] - 1.0, n1 + 1.0))),
             ('Shock pin front', _cyl((-st.CARRIER_SECTIONS['s_fork_half'], S[1], S[2]), (1, 0, 0), PIN_R, 2 * st.CARRIER_SECTIONS['s_fork_half'])),
             ('Shock pin rear', _cyl((-k.SHOCK_EYE_W / 2 - 0.2 - CHEEK, E[1], E[2]), (1, 0, 0), PIN_R, k.SHOCK_EYE_W + 0.4 + 2 * CHEEK))]
 

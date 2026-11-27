@@ -119,7 +119,7 @@ def moving_groups():
         g[('tie', s)] = ['Tie rod %d' % s]
         g[('block', s)] = ['Cup block %d' % s]
     g[('beam', 0)] = ['Balance beam']
-    g[('bcar', 0)] = ['Beam carrier', 'Beam yaw pin', 'Beam yaw pin clip', 'Shock pin front', 'Heave stop dowel'] + ['Yaw stop pad %s %d' % (n, s) for n in ('front', 'rear') for s in (1, -1)]
+    g[('bcar', 0)] = ['Beam carrier', 'Beam yaw pin', 'Beam yaw pin clip', 'Shock pin front', 'Heave stop dowel', 'Yaw pin sleeve', 'Tail sleeve 1', 'Tail sleeve -1'] + ['Yaw stop pad %s %d' % (n, s) for n in ('front', 'rear') for s in (1, -1)]
     g[('shock_b', 0)] = ['Heave shock body']
     g[('shock_s', 0)] = ['Heave shock shaft']
     return g

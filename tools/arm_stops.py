@@ -344,7 +344,11 @@ def beam_solids(r):
 
 # heave shock envelope (ASSUMED 1/10-class shock). REQUIREMENT for the bought shock: the lower spring retainer (R 8.25) starts >= 14 mm behind the
 # front eye centre (a spacer under the retainer if needed): at 12 mm the carrier's tail boss comes within 0.18 mm of it at droop, at 14 mm 1.11 mm
-SHOCK_GEOM = {'eye_r': 4.0, 'eye_w': 6.0, 'shaft_r': 2.0, 'cup_from_front_eye': 14.0, 'spring_r': 8.25}
+# (NOTES 60) the bought heave shock, RC4WD Ultimate Scale Shock 70 mm RC4Z-D0004 (store.hobbyetc.com/parts/view/29506): internal spring, body D8.8,
+# shaft D3.0, 72.5 extended / 55.1 compressed. No external spring or retainer: 'spring_r' is now the body radius 4.4, and the body's front end sits
+# 18 mm behind the front eye at ride height (68 - (55.1 - 5): the body is 50.1 mm from the rear eye, 5 mm of shaft and eye left at full compression,
+# ASSUMED). Was: shaft r 2.0, spring cup 14 mm behind the front eye, spring r 8.25 (a 1/10 class coil-over envelope).
+SHOCK_GEOM = {'eye_r': 4.0, 'eye_w': 6.0, 'shaft_r': 1.5, 'cup_from_front_eye': 18.0, 'spring_r': 4.4}
 
 
 def shock_solids(k, r):
@@ -387,7 +391,7 @@ def carrier_solids(k, r):
     ey, ez = Rg @ np.array([0, 1.0, 0]), Rg @ np.array([0, 0, 1.0])
     # boss: a cylinder about the pin (wall_top all round, so its top never rises above pin + d/2 + wall_top as the carrier turns) plus a block under
     # the pin (side walls wall_side, bottom wall wall_bottom: the bump tear-out section)
-    rcyl = tp['d'] / 2 + tp['wall_top']
+    rcyl = tp.get('bore_d', tp['d']) / 2 + tp['wall_top']
     cyl = cq.Solid.makeCylinder(rcyl, tp['boss_len'], cq.Vector(-tp['boss_len'] / 2, tail[1], tail[2]), cq.Vector(1, 0, 0))
     # block under the pin: full depth (d/2 + wall_bottom) under the bore (|dy| <= d/2, the tear-out planes), its rear-bottom corner chamfered up to
     # the side wall so it stays clear of the shock's spring cup behind S

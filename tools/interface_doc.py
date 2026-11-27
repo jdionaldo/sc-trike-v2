@@ -36,10 +36,25 @@ RM = [
     ("Clamp screw hole in the upper jaw", I.RM_CLAMP_HOLE, ""),
     ("Clamp thread in the hanger (pocket D, depth)", I.RM_CLAMP_INSERT, "printed: M3 insert OD 4.6 x 5.7; metal: tapped M3, 6 deep"),
     ("Rocker pin axis (x, y), vertical", I.RM_PIN_AXIS, ""),
-    ("Rocker pin", I.RM_PIN, "ISO 8734 D4 m6 x 20 hardened; the rocker turns on it (rocker bore D4.1)"),
-    ("Pin bore in foot and shoe", I.RM_PIN_BORE, "press fit; metal: D4 H7"),
+    ("Rocker pin", I.RM_PIN, "ISO 8734 D4 m6 x 24 hardened; the rocker turns on it (rocker bore D4.1)"),
+    ("Pin bore in the hanger (blind, 7 mm into its full section) and the shoe", I.RM_PIN_BORE, "press fit; metal: D4 H7"),
     ("Shoe bore floor (blind)", I.RM_SHOE_FLOOR, "the pin is held between this floor and the arm boss 1 mm over the foot"),
     ("Envelope", I.RM_ENVELOPE, "z of foot and shoe, strap x and y, clamp y, rear wall y (mm)"),
+]
+CT = [
+    ("Carrier pin axis PC (y, z), along x", I.CT_PIVOT_AXIS, "the carrier turns about it"),
+    ("Heave stop dowel axis at rest (y, z), along x", I.CT_TAIL_AXIS, "r 10.4 from PC"),
+    ("Heave stop dowel", I.CT_DOWEL, "runs in the two sleeves and the arc slots"),
+    ("Tail sleeves (name, ID, OD, length), two", I.CT_SLEEVE, "oil-filled sintered bronze, pressed in from each end"),
+    ("Sleeve bore / locating D8 bore between the sleeves (length)", I.CT_SLEEVE_BORE, "printed: 11.9 press fit, ream to the coupon; metal: D12 H7"),
+    ("Tail boss end faces |x|", I.CT_BOSS_X, ""),
+    ("Boss wall over the bore, spine side", I.CT_BOSS_WALL_TOP, "a metal carrier may not grow upward: the spine bridge is 1.00 mm above"),
+    ("Carrier turn at the droop / bump stop (deg)", I.CT_ARC, "+ = bump"),
+    ("Dowel radial clearance in the arc slots", I.CT_SLOT_CLEAR, "pad blocks and clevis plates (cage)"),
+    ("Clevis plates |x| (cage)", I.CT_PLATE_X, ""),
+    ("TPU saddles |x|", I.CT_SADDLE_X, ""),
+    ("Pad block y, front .. rear face (cage)", I.CT_PAD_BLOCK_Y, ""),
+    ("Least gap carrier to cage", I.CT_BRIDGE_GAP, "at rest and at both stops, at the clevis plates' inner faces"),
 ]
 
 
@@ -57,6 +72,6 @@ L = ["# Knuckle and rocker mount: interface for a printed or a metal part", "",
      "rocker under the arm pivot); RC knuckles and C-hubs are for solid axles or wishbones and do not share these hard points. Nothing was found",
      "that fits, so the interface is for a machined part. (Not an exhaustive market search.)", "",
      "Bought parts at these interfaces, with the maker's dimensions and sources: `bought_part_datasheets_2026-11-24.md`.", "",
-     "## Knuckle (one per side)", ""] + table(KN) + ["", "## Rocker mount (one per side)", ""] + table(RM) + [""]
+     "## Knuckle (one per side)", ""] + table(KN) + ["", "## Rocker mount (one per side)", ""] + table(RM) + ["", "## Beam carrier tail and pad blocks (NOTES 60)", ""] + table(CT) + [""]
 (ROOT / "docs" / "v2" / "knuckle_rocker_interface.md").write_text("\n".join(L))
 print("written docs/v2/knuckle_rocker_interface.md")

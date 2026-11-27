@@ -6,9 +6,10 @@ Loads (docs/v2/arm_stops.md, CALCULATED from 65 N per front wheel):
 - carrier clevis: the carrier pin pulls the two plates down and back with what is left of 262 N on the yaw pin and 676 N at the dowel:
   (0, 390, -808) N in all, half on each plate bore.
 The shock's rear clevis and the roof loads of analyses/cage.py are not in this case."""
+import os
 from soma.fem import Study
 
-study = Study("Cage v2, heave bump stop 2 x 338 N + clevis 898 N + yaw stop 2 x 160 N on the slot walls", material="PETG", safety=2, mesh=2.5)
+study = Study("Cage v2, heave bump stop 2 x 338 N + clevis 898 N + yaw stop 2 x 160 N on the slot walls", material="PETG", safety=2, mesh=float(os.environ.get("FEM_MESH", "2.5")))
 for sx in (1, -1):
     for y, z in ((-140.0, 21.2), (-48.0, 26.7), (38.0, 32.8)):
         study.fix("Cage", near=(sx * 45.0, y + 3.0, z))

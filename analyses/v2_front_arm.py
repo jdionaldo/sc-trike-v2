@@ -5,8 +5,9 @@ The spring lever reacts the bump: the beam's fork holds the lever ball along the
 which balances the 65 N about the pivot axis at rest (CALCULATED here: 65 x 99.75 / 54.91; 131 N in the helper's table is the value at the
 stop pose). It is applied on the end face of the stud boss (x 59.4), 6.8 mm inboard of the blade's mid plane; the ball itself sits 12.2 mm inboard,
 so the blade's torsion is UNDERSTATED by about 45 % here."""
+import os
 from soma.fem import Study
-study = Study("Front arm v2, 65 N bump + 30 N side at the tip, 118 N at the lever", material="PETG", safety=2, mesh=2.6)      # 2.6 mm: the default mesh (5.5 mm) left one degenerate element at the U0 strut (3235 MPa on 8 mm2)
+study = Study("Front arm v2, 65 N bump + 30 N side at the tip, 118 N at the lever", material="PETG", safety=2, mesh=float(os.environ.get("FEM_MESH", "2.6")))      # 2.6 mm: the default mesh (5.5 mm) left one degenerate element at the U0 strut (3235 MPa on 8 mm2)
 # Pivot bores as a pin joint on the fixed axle (redesign round, step D): held across the axle only (y, z), free along it; the side load is taken
 # on the outer boss's outer face (thrust face). The first runs held both bores rigidly in x too, which put the peak on the bore's edge.
 study.fix("arm 1", near=(66.2, -116.8, 47.5), axes="yz")

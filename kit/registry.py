@@ -39,9 +39,9 @@ PARTS = [
       mates="cage clevis (D6 x 35), SU6 (D8 yaw pin), heave shock (D3 pin), heave stop dowel D8 x 75 in the pad blocks",
       note="FEM: safety 1.30 two-wheel, 1.06 one-wheel (target 2): OPEN. Hub bore 6.4 on the D6 pin is a REQUIREMENT (loose on purpose)"),
     D(id="SU8", sub="SU", name="Heave saddle, bump", stems=["Heave_saddle_bump_-1", "Heave_saddle_bump_1"], mirrored=True, **TPU,
-      function="TPU seat of the heave stop dowel at +12 mm (two-wheel bump)", mates="cage pad block (glued)"),
+      function="TPU seat of the heave stop dowel at +12 mm (two-wheel bump)", mates="cage pad block (glued)", note="REQUIRED: 4 mm TPU 95A ahead of the dowel; the 0.20 m drop basis is 123 N with it, 164 N without (NOTES 61, 64)"),
     D(id="SU9", sub="SU", name="Heave saddle, droop", stems=["Heave_saddle_droop_-1", "Heave_saddle_droop_1"], mirrored=True, **TPU,
-      function="TPU seat of the heave stop dowel at -8 mm (two-wheel droop)", mates="cage pad block (glued)"),
+      function="TPU seat of the heave stop dowel at -8 mm (two-wheel droop)", mates="cage pad block (glued)", note="REQUIRED: 2 mm TPU 95A ahead of the dowel (the droop stop; NOTES 64)"),
     D(id="SU10", sub="SU", name="Yaw stop pad, front", stems=["Yaw_stop_pad_front_-1", "Yaw_stop_pad_front_1"], mirrored=True, **TPU,
       function="Pad on the carrier post: the beam lands on it at 10 deg lean", mates="SU7 post (glued)"),
     D(id="SU11", sub="SU", name="Yaw stop pad, rear", stems=["Yaw_stop_pad_rear_-1", "Yaw_stop_pad_rear_1"], mirrored=True, **TPU,
@@ -50,11 +50,11 @@ PARTS = [
       function="Wedge on the upper link's rail lug: the lever blade lands on it at -32.9 mm", mates="cage rail lug (glued)"),
     # --- steering ---------------------------------------------------------------------------------------------------------------------------------
     D(id="ST1", sub="ST", name="Rocker", stems=["Rocker_-1", "Rocker_1"], mirrored=True, walls=6, infill="100%", **PETG_S,
-      function="Steering rocker on the vertical D4 pin: drag link in, tie rod out", mates="ST2 (D4 x 20 pin), 2 ball studs"),
+      function="Steering rocker on the vertical D4 pin: drag link in, tie rod out", mates="ST2 (D4 x 24 pin), 2 ball studs"),
     D(id="ST2", sub="ST", name="Rocker bracket (PETG)", stems=["Rocker_bracket_-1", "Rocker_bracket_1"], mirrored=True, walls=8, infill="100%", **PETG_S,
-      function="Clamp on the arm pivot axle with the strap, shoe and rear wall that hold the rocker pin in double shear",
-      mates="D5 pivot axle, D4 rocker pin, front deck",
-      note="owner's choice (NOTES 26). FEM at the servo limit 0.47 N m: safety 0.75 (about 0.96 at the steering need 0.367 N m): BELOW 2"),
+      function="Clamp on the arm pivot axle; the rocker pin's top 7 mm deep in the hanger's full section, its foot in the shoe (strap and rear wall tie them)",
+      mates="D5 pivot axle, D4 x 24 rocker pin, front deck",
+      note="pin moved into the hanger (owner: Move the pin, NOTES 42). FEM at 0.47 N m (computed pin loads, horn +-30, both signs): safety 3.75 .. 8.98, settled; 2.57 in the old 64.4 N envelope case"),
     D(id="ST3", sub="ST", name="Servo floor", stems=["Servo_floor_-1", "Servo_floor_1"], mirrored=True, walls=4, infill="40%", **PETG_S,
       function="Wedge floor that seats the flat-lying steering servo on the deck", mates="front deck, servo, ST4"),
     D(id="ST4", sub="ST", name="Servo clip", stems=["Servo_clip_-1", "Servo_clip_1"], mirrored=True, walls=4, infill="40%", **PETG_S,
@@ -87,8 +87,9 @@ PARTS = [
     D(id="CG1", sub="CG", name="Cage", stems=["Cage"], optional=True, walls=4, infill="30%", **PETG_S, function="Cage with the exo frame", mates=""),
 ]
 SH = [("SH1", "Nose tub", "Nose_tub"), ("SH2", "Hood deck", "Hood_deck"), ("SH3", "Side pod", "Side_pod_left Side_pod_right"),
-      ("SH4", "Side cover", "Side_cover_left Side_cover_right"), ("SH5", "Hex grille", "Hex_grille"), ("SH6", "Roof panel", "Roof_panel"),
-      ("SH7", "Tail light housing", "Tail_light_housing"), ("LT1", "Nose light bar", "Nose_light_bar"), ("LT2", "Tail light strip", "Tail_light_strip")]
+      ("SH4", "Side cover front (pod top, NOTES 62)", "Side_cover_front_left Side_cover_front_right"), ("SH10", "Side cover rear (pod top, NOTES 62)", "Side_cover_rear_left Side_cover_rear_right"), ("SH5", "Hex grille", "Hex_grille"), ("SH6", "Roof panel", "Roof_panel"),
+      ("SH7", "Tail light housing", "Tail_light_housing"), ("SH8", "Cowl panel (hood rear, NOTES 44)", "Cowl_panel"), ("SH9", "Dash panel", "Dash_panel"),
+      ("LT1", "Nose light bar", "Nose_light_bar"), ("LT2", "Tail light strip", "Tail_light_strip")]
 for _id, _n, _s in SH:
     PARTS.append(D(id=_id, sub=_id[:2], name=_n, stems=_s.split(), optional=True, walls=3, infill="15%", material="PETG", load="none", support="auto", function="", mates=""))
 

@@ -137,6 +137,9 @@ def make_rear_arm():
         lo, hi = min(x0, x1), max(x0, x1)
         lug = _boss(lo, hi, AF, 2 * EAR_R).fuse(_boss(lo, hi, AR, 2 * EAR_R))
         lug = lug.fuse(cq.Solid.makeBox(hi - lo, AR[0] - AF[0], 2 * EAR_R, _v(lo, AF[0], AF[1] - EAR_R)))
+        # (NOTES 53) the rear bridge tube landed on the ear's round end behind the pin, next to the tool corridor: FEM 1.68 / 1.54 at the ear's outer
+        # face there. The ear now runs on at full section back to the tube (YR); the shock leaves its eye forward (-y), away from it
+        lug = lug.fuse(cq.Solid.makeBox(hi - lo, YR - AR[0], 2 * EAR_R, _v(lo, AR[0], AR[1] - EAR_R)))
         F.solids.append(lug)
     F.holes.append(_boss(-EAR_GAP / 2 - EAR_T - 1, EAR_GAP / 2 + EAR_T + 1, AR, PIN_BORE))
     F.holes += _ch.entry_cones((-EAR_GAP / 2 - EAR_T, -EAR_GAP / 2, EAR_GAP / 2, EAR_GAP / 2 + EAR_T), AR, PIN_BORE)

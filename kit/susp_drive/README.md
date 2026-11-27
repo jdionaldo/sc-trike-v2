@@ -1,6 +1,6 @@
 # Fugu V2 suspension + drivetrain kit (leading swing arms)
 
-Front swing arms, upper links, carriers, knuckle, balance beam and carrier, heave shock and stops, steering (rockers, servos, horns, drag links, tie rods), rear swing arm, belt drive, motor plate, wheels and tyres. 42 printed files on 6 plates, 24.9 h and 716 g by the Bambu Studio slice check (0 problems), the option plate included. Bought parts as listed on 2026-11-24 (15 rows VERIFIED, 34 ASSUMED, 6 UNKNOWN). Nothing bought.
+Front swing arms, upper links, carriers, knuckle, balance beam and carrier, heave shock and stops, steering (rockers, servos, horns, drag links, tie rods), rear swing arm, belt drive, motor plate, wheels and tyres. 42 printed files on 6 plates, 25.2 h and 724 g by the Bambu Studio slice check (0 problems), the option plate included. Bought parts as listed on 2026-11-24 (16 rows VERIFIED, 34 ASSUMED, 6 UNKNOWN). Nothing bought.
 
 ## Stated openly
 
@@ -30,12 +30,12 @@ Totals of the bought parts per combination (servo class follows: any printed opt
 
 | Rocker mount | Knuckle | Servo | Total USD |
 |---|---|---|---|
-| R-PETG | K-PETG | S-A2 | 1038.86 |
-| R-PETG | K-STEEL | S-A2 | 1040.12 |
-| R-AL | K-PETG | S-A2 | 1108.86 |
-| R-AL | K-STEEL | S-A1 | 892.91 |
-| R-STEEL | K-PETG | S-A2 | 1118.86 |
-| R-STEEL | K-STEEL | S-A1 | 902.91 |
+| R-PETG | K-PETG | S-A2 | 1046.53 |
+| R-PETG | K-STEEL | S-A2 | 1047.79 |
+| R-AL | K-PETG | S-A2 | 1116.53 |
+| R-AL | K-STEEL | S-A1 | 900.58 |
+| R-STEEL | K-PETG | S-A2 | 1126.53 |
+| R-STEEL | K-STEEL | S-A1 | 910.58 |
 
 ## 1. Bought parts
 
@@ -44,6 +44,7 @@ Quantities from the model (`Where` names the stand-in parts). Rows with an optio
 | Item | Option | Qty | Where (model) | Part / retailer | Unit USD (pack) | Packs | Total USD | Status | Note |
 |---|---|---|---|---|---|---|---|---|---|
 | Heave shock 70 mm (one, between the beam carrier and the cage) | - | 1 | Heave shock body/shaft (model 68.0 mm eye to eye, D3 eye pins) | RC4WD Ultimate Scale Shock 70 mm RC4Z-D0004, Hobby ETC https://store.hobbyetc.com/parts/view/29506 (Version 1 choice) | 20.99 (2) | 1 | 20.99 | VERIFIED | V1 sourcing: 72.5 ext / 55.1 comp, stroke 17.4, eye bore 3.0 (fits the D3 pins); DISCONTINUED; no spring rate stated (about 30 N/mm assumed) |
+| Plain sleeve, oil-filled sintered bronze, 8 x 12 x 12 (SKF PSM 8-12-12 A51) | - | 1 | Yaw pin sleeve: pressed into the top 12 mm of the beam carrier's yaw pin bore (printed bore 11.9), the D8 yaw pin pressed into it (NOTES 57) | SKF PSM 8-12-12 A51, 123bearing.com https://www.123bearing.com/accessories/bushes/bronze/psm8-12-12-a51-skf (opened 2026-11-25) | 7.67 (1) | 1 | 7.67 | VERIFIED | ID 8, OD 12, length 12, 5 g; 2 in stock on 2026-11-25; press fit in PETG ASSUMED (ream / coupon) |
 | Hardened dowel pin D3 x 12 (ISO 8734 m6) | - | 6 | Uplink pin inner/outer x 2 sides (4), Shock pin front/rear (2) | McMaster 91595A112 (pack 50) https://www.mcmaster.com/products/dowel-pins/specifications-met~iso-8734/ | 9.00 (50) | 1 | 9.00 | ASSUMED | no price on the page: est.; C52 |
 | Hardened dowel pin D4 x 55 (arm tip shaft) | - | 2 | tip shaft x 2 (model D4 x 54) | McMaster 91595A188 D4 x 50 (25) or 91595A192 D4 x 60 (10) | 12.00 (10) | 1 | 12.00 | ASSUMED | 55 is not in the series: 60 mm cut and deburred to 54; no price on the page: est. |
 | Hardened dowel pin D4 x 40 (kingpin) | - | 2 | Kingpin x 2 (model D4 x 39) | McMaster 91595A185 (25) | 11.00 (25) | 1 | 11.00 | ASSUMED | no price: est. |
@@ -71,11 +72,11 @@ Quantities from the model (`Where` names the stand-in parts). Rows with an optio
 | Metal servo horn 25T, ball hole at 12 mm | - | 2 | Steer horn x 2 (model: ball at 12 mm radius, on a 7 mm stud) | Tekno RC TKR5253B aluminium 25T horn, Horizon https://assets.horizonhobby.com/product/aluminum-servo-horn-25t-spline-m3-clamp-2-hole-arm/TKR5253B.html | 15.99 (1) | 2 | 31.98 | ASSUMED | hole distances not on the page: 12 mm unconfirmed |
 | Ball stud 6.8 mm, M3, with nylock | - | 8 | Knuckle ball stud x 2, Rocker ball stud in/out x 4, horn ball x 2 | HPI 66247 (see the lever row) | 17.49 (10) | 1 | 17.49 | ASSUMED | pack 10 ASSUMED; 10 studs in all |
 | M3 nylock DIN 985 | - | 10 | all ball studs | generic DIN 985 A2 (100) | 12.65 (100) | 1 | 12.65 | UNKNOWN | no page opened (Zoro snippet) |
-| M3 rod end for a 6.8 mm ball, swivel 25 deg or more (drag link, two per link on a short M3 stud) | - | 4 | Drag link x 2 (13.4 mm ball to ball) | RC4WD RC4ZS1378 plastic short rod end (body OD 7, ball 6.92) https://amainhobbies.com/rc4wd-m3-m4-plastic-short-rod-ends-2-rc4zs1378/p425162 | 8.99 (2) | 2 | 17.98 | ASSUMED | swivel not stated; pack size contradictory on the page; back order; no 6.8 mm M3 end with a stated 25 deg swivel was found |
+| M3 rod end for a 6.8 mm ball, swivel 25 deg or more (drag link, two per link on a short M3 stud) | - | 4 | Drag link x 2 (16.7 mm ball to ball, NOTES 42) | RC4WD RC4ZS1378 plastic short rod end (body OD 7, ball 6.92) https://amainhobbies.com/rc4wd-m3-m4-plastic-short-rod-ends-2-rc4zs1378/p425162 | 8.99 (2) | 2 | 17.98 | ASSUMED | swivel not stated; pack size contradictory on the page; back order; no 6.8 mm M3 end with a stated 25 deg swivel was found |
 | M3 stud 10 mm (drag link body) | - | 2 | Drag link x 2 | generic M3 set screw 10 mm | 0.20 (1) | 2 | 0.40 | ASSUMED | est. |
 | M4 rod end for a 6.8 mm ball (tie rods; the knuckle end slim, OD 8.2 at most) | - | 4 | Tie rod x 2, both ends | Tekno RC TKR5188B hard 6.8 mm M4 rod ends (8) https://store.hobbyetc.com/parts/view/132356; slim knuckle end: RC4WD RC4ZS1378 (OD 7) | 11.99 (8) | 1 | 11.99 | ASSUMED | housing OD of TKR5188B not given: use RC4ZS1378 (OD 7) at the knuckle end |
-| M4 turnbuckle about 100 mm (tie rod body, about 107 mm ball to ball) | - | 2 | Tie rod x 2 | Tekno RC TKR9423 M4 turnbuckle 100 mm (2) https://store.hobbyetc.com/parts/view/148994 | 16.99 (2) | 1 | 16.99 | ASSUMED | ball-to-ball length with the chosen ends not checked |
-| Hardened dowel pin D4 x 20 (rocker pin) | - | 2 | Rocker pin x 2 (model D4 x 21) in double shear | McMaster 91595A167 (50) | 9.00 (50) | 1 | 9.00 | ASSUMED | no price: est.; at the ASSUMED stall the pin sees 390 MPa: hardened pin required |
+| M4 turnbuckle about 100 mm (tie rod body, about 109 mm ball to ball: 108.84, NOTES 42) | - | 2 | Tie rod x 2 | Tekno RC TKR9423 M4 turnbuckle 100 mm (2) https://store.hobbyetc.com/parts/view/148994 | 16.99 (2) | 1 | 16.99 | ASSUMED | ball-to-ball length with the chosen ends not checked |
+| Hardened dowel pin D4 x 24 (rocker pin) | - | 2 | Rocker pin x 2 (model D4 x 24), from the shoe up 7 mm into the hanger (NOTES 42) | ISO 8734 D4 m6 x 24 (McMaster 91595A series; the x 24 part number not looked up) | 9.00 (50) | 1 | 9.00 | ASSUMED | no price: est.; at the ASSUMED stall the pin sees 390 MPa: hardened pin required |
 | Rocker bracket, aluminium 6082-T6, the printed bracket's shape machined (same interface) | R-AL | 2 | Rocker bracket x 2 | machined part from the model (parts/swingarm_front.py rocker_bracket), online CNC service | 35.00 (1) | 2 | 70.00 | ASSUMED | est., not quoted; safety about 2.3 at the ASSUMED 2.0 N m stall, about 17 g |
 | Rocker bracket B2, steel S235 or 1.4301, same shape | R-STEEL | 2 | Rocker bracket x 2 | machined or welded steel part | 40.00 (1) | 2 | 80.00 | ASSUMED | est., not quoted; safety about 2.2 (S235) / 2.0 (1.4301), about 50 g each |
 | Rocker bracket printed PETG (ST2 on plate 01, front suspension and steering) | R-PETG | 2 | Rocker bracket x 2 | printed | 0.00 (1) | 2 | 0.00 | ASSUMED | owner's choice; FEM at 0.47 N m: safety 0.75 (0.96 at 0.367 N m): BELOW 2; needs the torque-limited servo S-A2 |
@@ -98,7 +99,7 @@ Quantities from the model (`Where` names the stand-in parts). Rows with an optio
 | Screws for the pillow block and bearing carrier halves | - | ? | DT5/DT6 and DT7/DT8 to the decks | generic M3 | 0.10 (1) | 0 | 0.00 | UNKNOWN | count not taken from the traced carrier meshes |
 | Rear tyre 2.2 in, about 140 mm OD | - | 1 | Rear tire on the printed wheel DT17 (bead seat 55.9) | RC4WD Mud Slinger 2 XL 2.2 RC4ZT0122 (pair, with foams) https://www.amainhobbies.com/rc4wd-mud-slinger-2-xl-2.2-scale-crawler-tires-2-rc4zt0122/p-qtqrtarqbc2xactz | 29.99 (2) | 1 | 29.99 | VERIFIED | 139.7 x 53.5 mm, ID 55.5 (0.4 mm tight on the bead seat); backorder; the model's tyre envelope is 62 mm wide |
 | Front tyre 1.9 in, about 112 mm OD (Version 2 front) | - | 2 | mock tire x 2 on the printed wheels DT16 | Pro-Line Toyo Open Country R/T G8 1.9 PRO1021114 (pair) https://www.axialadventure.com/product/1-10-toyo-open-country-r-t-g8-f-r-1.9-rock-crawling-tires-2/PRO1021114.html | 24.99 (2) | 1 | 24.99 | VERIFIED | V1 sourcing: 113 x 38 mm; DISCONTINUED; alt. RC4WD Scrambler RC4ZT0144 |
-| **All rows (every option once)** | | | | | | | **1416.62** | | |
+| **All rows (every option once)** | | | | | | | **1424.29** | | |
 
 ## 2. Printed parts
 
@@ -107,7 +108,7 @@ Every file is oriented and packed: do not auto-orient in Bambu Studio. L/R parts
 | ID | Part | Material | Walls | Infill | Support | Face on the bed | Size mm | Plate |
 |---|---|---|---|---|---|---|---|---|
 | SU6 | Balance beam | PETG | 6 | 60% | auto | model +z down | 120 x 29 x 30 | Front suspension and steering (PETG) |
-| SU7 | Beam carrier (bellcrank) | PETG | 6 | 70% | auto | model -x down | 53 x 72 x 80 | Front suspension and steering (PETG) |
+| SU7 | Beam carrier (bellcrank) | PETG | 6 | 70% | auto | model +x down | 53 x 72 x 80 | Front suspension and steering (PETG) |
 | SU12L | Droop stop pad (L) | TPU 95A | 3 | 100% | off | model +z down | 9 x 7 x 10 | Stops and pads (TPU 95A) |
 | SU12R | Droop stop pad (R) | TPU 95A | 3 | 100% | off | model +z down | 9 x 7 x 10 | Stops and pads (TPU 95A) |
 | SU3L | Front carrier (L) | PETG | 6 | 70% | auto | model -y down | 65 x 36 x 16 | Front suspension and steering (PETG) |
@@ -118,10 +119,10 @@ Every file is oriented and packed: do not auto-orient in Bambu Studio. L/R parts
 | SU8R | Heave saddle, bump (R) | TPU 95A | 3 | 100% | off | model +x down | 8 x 12 x 17 | Stops and pads (TPU 95A) |
 | SU9L | Heave saddle, droop (L) | TPU 95A | 3 | 100% | off | model +x down | 7 x 12 x 17 | Stops and pads (TPU 95A) |
 | SU9R | Heave saddle, droop (R) | TPU 95A | 3 | 100% | off | model +x down | 7 x 12 x 17 | Stops and pads (TPU 95A) |
-| ST1L | Rocker (L) | PETG | 6 | 100% | auto | model +z down | 28 x 20 x 14 | Front suspension and steering (PETG) |
-| ST1R | Rocker (R) | PETG | 6 | 100% | auto | model +z down | 28 x 20 x 14 | Front suspension and steering (PETG) |
-| ST2L | Rocker bracket (PETG) (L) | PETG | 8 | 100% | auto | model +y down | 37 x 23 x 17 | Front suspension and steering (PETG) |
-| ST2R | Rocker bracket (PETG) (R) | PETG | 8 | 100% | auto | model +y down | 37 x 23 x 17 | Front suspension and steering (PETG) |
+| ST1L | Rocker (L) | PETG | 6 | 100% | auto | model +z down | 24 x 20 x 14 | Front suspension and steering (PETG) |
+| ST1R | Rocker (R) | PETG | 6 | 100% | auto | model +z down | 24 x 20 x 14 | Front suspension and steering (PETG) |
+| ST2L | Rocker bracket (PETG) (L) | PETG | 8 | 100% | auto | model +y down | 37 x 17 x 17 | Front suspension and steering (PETG) |
+| ST2R | Rocker bracket (PETG) (R) | PETG | 8 | 100% | auto | model +y down | 37 x 17 x 17 | Front suspension and steering (PETG) |
 | ST4L | Servo clip (L) | PETG | 4 | 40% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
 | ST4R | Servo clip (R) | PETG | 4 | 40% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
 | ST3L | Servo floor (L) | PETG | 4 | 40% | auto | model -z down | 36 x 32 x 4 | Front suspension and steering (PETG) |
@@ -143,7 +144,7 @@ Every file is oriented and packed: do not auto-orient in Bambu Studio. L/R parts
 | DT6 | Pillow block upper | PETG | 4 | 60% | auto | model -x down | 22 x 15 x 30 | Drivetrain and wheels (PETG) |
 | DT7 | Rear bearing carrier lower | PETG | 4 | 50% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
 | DT8 | Rear bearing carrier upper | PETG | 4 | 50% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
-| DT11 | Rear swing arm | PETG | 6 | 60% | auto | model +x down | 79 x 150 x 90 | Drivetrain and wheels (PETG) |
+| DT11 | Rear swing arm | PETG | 6 | 60% | auto | model +x down | 80 x 150 x 90 | Drivetrain and wheels (PETG) |
 | DT10 | Rear ring hub | PETG | 4 | 80% | auto | model +x down | 22 x 22 x 9 | Drivetrain and wheels (PETG) |
 | DT16L | Front wheel 1.9 in (L) | PETG | 6 | 60% | off | model +x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
 | DT16R | Front wheel 1.9 in (R) | PETG | 6 | 60% | off | model -x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
@@ -155,13 +156,13 @@ Open `bambu/all_plates.3mf` or one plate file. PETG in AMS slot 4; the TPU plate
 
 | Plate file | Time | Grams | Slice check |
 |---|---|---|---|
-| plate_01_Front_suspension_and_steering_1.3mf | 9.5 h | 238 | OK |
-| plate_01_Front_suspension_and_steering_2.3mf | 3.2 h | 98 | OK |
-| plate_01_Front_suspension_and_steering_3.3mf | 0.4 h | 15 | OK |
-| plate_02_Drivetrain_and_wheels_1.3mf | 10.3 h | 322 | OK |
+| plate_01_Front_suspension_and_steering_1.3mf | 9.7 h | 246 | OK |
+| plate_01_Front_suspension_and_steering_2.3mf | 3.1 h | 98 | OK |
+| plate_01_Front_suspension_and_steering_3.3mf | 0.4 h | 13 | OK |
+| plate_02_Drivetrain_and_wheels_1.3mf | 10.4 h | 324 | OK |
 | plate_02_Drivetrain_and_wheels_2.3mf | 1.3 h | 39 | OK |
 | plate_03_Stops_and_pads.3mf | 0.2 h | 4 | OK |
-| **Total** | **24.9 h** | **716** | 0 problems |
+| **Total** | **25.2 h** | **724** | 0 problems |
 
 ## 3b. Two paths: print, or buy / machine in metal
 

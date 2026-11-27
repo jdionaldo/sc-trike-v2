@@ -39,16 +39,16 @@ STEER_DESIGN = {
     "KNUCKLE_BALL": (107.31, -222.45, 14.6),      # MOVED: same 16.76 mm arm as the stand-in point, turned 20.6 deg forward of straight inboard so it is
                                                   # square to the tie rod in plan at centre (CALCULATED); stud vertical, ball inboard of the tyre face (x < 113)
     # tie rod: M4 threaded rod (M3 buckles at margin 1.05), ball ends with a >= 27 deg misalignment cone; stud vertical at both ends
-    "TIE_ROD_INNER_BALL": (69.81, -122.70, 21.5), # zero-bump point: yz = PIVOT + KNUCKLE_BALL - TIP, x = KNUCKLE_BALL x - 37.5 (CALCULATED); stud down
-    "TIE_ROD_L": 106.79,                          # ball to ball (CALCULATED)
+    "TIE_ROD_INNER_BALL": (64.31, -122.70, 21.5), # zero-bump point: yz = PIVOT + KNUCKLE_BALL - TIP, x = KNUCKLE_BALL x - 43.0 (was 37.5: pin moved, NOTES 42); stud down
+    "TIE_ROD_L": 108.84,                          # ball to ball (CALCULATED)
     # rocker: vertical pin on a body bracket under the arm root
     "ROCKER_AXIS": (0.0, 0.0, 1.0),               # parallel to KINGPIN_AXIS (required)
-    "ROCKER_PIN": (85.5, -116.8, 21.5),           # = KINGPIN_POINT + (TIE_ROD_INNER_BALL - KNUCKLE_BALL) (CALCULATED)
+    "ROCKER_PIN": (80.0, -116.8, 21.5),           # = KINGPIN_POINT + (TIE_ROD_INNER_BALL - KNUCKLE_BALL) (CALCULATED)
     "ROCKER_PIN_SPAN_Z": (19.0, 33.0),            # rocker hub (bush) z 19..33: hub bottom 19.2 mm off the ground at 10 deg lean (CALCULATED)
     "ROCKER_PLATES_Z": ((27.0, 30.0), (30.0, 33.0)),  # tie-rod arm plate, drag-link arm plate; both balls hang under their plate on 5.5 mm studs
     "ROCKER_PLATE_HALF_W": 3.5,                   # plate half width (ends round, r 3.5 round each ball stud)
     "ROD_END_HOUSINGS": {"tie": (5.0, 5.0, 3.0, 8.0), "drag": (3.75, 4.0, 2.5, 6.0)},   # (r, height, shank r, shank length) M4 / M3 rod ends, from the thread
-    "ROCKER_IN_BALL": (66.0, -109.70, 24.5),      # drag-link ball, stud down from the upper plate; input arm 20.75 mm, 20 deg REARWARD of straight
+    "ROCKER_IN_BALL": (64.0, -109.70, 24.5),      # drag-link ball (was x 66.0, NOTES 42), stud down from the upper plate; input arm 17.50 mm, 24 deg REARWARD of straight
                                                   # inboard (40.6 deg from the tie-rod arm: balls 13.55 mm apart in plan); drag link along y in plan
     # servo: low-profile AGFRC B44BLS class lying on the deck, output along x, back behind the pivot axle (first snapshot position)
     "SERVO_X": (31.5, 58.5),                      # thread's box x (horn plate x 59.2 .. 61.5)
@@ -56,7 +56,7 @@ STEER_DESIGN = {
     "HORN_L": 12.0,                               # ASSUMED metal 25T horn hole radius; sized so servo +-30 deg reaches the clearance lock (CALCULATED below)
     "HORN_BALL": (68.5, -93.70, 26.38),           # horn pointing down, 8.4 deg rearward: drag link square to the horn at centre in its yz plane
                                                   # (CALCULATED); ball 7 mm outboard of the horn plate, link 10.8 deg off y in plan (evens out the locks)
-    "DRAG_LINK_L": 16.30,                         # ball to ball (CALCULATED)
+    "DRAG_LINK_L": 16.73,                         # ball to ball (CALCULATED)
     "UPPER_LINK_OUT": (101.0, -219.3, 91.0),  # MOVED inboard from x 105 (hinge along x, so the link stays parallel to the arm)
     "LOCK_DEG": 18.5,                             # mechanical lock each way the envelope is sized for (arm-limited inner lock, CALCULATED)
     # carrier / knuckle envelope (carrier frame = world at rest). Boxes (x0, y0, z0, x1, y1, z1); cyl_z = vertical cylinder about the kingpin
@@ -78,7 +78,7 @@ STEER_DESIGN = {
     "ROCKER_MOUNT": {                             # pin hangs from above (cantilever D4 steel pin ASSUMED); nothing under the rocker
         "axle clamp + hanger": ("box", 71.2, -120.8, 34.0, 84.7, -112.8, 53.5),   # split clamp round the fixed axle (y -116.8, z 47.5) between
                                                                                   # the arm's pivot bosses (x 62.45..69.95 / 85.75..93.25)
-        "foot over the rocker": ("box", 84.7, -120.8, 34.0, 90.5, -112.8, 37.5),  # carries the pin at x 85.5; 1 mm under the outer pivot boss
+        "foot over the rocker": ("box", 84.7, -120.8, 34.0, 88.5, -112.8, 37.5),  # links the hanger to the strap (the pin is now in the hanger at x 80.0); 1 mm under the outer pivot boss
     },
     # keep-out the v2 arm must respect: rocker, rod ends and drag link live under the arm root
     "ARM_ROOT_L0_Z_MIN": 45.0,                    # lower root node of both arm plates (y -130) at world z >= 45 (Nov 21 arm: 34.1, collides at droop)

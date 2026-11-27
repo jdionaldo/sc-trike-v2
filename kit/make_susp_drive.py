@@ -55,7 +55,7 @@ STEPS = [
      "Check: the knuckle turns 20 deg each way without binding; the wheel spins on its bushing without wobble (owner: 'plain bushings')."),
     ("4. Spring levers and cup blocks", "Screw a 6.8 mm ball stud into each lever (arm root, x 54). Turn two pucks of D9 x 9 from the POM rod with the 6.8 mm ball socket and the "
      "20 deg neck (drawing: parts/swingarm_front.py cup_block) and press each onto its ball.", "2 x ball stud 6.8, POM rod D10", "Check: puck turns on the ball without play."),
-    ("5. Beam carrier, heave shock and stops", "Glue the TPU saddles SU8/SU9 into the cage pad blocks and the yaw pads SU10/SU11 onto the carrier SU7 posts (CA for TPU). Ream the pad block arc slots "
+    ("5. Beam carrier, heave shock and stops", "The TPU saddles SU8/SU9 are REQUIRED, not optional: the 4 mm bump saddle SU8 (TPU 95A) is what keeps the landing load at 123 N per front wheel from a 0.20 m drop (164 N without it; NOTES 61, 64); the droop saddle SU9 is 2 mm. Glue the TPU saddles SU8/SU9 into the cage pad blocks and the yaw pads SU10/SU11 onto the carrier SU7 posts (CA for TPU). Ream the pad block arc slots "
      "to 8.3 mm (REQUIREMENT: radial clearance 0.15 on the D8 dowel) and the carrier hub bore to 6.4 mm (REQUIREMENT: loose on purpose, so the dowel takes the yaw moment first). "
      "Pin the carrier into the cage clevis with the D6 x 35. Push the D8 x 75 heave stop dowel through the carrier tail and both pad block slots. Mount the heave shock between the "
      "carrier fork and the cage rear clevis with the two D3 pins.", "D6 x 35, D8 x 75, heave shock, 2 x D3 x 12", "Check: push both wheels up 12 mm: the dowel lands on the bump saddles; let them drop 8 mm: on the droop saddles."),
@@ -97,6 +97,7 @@ FITS = [
     "rod end housing OD at the knuckle (8.2 mm at most); 6 x 1 tube OD (press fit in the knuckle's D6.0 bore).",
 ]
 OPEN = [
+    "Front arm (owner's choice, 2026-11-26, 'Keep printed'; NOTES 59, 61): the printed front arm is the first part expected to fail in a drop above about 0.15 .. 0.20 m. It is a replaceable print: reprint SU1L / SU1R (kit/susp_drive/stl/SU1L.stl, SU1R.stl, on plate 01 Front suspension and steering).",
     "Strength below the target safety of 2 (PETG across layers 20 MPa; NOTES.md): rocker mount (printed: 1.02 at the steering need, 0.19 at the ASSUMED 2.0 N m stall), "
     "beam carrier (1.30 two-wheel, 1.06 one-wheel landing), front arm (1.49 at the outer bore edge), cage at the stops (0.73 at the upper ear). Only the balance beam passes (2.13).",
     "No FEM of the cage with the desert shell's exo frame and the raised hoop corner: every cage FEM ran on the cage before it.",

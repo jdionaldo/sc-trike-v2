@@ -8,4 +8,4 @@ from soma.fem import Study
 study = Study("Rocker mount, steering stall 274 N on the rocker pin (ASSUMED 2.0 N m servo)", material="PETG", safety=2, parts=["Rocker pin 1"])
 study.set_material("Rocker pin 1", "Steel S235")
 study.fix("Rocker bracket 1", near=(78.0, -116.8, 44.95))       # axle bore, a point on its wall
-study.force("Rocker pin 1", N=(0.0, 274.0, 0.0), near=(87.5, -116.8, 26.0))
+study.force("Rocker pin 1", N=(0.0, 274.0, 0.0), near=(82.0, -116.8, 26.0))

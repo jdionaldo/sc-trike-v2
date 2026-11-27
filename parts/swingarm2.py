@@ -227,9 +227,9 @@ def beam_pose(t_plus, t_minus):
 KINGPIN = (123.0, TIP[0])               # vertical kingpin (x, y); x is still the estimate from the old drive joint stand-in
 KINGPIN_Z = (21.0, 60.0)                # kingpin pin, bottom / top (knuckle ear faces z 22 .. 59)
 KNUCKLE_BALL_B = (107.31, -222.45, 14.6)    # tie rod ball on the knuckle arm (16.76 mm arm, 20.6 deg forward of straight inboard)
-ROD_INNER_BALL = (69.81, -122.70, 21.5)     # tie rod inner ball on the rocker's output arm
-ROCKER_PIN = (85.5, -116.8)             # vertical pin (x, y), under the pivot axle between the arm plates
-ROCKER_IN_BALL = (66.0, -109.70, 24.5)  # drag link ball on the rocker's input arm (20.75 mm, 20 deg rearward of straight inboard: 4.8 mm between the rod end housings)
+ROD_INNER_BALL = (64.31, -122.70, 21.5)     # tie rod inner ball on the rocker's output arm (was x 69.81) (moved, owner's decision "Move the pin", NOTES 42: pin and tie rod ball 5.5 mm inboard, drag link ball 2.0 mm inboard)
+ROCKER_PIN = (80.0, -116.8)             # vertical pin (x, y), under the hanger's full section (was x 85.5, at the thin foot's root)
+ROCKER_IN_BALL = (64.0, -109.70, 24.5)  # (was x 66.0; input arm now 17.50 mm) drag link ball on the rocker's input arm (20.75 mm, 20 deg rearward of straight inboard: 4.8 mm between the rod end housings)
 ROCKER_HUB_Z = (19.0, 33.0)             # rocker hub: its underside is 19.2 mm off the ground at 10 deg lean
 ROCKER_PLATES_Z = ((27.0, 30.0), (30.0, 33.0))   # tie rod arm plate, drag link arm plate; both balls hang under their plate on 5.5 mm studs
 SERVO_SHAFT_B = (-98.4 + SERVO_SHIFT[0], 38.3 + SERVO_SHIFT[1])   # servo output axis (y, z): lying flat on the deck behind the pivot axle
@@ -240,7 +240,7 @@ ARM_ROOT_L0_Z = 45.0                    # lower root node of the arm (y -130) ra
 LINKAGE_ZONE = (58.0, -133.0, 12.0, 92.0, -96.0, 33.0)     # no arm member in this box at any travel
 # -- wheel (measured on the built model, 9da7463): barrel bore r 21.13 from x 127, inner hub face x 148, hex pocket r 6.9 from x 149 to 158, outer face x 161
 WHEEL_BORE_R, WHEEL_IN_X, WHEEL_DISC_X, WHEEL_OUT_X = 21.13, 127.0, 148.0, 161.0
-ROCKER_MOUNT_X = (71.2, 84.7, 90.5)     # clamp and hanger on the pivot axle from x 71.2 to 84.7, foot over the rocker out to x 90.5
+ROCKER_MOUNT_X = (71.2, 84.7, 88.5)     # clamp and hanger on the pivot axle from x 71.2 to 84.7 (the pin's top in it), foot out to the strap at x 88.5
 ARM_FLOOR_Z = 38.5                      # no arm material below this over the mount (x 71.2 .. 90.5, y -121 .. -112) at any travel
 # -- heave spring: bellcrank carrier under the spine's front cross tube, beam on a tilted yaw pin, cup blocks sliding in the beam's end forks
 BEAM_C = (0.0, -81.45, 85.4)            # beam yaw pin on the carrier
@@ -262,7 +262,18 @@ SHOCK_BODY_R, SHOCK_EYE_W = 8.25, 6.0   # ASSUMED 1/10 class shock: spring OD 16
 GUARD_VOLUMES = {      # Front carrier 16922 -> 14415 (Nov 24): kingpin block and web shortened to z 31..50 for the PETG knuckle
                        # Rocker bracket 6313.6 -> 6096.2 (Nov 24): clamp slit to the rear, M3 clamp screw and insert, blind pin bore (parts/swap_interface.py)
                        # mm3, +x side where there are two
-    'Beam carrier': 49851.3, 'Balance beam': 27035.9, 'arm': 49788.0, 'Rocker bracket': 6096.2, 'Front carrier': 14415.0, 'Rocker': 1485.5, 'Pad block': 7430.1,
+                       # Rocker bracket 6096.2 -> 5558.0, Rocker 1485.5 -> 1407.6 (Nov 25, NOTES 42): pin moved 5.5 mm inboard into the hanger, D4 x 24
+                       # Pad block 7430.1 -> 8682.3 (Nov 25, NOTES 49): gusset under the ear on the post, keel under the block's rear and the strut lump
+                       # Beam carrier 49851.3 -> 50300.7 (Nov 26, NOTES 57): yaw pin boss r 11 with a cap, bore for the bronze sleeve, tail web 26.2
+                       # Beam carrier 50300.7 -> 50456.8 (Nov 26, NOTES 57 attempt 2): 1 mm more hub wall under the carrier pin
+                       # arm 49788.0 -> 52792.8 (Nov 26, NOTES 59): 3.5 mm outward rib on the spring lever's blade and strut, strut half width 5,
+                       # inner upper chord U0-U1 D9.5; 54124.3 (attempt 3): crotch fillet R 10, back edge +4 at the root, rib end ramped;
+                       # 53572.6 (attempt 3 repair): rib ramp from r 15.5 (was 14.5), back edge +2.5 (clearance to the Rocker bracket, horn and Rocker in motion)
+                       # Beam carrier 50456.8 -> 50169.2, Pad block 8682.3 -> 9369.7 (Nov 26, NOTES 60, item 1(b)): tail at r 10.4 with two bronze
+                       # sleeves (bore 12, top wall 1.2); pad block rear face 1.9 mm further back with the dowel's arc slot
+                       # Pad block 9369.7 -> 9606.8 (NOTES 60, cage mesh fix): exact arc window, floor under the droop pockets to z 87.5 from y -44.6
+                       # Pad block 9606.8 -> 10011.7 (NOTES 64, 4 mm bump saddle): stadium pockets the slot's width ending at |x| 35.9, 1.2 mm pad over them
+    'Beam carrier': 50169.2, 'Balance beam': 27035.9, 'arm': 53572.6, 'Rocker bracket': 5558.0, 'Front carrier': 14415.0, 'Rocker': 1407.6, 'Pad block': 10011.7,
 }
 GUARD_TOL = 0.01
 

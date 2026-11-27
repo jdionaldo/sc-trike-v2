@@ -178,7 +178,7 @@ def rot_to_down(m, k):
 # Strength-first orientation (see print_strength_plan.md): these designs may only stand on the listed model-axis faces (0 +x, 1 -x, 2 +y, 3 -y, 4 +z, 5 -z),
 # so the pivot / pin axis is vertical (round bores, continuous perimeters) and the load plane of the plates and links lies in the layer plane.
 STRENGTH_FACES = {'SU1': (0, 1),     # front swing arm: plates flat, pivots vertical (was standing on its edge, in-plane bending across the layers)
-                  'DT11': (0, 1),    # rear swing arm: same
+                  'DT11': (0,),      # rear swing arm: on its +x face (NOTES 55: with the clevis ears extended, the -x face won on bed contact but left a 289 mm2 island at x 42)
                   'ST3': (4, 5)}     # tie rod: lies flat (was standing on its edge, 47 mm tall)
 # Fixed print faces where the automatic choice was stale or poor (printability review 11-22): rear deck on its +y face (1752 mm2 overhang
 # instead of 6292 on +x), front light contact block on its -z face (bed 289 mm2 instead of 1 mm2 on +z).

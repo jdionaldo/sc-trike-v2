@@ -10,6 +10,7 @@ under the arm root with a drag link from the servo horn and an M4 tie rod parall
 bellcrank carrier, a balance beam on a tilted yaw pin, cup blocks in the beam's end forks and one shock under the cage spine (docs/v2/beam_guide.md).
 """
 import math
+import os
 import cadquery as cq
 from parts import swingarm2 as k
 from parts.params import CHASSIS_Y, CHASSIS_Z
@@ -23,6 +24,12 @@ BALL_R = 3.4               # bought 6.8 mm ball stud
 STRUT = 8.0                # lever blade thickness (x), as thick as the arm's chord tubes
 LEVER_ROOT, LEVER_TIP = 22.0, 11.0     # blade width at the pivot boss and at the top
 LEVER_STRUT_R = 24.0       # the strut from U0 meets the blade's centre line this far from the pivot
+LEVER_RIB = 3.5            # (NOTES 59) blade and strut thickened outward by this (x 70.2 .. 73.7): the ball's 12.2 mm offset twists the blade
+LEVER_RIB_R0 = 19.0        # (attempt 3 repair: 18.0 -> 19.0, ramp starts at r 15.5 on the blade face; at 14.5 it swept into the Rocker bracket at the one-wheel corner) # the rib stays this far from the pivot axis: the pivot pulley and belt (x 70.2 .. 73.8, r <= 8.2) and the rocker
+                           # bracket (x 71 .. 74 behind the pivot; NOTES 59 attempt 1 hit it at r 12) are there
+LEVER_BACK = 2.5           # (attempt 3) back edge widened at the root, tapering to 0 at the top; 4.0 came 0.75 mm to the steer horn and 0.97 to the Rocker at the one-wheel corner, 2.5 keeps both over 1.5
+LEVER_CROTCH_R = 10.0      # (NOTES 59 attempt 3) radius in the crotch between the strut's upper edge and the blade's front edge (FEM: x1.7 there)
+LEVER_STRUT_W = 5.0        # (NOTES 59 attempt 2) half width of the strut from U0 to the blade (was 4): the strut crotch peaked
 FORK = (6.0, 6.5, 13.5)    # beam end fork, half size along the beam / M / N (docs/v2/beam_guide.md)
 PUCK_R, PUCK_H = 4.5, 4.5  # round puck on the lever ball: radius, half height along M
 BEAM_SIDE = 10.0
@@ -105,11 +112,55 @@ def lever_ref(sx=1):
     from parts.frontarm import PIVOT_YZ
     x = k.LEVER_X
     top = V(*lever_top_w()) - OFF
-    s = _slab((PIVOT_YZ[0], PIVOT_YZ[1]), LEVER_ROOT / 2, (top.y, top.z), LEVER_TIP / 2, x - STRUT / 2, x + STRUT / 2)
-    # strut from the upper chord root U0 to the blade at r 24: it closes the re-entrant corner between the blade's front edge and the neck
-    # (FEM: 17.3 MPa, safety 1.16 there)
     a = math.radians(k.LEVER_TILT)
-    s = s.fuse(_slab((-139.0, 75.5), 4.0, (PIVOT_YZ[0] + LEVER_STRUT_R * math.sin(a), PIVOT_YZ[1] + LEVER_STRUT_R * math.cos(a)), 4.0, x - STRUT / 2, x + STRUT / 2))
+    sj = (PIVOT_YZ[0] + LEVER_STRUT_R * math.sin(a), PIVOT_YZ[1] + LEVER_STRUT_R * math.cos(a))
+
+    def outline(x0, x1):
+        """Blade + strut + back widening + crotch fillet, as one plan outline extruded from x0 to x1."""
+        o = _slab((PIVOT_YZ[0], PIVOT_YZ[1]), LEVER_ROOT / 2, (top.y, top.z), LEVER_TIP / 2, x0, x1)
+        # strut from the upper chord root U0 to the blade at r 24: it closes the re-entrant corner between the blade's front edge and the neck
+        # (FEM: 17.3 MPa, safety 1.16 there)
+        o = o.fuse(_slab((-139.0, 75.5), LEVER_STRUT_W, sj, LEVER_STRUT_W, x0, x1))
+        P = (PIVOT_YZ[0], PIVOT_YZ[1]); Lb = math.hypot(top.y - P[0], top.z - P[1])
+        d = ((top.y - P[0]) / Lb, (top.z - P[1]) / Lb); n = (-d[1], d[0])         # blade direction and its front-edge normal
+        if LEVER_BACK > 0:
+            # (NOTES 59 attempt 3) back edge moved back by LEVER_BACK at the root, 0 at the top
+            rb = LEVER_ROOT / 2 + LEVER_BACK
+            pts = [(P[0] - n[0] * (LEVER_ROOT / 2 - 1.0), P[1] - n[1] * (LEVER_ROOT / 2 - 1.0)), (P[0] - n[0] * rb, P[1] - n[1] * rb),
+                   (top.y - n[0] * LEVER_TIP / 2, top.z - n[1] * LEVER_TIP / 2), (top.y - n[0] * (LEVER_TIP / 2 - 1.0), top.z - n[1] * (LEVER_TIP / 2 - 1.0))]
+            o = o.fuse(cq.Workplane('YZ').workplane(offset=x0).polyline(pts).close().extrude(x1 - x0).val())
+        if LEVER_CROTCH_R > 0:
+            # (NOTES 59 attempt 3) fillet piece in the crotch of the strut's upper edge and the blade's front edge
+            Ls = math.hypot(sj[0] + 139.0, sj[1] - 75.5); ds = ((sj[0] + 139.0) / Ls, (sj[1] - 75.5) / Ls); ns = (-ds[1], ds[0])
+            A0 = (-139.0 + ns[0] * LEVER_STRUT_W, 75.5 + ns[1] * LEVER_STRUT_W)            # a point on the strut's upper edge
+            B0 = (P[0] + n[0] * LEVER_ROOT / 2, P[1] + n[1] * LEVER_ROOT / 2)               # the blade's front edge from root to top corner
+            B1 = (top.y + n[0] * LEVER_TIP / 2, top.z + n[1] * LEVER_TIP / 2)
+            Lf = math.hypot(B1[0] - B0[0], B1[1] - B0[1]); df = ((B1[0] - B0[0]) / Lf, (B1[1] - B0[1]) / Lf)
+            det = ds[0] * (-df[1]) - ds[1] * (-df[0])
+            t = ((B0[0] - A0[0]) * (-df[1]) - (B0[1] - A0[1]) * (-df[0])) / det
+            C = (A0[0] + ds[0] * t, A0[1] + ds[1] * t)                                      # corner
+            u1, u2 = df, (-ds[0], -ds[1])                                                   # free directions: up the blade edge, back along the strut
+            phi = math.acos(max(-1.0, min(1.0, u1[0] * u2[0] + u1[1] * u2[1]))) / 2
+            bis = (u1[0] + u2[0], u1[1] + u2[1]); bn = math.hypot(*bis); bis = (bis[0] / bn, bis[1] / bn)
+            tl = LEVER_CROTCH_R / math.tan(phi)
+            T1 = (C[0] + u1[0] * tl - bis[0] * 0.3, C[1] + u1[1] * tl - bis[1] * 0.3)
+            T2 = (C[0] + u2[0] * tl - bis[0] * 0.3, C[1] + u2[1] * tl - bis[1] * 0.3)
+            Ci = (C[0] - bis[0] * 0.6, C[1] - bis[1] * 0.6)
+            M = (C[0] + bis[0] * LEVER_CROTCH_R / math.sin(phi), C[1] + bis[1] * LEVER_CROTCH_R / math.sin(phi))
+            fp = cq.Workplane('YZ').workplane(offset=x0).polyline([Ci, T1, T2]).close().extrude(x1 - x0).val()
+            fp = fp.cut(_cyl((x0 - 1.0, M[0], M[1]), (1, 0, 0), LEVER_CROTCH_R, x1 - x0 + 2.0))
+            o = o.fuse(fp)
+        return o
+
+    s = outline(x - STRUT / 2, x + STRUT / 2)
+    if LEVER_RIB > 0:
+        # (NOTES 59) outward rib on blade and strut, the same outline, x + STRUT/2 .. + LEVER_RIB, kept out of r LEVER_RIB_R0 round the pivot;
+        # (attempt 3) its end is a 45 deg ramp (r LEVER_RIB_R0 - LEVER_RIB at the blade face, LEVER_RIB_R0 at the rib's face), not a step
+        x0, x1 = x + STRUT / 2 - 0.01, x + STRUT / 2 + LEVER_RIB
+        rib = outline(x0, x1)
+        cone = cq.Solid.makeCone(LEVER_RIB_R0 - LEVER_RIB - 0.01, LEVER_RIB_R0 + 0.01, x1 - x0 + 0.02, V(x0 - 0.01, PIVOT_YZ[0], PIVOT_YZ[1]), V(1, 0, 0))
+        rib = rib.cut(cone)
+        s = s.fuse(rib)
     # (redesign round, D) inner pivot boss 2.4 mm longer toward the inside (to x 60.0, 1.5 mm from the servo's corner at x 58.5): with pinned
     # bores the arm read 14.6 MPa at this bore's edge
     s = s.fuse(_cyl((x - STRUT / 2 - 2.2, PIVOT_YZ[0], PIVOT_YZ[1]), (1, 0, 0), 9.0, 2.4))
@@ -119,10 +170,22 @@ def lever_ref(sx=1):
     return _mir(s, sx)
 
 
+def stud_bore_seg(sx=1):
+    """FEM only (environment FUGU_FEM_BORE_SEG=1, NOTES 58; ref frame): the stud bore again, 0.001 mm larger, as two cylinders that meet at the
+    blade's mid plane (x = LEVER_X), cut after the arm's clean(): its wall then has a mouth half and a far half, so a case can put the stud's two
+    bearing forces on them (the ball's 12.2 mm offset as a couple). The build never sets the switch."""
+    top = V(*lever_top_w()) - OFF
+    s = _cyl((top.x + 6.0, top.y, top.z), (-1, 0, 0), BORE_R + 0.001, 6.0).fuse(_cyl((top.x, top.y, top.z), (-1, 0, 0), BORE_R + 0.001, 14.0))
+    return _mir(s, sx)
+
+
 def lever_ball(sx=1):
     top = lever_top_w()
     c = V(k.LEVER_BALL_X, top[1], top[2])
-    s = _ball(BALL_R, c).fuse(_cyl((c.x, c.y, c.z), (1, 0, 0), PIN_R, k.LEVER_X - k.LEVER_BALL_X + 3.0))
+    # FEM only (FUGU_FEM_STUD_BOND=1, NOTES 56): the shank at the bore's radius, so the stud bonds to the arm and the lever load can act on the
+    # ball itself (12.2 mm inboard of the blade) instead of on the boss face; the build never sets it
+    r = BORE_R if os.environ.get('FUGU_FEM_STUD_BOND') == '1' else PIN_R
+    s = _ball(BALL_R, c).fuse(_cyl((c.x, c.y, c.z), (1, 0, 0), r, k.LEVER_X - k.LEVER_BALL_X + 3.0))
     return _mir(s, sx)
 
 
@@ -319,7 +382,7 @@ TIE_HOUSING_OUT = (4.1, 5.0)       # the tie rod's knuckle end needs a slim rod 
                                    # tyre's inner face (x 113) at full lock with lean and bump; the ball itself stays (bump steer depends on it)
 ROCKER_HALF_W = 3.5
 MOUNT_Y = (-120.8, -112.8)
-STRAP_X = (91.0, 94.0)             # strap outboard of the rocker hub (hub edge x 90.0)
+STRAP_X = (85.5, 88.5)             # strap outboard of the rocker hub (hub edge x 84.5; was 91 .. 94 with the pin at x 85.5)
 STRAP_Y = (-120.8, -103.8)         # not ahead of y -120.8: the arm's neck comes down there at droop (0.47 mm with a strap from -124.8)
 REAR_WALL_Y = (-106.8, -103.8)     # wall behind the arm's outer pivot boss (r 9, rear edge y -107.8), from the foot up to the hanger's full height
 SHOE_Z = (16.5, 18.7)              # shoe under the hub (hub underside z 19.0): the lowest point of the front end at lean
@@ -405,7 +468,7 @@ def rocker_hardware(sx=1):
     ro, ri = k.ROD_INNER_BALL, k.ROCKER_IN_BALL
     stud = lambda b, pz: _ball(BALL_R, V(*b)).fuse(_cyl(b, (0, 0, 1), PIN_R, pz[1] - b[2]))
     from parts import swap_interface as I
-    out = [('Rocker pin', _cyl((px, py, SHOE_Z[0] + I.RM_SHOE_FLOOR), (0, 0, 1), I.RM_PIN[0] / 2, I.RM_PIN[1])),    # ISO 8734 D4 x 20
+    out = [('Rocker pin', _cyl((px, py, SHOE_Z[0] + I.RM_SHOE_FLOOR), (0, 0, 1), I.RM_PIN[0] / 2, I.RM_PIN[1])),    # ISO 8734 D4 x 24
            ('Rocker ball stud out', stud(ro, k.ROCKER_PLATES_Z[0])), ('Rocker ball stud in', stud(ri, k.ROCKER_PLATES_Z[1]))]
     return [(n, _mir(s, sx)) for n, s in out]
 
@@ -432,7 +495,7 @@ def rocker_bracket(sx=1):
     from parts import swap_interface as I   # every interface feature (shared with the metal bracket B2)
     s = s.cut(_cyl((60.0, ay, az), (1, 0, 0), I.RM_AXLE[1] / 2, 40.0))
     floor = SHOE_Z[0] + I.RM_SHOE_FLOOR
-    s = s.cut(_cyl((px, py, floor), (0, 0, 1), I.RM_PIN_BORE / 2, 60.0))                   # pin bore, blind in the shoe: the pin is held between it and the arm boss
+    s = s.cut(_cyl((px, py, floor), (0, 0, 1), I.RM_PIN_BORE / 2, I.RM_PIN[1]))           # pin bore, blind at both ends: from the shoe's floor up into the hanger's full section (NOTES 42)
     # clamp: slit in the plane of the axle, from the axle to the rear face (the C opens rearward, the hinge is the wall ahead of the axle),
     # one M3 from the top through the upper jaw into an insert in the hanger (was a slit above the axle with no screw: never drawn)
     w, ln = I.RM_SLIT

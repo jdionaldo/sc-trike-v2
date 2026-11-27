@@ -47,8 +47,26 @@ Bought parts at these interfaces, with the maker's dimensions and sources: `boug
 | Clamp screw, axis (x, y), vertical from the top | ISO 4762 M3 x 12, (78.0, -110.0) |  |
 | Clamp screw hole in the upper jaw | 3.4 |  |
 | Clamp thread in the hanger (pocket D, depth) | 4, 5.7 | printed: M3 insert OD 4.6 x 5.7; metal: tapped M3, 6 deep |
-| Rocker pin axis (x, y), vertical | 85.5, -116.8 |  |
-| Rocker pin | 4, 20 | ISO 8734 D4 m6 x 20 hardened; the rocker turns on it (rocker bore D4.1) |
-| Pin bore in foot and shoe | 4 | press fit; metal: D4 H7 |
+| Rocker pin axis (x, y), vertical | 80, -116.8 |  |
+| Rocker pin | 4, 24 | ISO 8734 D4 m6 x 24 hardened; the rocker turns on it (rocker bore D4.1) |
+| Pin bore in the hanger (blind, 7 mm into its full section) and the shoe | 4 | press fit; metal: D4 H7 |
 | Shoe bore floor (blind) | 0.5 | the pin is held between this floor and the arm boss 1 mm over the foot |
-| Envelope | {'foot_z': (34.0, 37.5), 'shoe_z': (16.5, 18.7), 'strap_x': (91.0, 94.0), 'strap_y': (-120.8, -103.8), 'mount_y': (-120.8, -112.8), 'rear_wall_y': (-106.8, -103.8), 'top_gap_to_arm_boss': 1.0} | z of foot and shoe, strap x and y, clamp y, rear wall y (mm) |
+| Envelope | {'foot_z': (34.0, 37.5), 'shoe_z': (16.5, 18.7), 'strap_x': (85.5, 88.5), 'strap_y': (-120.8, -103.8), 'mount_y': (-120.8, -112.8), 'rear_wall_y': (-106.8, -103.8), 'top_gap_to_arm_boss': 1.0} | z of foot and shoe, strap x and y, clamp y, rear wall y (mm) |
+
+## Beam carrier tail and pad blocks (NOTES 60)
+
+| Feature | Value (mm) | Note |
+|---|---|---|
+| Carrier pin axis PC (y, z), along x | -50.6, 98.5 | the carrier turns about it |
+| Heave stop dowel axis at rest (y, z), along x | -40.25, 97.5 | r 10.4 from PC |
+| Heave stop dowel | D8 x 75 stock dowel, 8, 75 | runs in the two sleeves and the arc slots |
+| Tail sleeves (name, ID, OD, length), two | SKF PSM 8-12-12 A51, 8, 12, 12 | oil-filled sintered bronze, pressed in from each end |
+| Sleeve bore / locating D8 bore between the sleeves (length) | 11.9, 2.2 | printed: 11.9 press fit, ream to the coupon; metal: D12 H7 |
+| Tail boss end faces |x| | 13.1 |  |
+| Boss wall over the bore, spine side | 1.2 | a metal carrier may not grow upward: the spine bridge is 1.00 mm above |
+| Carrier turn at the droop / bump stop (deg) | -9.28, 15.46 | + = bump |
+| Dowel radial clearance in the arc slots | 0.15 | pad blocks and clevis plates (cage) |
+| Clevis plates |x| (cage) | 14.4, 17.4 |  |
+| TPU saddles |x| | 18.4, 35.4 |  |
+| Pad block y, front .. rear face (cage) | -50.3, -31.7 |  |
+| Least gap carrier to cage | 1 | at rest and at both stops, at the clevis plates' inner faces |

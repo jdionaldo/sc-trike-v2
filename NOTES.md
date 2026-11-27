@@ -1461,3 +1461,767 @@ the front wheels have no bearing in the model.
       - pod tail tip (48.8, 115.5, 175.0): feather band 1.0 mm, 7.9 mm2, down to 0.04 mm
       - pod junction (73.2, -48.1, 147.6): feather band 0.9 mm, part of an 8.4 mm2 region with the y -54 seam, down to 0.22 mm
     The 32 smaller spots per pod (under 4.3 mm2 each, 29 mm2 in all) are not classified one by one.
+
+37. Markup 2 covers (owner, November 25: "add covers to the identified sections. make sure they are molded/merged seamlessly to the existing shell"; picture owner_v2_covers_markup_2.webp; one area per commit).
+    Area 1, cowl panel (separate part, lifts straight up): a 3 mm skin on the hood's own top planes (the hood's y -252 / -204 facet rows extended),
+    0.3 mm (SHELL_GAP) behind the hood's rear edge, so the deck, the valley crease at x 25 and the bulge's chine run on without a step (top
+    height 0.12 mm higher 0.7 mm further back = the facets' own slope, MEASURED). The flat crown (|x| <= 15) runs back over the cowl bar to
+    y -186, where the windscreen V legs would come through its underside (y -183); the rest stops 0.4 mm ahead of the bar's front face
+    (y -198.4). From above the bar closes the strip between them. Two M3 screws from above at (+-11, -194) through 7 mm bosses (0.4 mm over the
+    bar top, z 137.07) into 2.5 mm pilots 5 mm deep in the bar (cut into the cage).
+    Thickness (64): 0.04 cm2 below 1.2, all corner readings (ball test): deck rear edge (+-27.2 .. 37.4, -198.4, 133.8) and side edge
+    (+-40.2, -200.2, 129.6), ball at 0.75 mm. Hood rear edge (+-27.2, -204.0, 132.8), 1.9 mm2, ball at 0.75 mm (the hood's own end face,
+    unchanged). Tried and dropped: plan step at the valley x 25 (bar's fit cut left a 0.25 mm2 wedge at the 45 deg wall's foot, ball 1.25 mm),
+    at x 19 (vertical cut through the 45 deg wall, 21.7 mm2 at 0.01 mm).
+    Area 2, dash panel (separate, removable, lifts straight up): the side covers' inner-edge section (upper rail top + FIT_CUT, 3 mm) carried
+    across between the covers, 0.3 mm from each, so its top is flush with the covers' inner edge (no step from the side), y -116 .. -86 (it
+    runs 5.6 mm under the roof panel's front edge at y -91.6). It sits on the two upper rails, two M3 from above at (+-45, -97) into 2.5 mm
+    pilots 5 mm deep in the rail tops (tool path from above checked). The windscreen V legs pass 23 .. 29 mm over it at y -116 .. -106: the
+    dash has a through-notch on their plan outline + 0.4 mm, run out to its side edge; from above the legs and the rail hide it. Ahead of
+    y -116 (inside the V, behind the y -140 cross tube) stays open, as in the markup.
+    First build (65): the notch looked for members from the dash's lowest point up, found the rails under its rear half (their top rises to
+    148.4) and cut the dash off them; the lift space now follows the dash's top surface.
+    Clearances over the 37 poses (tools/panel_clearance.py): beam carrier 25.4 mm (droop -8, full lock), balance beam 30.6 mm (corner
+    -32.9 / +16.4), yaw stop pads 40.6, cup blocks 44.3, arms 45.7, uplinks 48.9; steer horns, drag links and rockers (the servo side) more
+    than 48.9 mm. Static: side covers 0.30, cage 0.37 (the fit gap), pods 17.6.
+    Thickness (66): 0.17 cm2 below 1.2, corner readings (ball at 0.75 mm): front end face's lower edge (y -116, z 146.7, 80.8 mm long) and
+    the rear top edge (+-45.5, -86.0, 152.8); the plate rises 6 deg against its vertical end faces.
+    Areas 3 / 4, pod flat top (merged, one solid per pod): the 45 deg flange is gone. Its place is a flat 3 mm plate in the plane of the
+    pod's top land, fused into the pod, from under the land (FLANGE_SEAT, never past the land's outer edge) in to the cage + 0.4 mm. Inner
+    edge x 46.2 (y 48) .. 39.7 (y 104) and 36.6 (y 120 .. 128); y 104 .. 120 has no gap (the cage tube reaches x 49.4 at the land's
+    height and closes it from above). The land is now read in a 0.02 mm slice, so FLANGE_DROP is 0: no step between land and plate (the 0.6 mm
+    slice read the sloped land 0.05 mm high, which was why the earlier flange top had to sit 0.15 mm under it).
+    Support when the pod prints upright: the plate's underside, 9.1 cm2 (right) / 9.5 cm2 (left), on hidden faces only (limit 15).
+    Thickness (67): pods 1.78 -> 1.63 cm2 below 1.2 each. Rear top zone 22.2 -> 8.3 mm2: the old "top strip y 34..105" exception (14.3 mm2)
+    is now 4.6 mm2 and the tail-tip OPEN DEFECT (7.9 mm2, 0.04 mm) is gone. New named exceptions (corner readings, ball test): flat top's
+    end at y 104 (47.3, 104.0, 173.2) ball 0.75, its square inner corner (39.7, 104.0, 173.2) ball 1.06 (a three-face 90 deg corner: the
+    ball cannot come closer than 0.6 * sqrt 3 = 1.04, the plate is 3 mm), the land at (49.7, 112.1, 174.5) 3.7 mm2 ball 0.56, the end at
+    y 128 (43.9, 128.0, 177.0) ball 0.75. Mirror values on the left pod.
+
+38. Rocker bracket and front carrier "more robust" (owner, November 25: "can you make the rocker bracket and front carrier more robust"; orchestrator:
+    safety 2.0 in every load case, settled at two meshes, read away from supports, interfaces kept). STOPPED before any geometry change: neither
+    part reaches 2.0 inside its interfaces; options went to the orchestrator. "Front carrier" read as the Beam carrier (its two landing cases,
+    ASSUMED; the per-side Front carriers have no FEM case). Method: tools/fem_away.py (written here): highest von Mises stress farther than D mm
+    from every held or loaded face, per part, from the result GLB.
+    Rocker bracket 1 (PETG 20 MPa):
+      - analyses/v2_rocker_mount_limit.py (64.4 N along y on the pin, envelope case) no longer meshed at the default size since the 0.5 mm
+        chamfers ("1 distorted element"): FEM_MESH switch added. 49.2 MPa / 0.41 (mesh 1.0), 54.9 / 0.36 (mesh 0.8), +11 %: not settled.
+      - Pin load from the steering kinematics (CALCULATED, servo 0.47 N m ASSUMED, wheel blocked, horn lever square to the drag link): the rods
+        pull the rocker's arms in opposite directions, so the pin carries their difference. Horn -30: 14.6 N; 0: 23.7 N; +30: 34.1 N =
+        (32.2, -10.3, 4.3) N (drag 48.2, tie rod 60.5 N); the other torque direction the opposite sign. analyses/v2_rocker_mount_servo.py
+        (ROCKER_SIGN, FEM_MESH): away from the load faces (> 2 mm) 33.9 -> 37.5 MPa (sign +, mesh 1.0 -> 0.8), 33.5 -> 41.9 (sign -):
+        safety 0.59 / 0.53 and 0.60 / 0.48, not settled.
+      - Peak in every case: the square inside corner of the foot's top (z 37.5) and the hanger's outer face (x 84.7), at (84.7, -118.6, 37.0).
+        The pin load goes through the 3.5 mm foot into the hanger; the D4 pin bore (x 83.5 .. 87.5) cuts the foot at that root. Room there
+        (MEASURED on the build): rocker hub 1.0 mm under the foot, arm pivot boss underside z 38.5 (1.0 mm over it), arm side face x 85.75
+        (1.05 mm outboard of the hanger face): a root radius of about 0.9 mm at most. 2.0 needs 10 MPa there.
+    Beam carrier (PETG):
+      - Today's baseline (guide round 3 carrier, chamfered): two-wheel 17.9 MPa / 1.12 (away 2 mm 1.28, 3 mm 1.50); one-wheel 37.0 / 0.54 at
+        (12.9, -43.9, 94.9), 4.4 mm from any support, coarser mesh within 4 %. (The 1.30 / 1.06 of the redesign round were the earlier carrier.)
+      - Peak: where the D8 dowel leaves the tail boss (boss |x| <= 12.4). The yaw moment (8.6 N m) enters the dowel through the 24.8 mm boss.
+        The cage's pad block slot walls hold the dowel front and back over |x| 14.2 .. 36.5 (MEASURED): the boss can grow by 1 mm per side only.
+      - The cases hold the dowel at its end faces (x 37.5, a 25 mm lever). Slot-supported versions (same loads; dowel held in y on its slot
+        segments, in z at the end faces): analyses/v2_beam_carrier_yaw_slot.py, v2_beam_carrier_slot.py; they need FUGU_FEM_DOWEL_SEG=1 (the
+        dowel's face split at |x| 14.4 / 36.4 by parts/swingarm_guide.py _dowel(); the build never sets it, geometry unchanged).
+        One-wheel: away 2 mm 0.92 / 0.84 (mesh 1.93 / 1.4), 3 mm 1.07 / 1.02. Two-wheel: away 2 mm 1.31 / 1.19 (mesh 1.6 / 1.2), 3 mm 1.46 / 1.40
+        (yaw pin boss rim).
+    Build ok (no geometry change), STEP re-exported.
+
+39. Front carrier, area 1 fused, pivot-stub openings (orchestrator, November 25).
+    Front carrier 1 (per-side kingpin block; "front carrier" in the owner's request was the Beam carrier, confirmed): new case
+    analyses/v2_front_carrier_landing.py, the knuckle case's one-wheel landing (65 N up + 30 N in at the tyre) passed through the knuckle's
+    statics to the block: (-26, 0, 65) N on its underside, (-4, 0, 0) N on its top; held at the arm tip pin bore and the upper link pin bores.
+    2.5 / 3.2 MPa (mesh 1.2 / 0.9), safety 8.0 / 6.3, on the tip pin support's edge; away from supports (2 mm) 0.79 / 0.91 MPa, safety 25 / 22.
+    Nothing changed.
+    Area 1, cowl fused into the hood (COWL_FUSED switch in parts/desert_shell.py, now False): one valid solid (23005.0 + 2911.7 = 25916.7 mm3),
+    install path clear (nothing over the cowl), bed fit fine (36.0 x 80.7 x 104.5 standing on its rear end, the kit's own chooser). FAILED on
+    support: overhang 267 -> 547 mm2 (+280) and bed contact 274 -> 92 mm2 (the deck's rear edge ends 12.4 mm short of the crown's, the bosses
+    print sideways). The joint also kept 51 edges along y -204 (the extended facets are not exactly the hood's planes, so they did not merge).
+    So the separate Cowl panel of fffb771 stays (build 70 identical: 2829.6 mm3).
+    Openings beside the pivot stubs at the rear end of the flat pod tops (seen from above, right side x 37 .. 44, y 138 .. 160; and x 20 .. 28,
+    y 148 .. 160): not clearance the rear arm needs. Across it is 4.5 mm between the cage rail's outer face (x 37.2) and the rear arm's inboard face
+    (x 41.7); the rail's underside is at z 145 .. 152, the arm's top at z 108 at rest and about 119 at full bump (ESTIMATE from the 35 mm axle
+    travel). The arm swings about an axis along x, so its side faces never move toward the rail. It lies behind the pod's end (y 134), outside
+    the markup's areas; it can be closed by a strip from the cage rail or the pod's tail, as a new piece.
+
+40. Beam carrier, two-wheel landing to 2.0 inside the interfaces (orchestrator, November 25): three attempts, STOPPED; geometry back to HEAD.
+    Read away from supports (tools/fem_away.py, 2 and 3 mm give the same here), PETG 20 MPa. Cases: v2_beam_carrier.py (dowel held at its end
+    faces; FEM_MESH switch added, default 1.6) and v2_beam_carrier_slot.py (dowel held in y in its slots).
+    | Geometry | end faces, mesh 1.6 / 1.2 | slot, mesh 1.6 / 1.2 | peak |
+    | HEAD | 15.6 MPa 1.28 / not run | 15.3 1.31 / 16.9 1.19 | yaw pin boss top rim (pin end flush with the boss top) |
+    | 1: yaw pin boss r 9 -> 11, 2.5 mm cap over the pin (blind bore, pin from below) | 9.85 2.03 / 11.24 1.78, 13 % (not settled) | 9.37 2.13 / 10.29 1.94 | dowel exit at the tail boss end; hub underside at its end |
+    | 2: + tail web, boss and block 24.8 -> 26.2 wide (step to the hub 1.0 -> 0.3 mm, 1.1 mm to the slot walls) | 10.25 1.95 / 9.89 2.02 (4 %) | 9.69 2.06 / 10.18 1.96 (5 %) | same two spots, settled |
+    | 3: + hub's lower half r 9.5, block under the dowel 1.5 mm deeper | 14.23 1.41 (mesh 1.6) | not run | dowel exit moved to the TOP of the tail boss (12.7, -44.1, 102.0) |
+    Best reached: attempt 2, 1.95 .. 2.06 over the four readings, settled (4 / 5 %); the lowest (1.95) is the end-face case at mesh 1.6.
+    Theory: the last peak is where the bonded steel dowel leaves the plastic tail boss (a bimaterial edge); the dowel's bend between the boss and
+    its supports pries the boss mouth, and stiffening one side moves the prying to the other (attempt 3). What would settle it: a longer boss
+    (the slot walls start at x 14.2, an interface) or a sleeve that spreads the bearing. Attempt 2 is kept as a patch for the orchestrator
+    (shared notes folder, v2_beam_carrier_attempt2.patch: parts/swingarm_guide.py PIN_BOSS_R2 11, PIN_BOSS_CAP 2.5, blind bore, TAIL_W2 26.2;
+    parts/swingarm2.py guard 51054.7). Not run on it: rest / collide / 37 poses / thickness / kit.
+
+41. OWNER DECISIONS (November 25, on the V2 orchestrator's question card, relayed): rocker bracket = "Move the pin" (option b of NOTES 38: the
+    printed bracket redrawn with the pin away from the foot root, swap interface and aluminium alternative updated to match); beam carrier =
+    "Metal sleeves" (option b: bought sleeves in the tail boss and the yaw pin boss to spread the dowel's and pin's bearing; cage unchanged).
+    Standing order (owner, relayed): "keep going autonomously until production ready. make sure all weak joints, seams, parts are reinforced.
+    make sure all joints and facets are seamlesly blended like the shoulder to door skin of the shell". Queue: sleeves, moved pin, weak-part
+    register, seam / facet blend audit, production-ready list (orchestrator's message of November 25).
+    Sleeve chosen: SKF PSM 8-12-12 A51, oil-filled sintered bronze, ID 8, OD 12, length 12, 5 g; 123bearing.com
+    (https://www.123bearing.com/accessories/bushes/bronze/psm8-12-12-a51-skf, opened 2026-11-25): USD 7.67 each (1 .. 9), 2 in stock that day.
+    Other listings seen the same day: SDP-SI A 7B 4MP081212 (8 x 12 x 12 sintered bronze) USD 4.60, 4 weeks; Bunting AAM008012012 (Motion,
+    quote). Three per car (two in the tail boss, one in the yaw pin boss).
+    Beam carrier sleeves, first try (November 25): two SKF PSM 8-12-12 in the tail boss (boss r 6.3 -> 8.3) and one in the top of the yaw pin
+    bore. Build ok (125 parts) but the rest check failed: each tail sleeve 11.2 mm3 into the carrier pin. The dowel's axis (TAIL y -42.1) is
+    8.5 mm from the D6 carrier pin's (PC y -50.6); a 12 mm sleeve needs 9.2, the thinnest for an 8 mm dowel (OD 10) leaves 0.3 mm of plastic
+    between the bores. Moving either axis is an interface (the dowel sits in the cage's pad block slots; the cage stays). Not committed; the try
+    is a patch in the shared notes folder (v2_beam_carrier_sleeves_try.patch). Options went to the orchestrator: yaw pin sleeve only plus the
+    NOTES 40 attempt-2 shape (two-wheel case), and for the one-wheel case a moved dowel (cage change) or an aluminium carrier.
+
+42. Rocker bracket with the moved pin (owner's decision "Move the pin", NOTES 41).
+    Where the load now goes: the pin's top end sits 7 mm deep (z 34 .. 41) in the hanger's full section (x 71.2 .. 84.7, 8 mm along y plus the
+    9 mm rear extension, 19.5 mm tall up to the axle clamp), its lower end in the shoe as before; the pin hangs 13 mm (z 21 .. 34) from the
+    hanger's underside to the middle of the rocker's hub. Before, the pin's top sat in the 3.5 mm foot outboard of the hanger with its bore at
+    the foot's root (the hot spot). Pin ISO 8734 D4 m6 x 24 (was x 20).
+    Geometry (CALCULATED with tools/steer_kin.py, its derived-entry checks pass):
+      - rocker pin (85.5, -116.8) -> (80.0, -116.8); tie rod inner ball x 69.81 -> 64.31 (the rocker / knuckle parallelogram kept: same output
+        arm as the knuckle arm); drag link ball on the rocker x 66.0 -> 64.0 (input arm 20.75 -> 17.50 mm); horn ball and servo unchanged (the
+        horn must stay inboard of the arm's inner plate at x 62.2, so the whole chain could not move). Tie rod 106.79 -> 108.84 mm, drag link
+        16.30 -> 16.73 mm. Strap x 91 .. 94 -> 85.5 .. 88.5, foot out to x 88.5, shoe from x 74.5.
+      - Searched first: everything shifted 5.5 mm with the horn ball fixed put the drag link's horn rod end at 30.7 deg (cone 25); the drag ball
+        kept at x 66 made the lock +21.7 / -32.5 deg, transmission 17.2 deg and the servo need 0.84 N m. Chosen: drag ball -2.0 mm.
+    Steering (horn +-30 deg): lock +18.81 / -22.51 deg (was +16.35 / -19.28); the + side is 0.31 deg past the clearance lock 18.5 deg (arm
+    limited): set that servo's end point to about 29.5 deg (the -22.51 side is inside the upper link's -30.5). Bump steer max 0.023 deg (was
+    0.022). Minimum transmission angle 43.7 deg (was 45.3). Servo torque needed 0.324 N m (was 0.266), margined 0.421 vs the ASSUMED 1.0 N m.
+    Rod-end misalignment: tie rod 21.4 / 21.5 deg (unchanged), drag link at the rocker 14.5 (was 14.8), at the horn 20.8 (was 13.2): inside the
+    25 deg cone with 4.2 deg of reserve (the tool asks for 5). M4 tie rod buckling margin 3.39 at the ASSUMED 2.0 N m stall. Lowest point at
+    10 deg lean 19.31 mm (was 18.36; requirement 18.0): ground clearance better by 0.95 mm.
+    Pin load at 0.47 N m (CALCULATED, wheel blocked): horn +30 deg (38.3, -1.3, 5.1) N, |38.7| N; horn -30 deg (14.8, 9.9, 8.4) N, |19.7| N; the
+    other torque direction the opposite sign.
+    FEM analyses/v2_rocker_mount_servo.py (ROCKER_HORN, ROCKER_SIGN, FEM_MESH), read 2 mm away from supports and loads (tools/fem_away.py):
+      horn +30, sign +: 4.95 MPa / safety 4.04 (mesh 1.0), 5.21 / 3.84 (mesh 0.8), 5 %; at the pin bore's top end (81.9, -116.3, 41.0)
+      horn +30, sign -: 4.86 / 4.11 (1.0), 5.33 / 3.75 (0.8), 9 %
+      horn -30, sign +: 2.25 / 8.89 (1.0); sign -: 2.23 / 8.98 (1.0)
+      before (pin at x 85.5, same cases): 0.59 / 0.53 and 0.60 / 0.48, not settled. The global peaks (9.4 .. 12.8 MPa) sit on the held axle
+      bore's edge (the clamp is modelled rigid there). Deflection 0.077 mm (was 0.43).
+    The 31 % servo limit: not needed for the bracket any more (3.75 at 40 % / 0.47 N m; linear, so about 2 at 0.88 N m, 88 % if the percentage
+    is linear). Whether the servo's own gears and the rod ends take more is not checked: lift it to 40 % and keep the bench check.
+    Old 64.4 N envelope case (analyses/v2_rocker_mount_limit.py, whole tie rod force along y): 7.78 MPa away from supports, safety 2.57 (was 0.41 /
+    0.36); its global 34.8 MPa sits on the held axle bore's edge.
+    Checks (build 77, 122 parts): rest 0, collide 0, assembly path 0 of 8, 37 poses 0 overlaps (the same three near pairs: beam-deck 0.00 distance
+    artifact, upper links on their own pins 0.04); steering in the pose run reaches +18.81 / -22.51 deg. cg_tip: 3055 g, CG 92.8 mm, tip 41.0 deg
+    (unchanged; bracket -0.7 g, rocker -0.1 g per side). Thickness 77: rocker nothing below 1.2; rocker bracket 0.26 cm2 below 1.2, all at the
+    0.5 mm floor under the pin's blind bore in the shoe (RM_SHOE_FLOOR, swap interface; it carries no load, the pin is pressed; a thicker floor
+    costs ground clearance): NAMED EXCEPTION. Chamfers: 52 of 52 corners, 0.5 mm, fits kept. Kit: STLs re-exported, 42 parts, mesh audit 0 flagged
+    (ST2 overhang 97.9 mm2, was 94.4; volume 5484.5, was 6009.4), Bambu Studio slice check 0 problems, 24.9 h, 715 g; README regenerated;
+    plate_04_Options.3mf kept by the guard. Swap interface and docs/v2/knuckle_rocker_interface.md: pin axis (80.0, -116.8), D4 x 24, strap x
+    85.5 .. 88.5; the aluminium bracket is the same printed shape machined (the doc's rule), so it follows. ASSUMED: servo torque 0.47 N m at 40 %
+    (linear), horn lever, rod end cones (25 deg; the drag link's horn end now needs 20.8 + reserve), sintered-bronze and PETG data.
+
+43. Seams and facets: the reference and the audit (owner: "make sure all joints and facets are seamlesly blended like the shoulder to door skin
+    of the shell"). Tool: tools/seam_probe.py (parallel rays at the tessellated outer skins along a line across a joint; reports per neighbouring
+    hit the step along the ray, the crease angle between the normals, which part, and openings). Audit log renders/v2_seam_audit.txt.
+    THE REFERENCE, side pod shoulder (the forward-swept wing hull) to door skin (the main flank hull), right pod, rays from outboard at
+    z 108 .. 142 along y -75 .. -35 (MEASURED): the two skins meet on ONE fold line at y -53.8, straight from the chine to the belt, shared by
+    both hulls (no second edge, no sliver face, wall continuous, nothing open); crease 4.4 deg along its whole length; step across it 0.07 mm at
+    the belt (z 142), 0.20 (135), 0.39 (125), 0.58 (115), 0.71 mm at z 108. So the bar is: one fold line, a crease of a few degrees, a step under
+    1 mm, no ledge, no gap, no patch. A part that must come off may add a 0.3 mm gap, but on such a fold line, faces flush on both sides.
+    AUDIT against it (rays from above unless noted; build of 636b330):
+      - Cowl panel to hood (fffb771): 0.3 mm gap straight across the hood's facets at y -204 (not on a fold); flush. FAILS (split across a face).
+      - Dash to side covers: 0.3 mm gap on the fold where the flat dash meets the covers' sloping top, flush. PASSES.
+      - Side covers to pods: the cover's outer edge stands 4.5 .. 5.1 mm above the pod skin beside it (y -60 .. 40), crease 17 .. 57 deg: the cover
+        lies ON the pod's top land instead of IN it. FAILS (ledge).
+      - Side covers to the cage rail, flat pod tops to the cage: the black rail shows between them by design (from above no opening). As drawn.
+      - Flat pod tops to the pod skin: same part, the land's plane continues (NOTES 37). Pod to deck from outboard (y 40): deck side 8 mm inboard of
+        the pod's lower edge, 43 deg; the pod's lower edge is its own chine. Hood to nose tub, roof edges: on their own edges, nothing open.
+      - Tail: from above, open between the pod's tail end (y 134) and the tail light housing (y about 145 .. 180) beside the rear arm (NOTES 39).
+    Fix order: cowl (split moved onto a real fold), cover ledge (cover let into the pod), tail opening.
+
+44. Cowl on the hood's fold (seam audit, NOTES 43; owner: seamless). The hood is built with its rear facet rows (y -252 / -204) extended along
+    their own lines to y -182 (build_armored_hood(y_end)), cut to the cowl's plan behind y -204 (crown to y -186, the rest to the cowl bar's
+    face) and SPLIT ON ITS OWN FOLD at y -252 (COWL_MODE 'fold', COWL_FOLD_Y), 0.3 mm gap: the front facet rows stay the Hood deck, the rear
+    facets and the cowl are one piece, the Cowl panel. So the old seam across the hood's face at y -204 is gone (no edge left at y -204: every
+    rear facet is one face from y -252 to the panel's end), and the only split is the panel line on the fold the hood already had (crease about
+    4 deg), flush both sides. Why not fused: fused, the hood printed on its stepped rear end (+280 mm2 support, bed contact 92 mm2, NOTES 39).
+    Split on the fold, each piece prints on its cut face: hood 252 mm2 overhang / 281 mm2 bed, cowl panel 105 / 279 (with its two bosses):
+    357 mm2 in all against 356 for the separate hood and cowl of fffb771. Screws: hood front 2 M3 (y -270), cowl panel 2 M3 (y -218, the old hood
+    tabs) and 2 M3 into the cowl bar. Build ok (122 parts), rest 0, collide 0, assembly path 0 of 8 (hood and cowl up 30 mm). Thickness 78: hood
+    0.05 cm2, cowl panel 0.40 cm2 below 1.2, all at the cut faces and the deck's rear edge: corner readings (ball 0.75 mm; 0.90 where the bulge
+    shoulder's crease meets the hood's cut face, a three-face corner, the skin is 3 mm): named exceptions. Not near moving parts: no pose run.
+    The kit registry has no row for the Cowl panel and the Dash panel yet (production-ready list).
+
+45. Weak-part register (V2, HEAD after NOTES 44). Safety = PETG across the layers 20 MPa / von Mises; "away" read 2 mm from supports and loads
+    (tools/fem_away.py); "settled" = two meshes within 10 %. Compiled from NOTES, analyses/ and the FEM logs.
+    | Part / joint | Kit | Safety | Case | Status |
+    | Rocker bracket | ST2 | 3.75 .. 8.98 (0.47 N m, settled); 2.57 old envelope | v2_rocker_mount_servo / _limit | PASS (NOTES 42) |
+    | Front carrier, per side | SU3 | 6.3 (away 22), global not settled | v2_front_carrier_landing | PASS (NOTES 39) |
+    | Front knuckle | SU4 | landing 2.71, steering 0.47 N m 2.43; one mesh, before the chamfers and bushing | v2_knuckle_landing / _steer_limit | PASS, re-run |
+    | Balance beam | SU6 | 2.13, one coarse mesh, before the chamfers | v2_balance_beam | PASS marginal, re-run |
+    | Beam carrier two-wheel | SU7 | 1.12 (away 1.28; slot 1.19 .. 1.46); attempt-2 patch 1.95 .. 2.06 | v2_beam_carrier(_slot) | OPEN (NOTES 40) |
+    | Beam carrier one-wheel | SU7 | 0.54 (slot, away 0.84 .. 1.07) | v2_beam_carrier_yaw(_slot) | OPEN, owner (NOTES 41) |
+    | Front arm | SU1 | 1.49 at the outer pivot bore, one mesh; strut / root post notch | v2_front_arm | CLOSED, owner-accepted 2026-11-26 ("Keep printed", twice): 70ba3e2 arm 1.88 at 65 N; at 0.20 m 0.99 .. 1.04 with the 4 mm saddle (123 N), 0.75 .. 0.78 without (164 N) (NOTES 59, 61) |
+    | Upper link | SU2 | 1.53; the case has the old hinge x 105 (V2: 101) | uplink | OPEN, stale case |
+    | Rear swing arm | DT11 | 1.66 on 2.5 mm2, one mesh (V2 has the ae659cc arm, not V1's later web fix) | rear_arm | OPEN |
+    | Cage at the stops: strut root / upper ear / slot wall | CG1 | 1.12 (1.08) / 0.73 (0.55) / 0.68 at the load face | v2_cage_stops(_fine) | OPEN |
+    | Cage rear spot (16.0, 203.0, 174.4) | CG1 | 77 MPa = 0.26, fine mesh only (coarse 27.0): never explained | v2_cage_stops_fine | OPEN, explain first |
+    | Cage global (roof, shock, bumper) | CG1 | 1.52 on the V1 cage (feet at y -127) | cage (stale) | OPEN, stale |
+    | Cage with the exo frame, shock clevis on the spine | CG1 | no case | - | NO CASE |
+    | Rocker, arm pivot blocks, servo floor and clip, pillow blocks, rear bearing carriers, ring hub, pulleys, front and rear wheels, motor
+      plate, decks, skid | ST1, SU5, ST3/4, DT5..10, DT14..17, CH1..5 | no case | - | NO CASE |
+    | Joints: cage feet in the deck pockets (M3 + D4.2 inserts), pod screws into cage bosses and deck brackets, cover screws into pod bosses,
+      hood / cowl / dash screws and tabs, nose tub screws, tail housing screws, insert pull-out (M4 knuckle stud, M3 clamp, servo clip),
+      rocker clamp screw, servo holder screws, skid lap screws, glued roof / grille / light bar | - | no check | hand calc to do | NO CASE |
+    | Side pod / side covers: the mitre edges on the fold (NOTES 62) | SH3, SH4, SH10 | thickness under 1.2: pod 2.84, covers 1.09 + 1.64 cm2 | soma
+      analyze thickness | ACCEPTED (orchestrator 2026-11-27): 51 deg (wing) / 72 deg (main) solid edges, acute-corner readings, not thin walls |
+    | Side pod flank and lower screws, 6 per pod (round heads through the sloped skin along x) | SH3 | - | - | OPEN, outside the owner's loop
+      (NOTES 62): a flush countersink along x on the 27 deg skin needs more than the 3 mm wall |
+    Stale or V1 cases in analyses/ (not V2 geometry): wishbone_*, lean_beam, front_arm (superseded by v2_front_arm), tie_rod (V2: bought), cage,
+    rear_arm, uplink; analyses/strength_check.md is V1. GUARD_VOLUMES lists a 'Pad block' that is part of the cage solid in V2.
+    Order of work: explain the 77 MPa spot, the cage stops (ear, strut root, slot wall), front arm, upper link (new case), rear arm, carrier
+    two-wheel (attempt 2 when the owner's carrier choice is in), then cases for the NO CASE parts, then the joint hand calculations.
+
+46. Side covers to pods, the 4.5 .. 5.1 mm ledge (NOTES 43): three attempts, STOPPED; COVER_FLUSH switch left False (geometry as c8936ed).
+    1. Cover's outer top on the pod's top (topmost 1 mm slab), pod rebated under the cover + 0.3 mm: ledge 2.1 mm (the slab's outer x lay 1 mm down
+       the flank's 51 deg slope).
+    2. Outer corner from a 0.05 mm slab (the chine itself): the joint MATCHES the reference (step 0.15 .. 0.26 mm, 0.3 mm gap on the pod's top chine,
+       crease = the chine's own 0.6 .. 25 deg); rest 0, collide 0, path 0 of 8. But the rebate cut the pod's sloped wall tops into feathers: pod thin
+       area 162.6 -> 362.6 mm2 (shoulder wing top 105 mm2, top edge y -37 .. 105 97 mm2, front wing 77 mm2, down to 0.01 mm).
+    3. Plus a 3 mm seat band under the cover inside the pod's envelope within 3 mm of the old walls (+1835 mm3 per pod): 531.6 mm2 (worse).
+    Theory: the pod's top is the open edge of a hollow block (no top skin, NOTES 36); any cover-shaped cut through its sloped walls leaves a feather,
+    and a band adds more sloped cut edges. What would settle it: redraw the pod's top as a closed flat land in the pod hull itself (a 3 mm lip on
+    the top facet, built with the pod, not cut afterwards), then let the cover into a rebate in that land. A pod redraw; not started.
+
+47. The cage's 77 MPa spot at (16.0, 203.0, 174.4) (fine-mesh cage stop run of November 24, never explained): NOT STRESS. It is one mesh vertex:
+    within 0.5 mm of it the median is 0.02 MPa, the same spot in the coarse run reads 0.0 MPa, and the whole tail (y > 120) has a 99th percentile
+    of 0.12 MPa. The case loads the cage at y -50 and holds it at the feet (y <= 38): the tail carries no load in it, it only turns with the frame.
+    The vertex sits where the tail light housing's screw stub (a cylinder along y, x 12 .. 20, top z 177.1) runs into the tail cross plate's top
+    (z 174.3) at a shallow, nearly tangent angle along y 202.8: a knife-thin wedge that meshes into a distorted element. Geometry note for the
+    register: a fillet or a flat seat under the stub would remove the wedge; it carries no load in any case run so far.
+
+48. Cage at the stops, today's cage (exo frame, shell bosses; analyses/v2_cage_stops.py, FEM_MESH switch added), meshes 2.5 / 2.0, read 2 and 3 mm
+    from supports and loads with the tail artifact of NOTES 47 left out (it reads 35.2 MPa at mesh 2.0, again one vertex):
+      ear underside to the post (41.0, -44.8 .. -51.2, 106.8): 19.12 / 19.67 MPa, safety 1.05 / 1.02 (settled, 3 %)
+      root lump underside behind the dowel window, where the stop strut leaves (32.6 .. 36.4, -29.5 .. -38.4, 89.0): 17.89 / 19.06, 1.12 / 1.05 (7 %)
+      pad block top (36.4, -43.6, 111.5): 18.16 at mesh 2.0, 1.10
+      rear foot / rear upright (47.2, 42.4, 34.8) and (-46.0, 44.0, 147.5): 15.4 / 17.3, 1.30 / 1.16
+    The global maxima (27.8 / 35.9 MPa) sit on the loaded window face. The NOTES 45 values (upper ear 0.73 / 0.55, slot wall 0.68) were read at the
+    global maximum before the exo frame; today's ear reads 1.02 settled away from the load face. OPEN: all four under 2.
+
+49. Cage at the stops, reinforcement (pad block, parts/swingarm_guide.py pad_block): two attempts, the second kept; still OPEN under 2.
+    Attempt 1: 45 deg gusset under the ear against the post (x 38.6 .. 41, down to z 104.4; 2.4 mm from the dowel at rest) and a 4 mm keel under
+    the block's rear and the strut lump out to x 40: ear corner 1.02 -> 1.23, but the keel's steep front start made a new notch (36.4, -38.0, 89.0),
+    25.95 MPa / 0.77 (mesh 2.5). Attempt 2 (kept): the keel only as wide as the block (x 17.4 .. 36.4) with an 18 deg ramp from y -46.
+    Readings, meshes 2.5 / 2.0, 2 mm from supports and loads (single-vertex artifacts left out: the tail wedge of NOTES 47, and one vertex at
+    (46.0, 44.0, 147.5) on the rear upright that reads 44.9 MPa at mesh 2.0 only, median 0.58 MPa within 2 mm, 0.41 at mesh 2.5):
+      strut root at the lump (32.5 .. 34.7, -22.5 .. -23.1, 85) 17.77 / 19.25 MPa, safety 1.13 / 1.04 (was 1.12 / 1.05: unchanged)
+      ear corner on the post (40.7 .. 41.0, -51.4, 104.7) 15.03 / 14.58, 1.33 / 1.37 (was 1.05 / 1.02)
+      block top (36.4, -42.9, 110.9) 13.02 / 14.34, 1.54 / 1.39 (was 1.10)
+      rear foot (46.3 .. 47.2, 42.4, 35) 15.30 / 14.18, 1.31 / 1.41
+    Pad block 7430.1 -> 8682.3 mm3 (+1.6 g each). Rest 0, collide 0, 37 poses 0 overlaps (the three known near pairs). The cage (CG1) is in the full print kit, not re-exported here.
+    What limits the strut root: the 338 N per block at the bump stop leaves through the 11 mm stop strut, and the strut cannot grow (11 mm from x 36
+    is 2 mm off the motor plate's corner, NOTES 24 round). Theory: a second strut (the pad block's front to the front foot node) or a deeper lump
+    keyed into the spine cross tube would split the load; a load-path change, not a fillet. Not started.
+
+50. PRODUCTION-READY LIST: what still separates V2 from "print it and it assembles" (kept current; first version November 26).
+    Strength (NOTES 45 register): OPEN under 2: beam carrier one-wheel (0.54; owner's sleeves do not fit the tail boss, NOTES 41) and two-wheel
+    (1.12; attempt-2 patch reaches 1.95 .. 2.06), cage strut root 1.04 (NOTES 49), front arm 1.49, upper link 1.53 (stale case), rear arm 1.66.
+    No case yet: rocker, arm pivot blocks, servo floor and clip, pillow blocks, rear bearing carriers, ring hub, pulleys, wheels, motor plate,
+    decks, skid, the cage with the exo frame and the shock's rear clevis, and every screwed / glued joint (hand calculations to do).
+    Fits ASSUMED, to settle on a printed test coupon: press fits of the D4 rocker pin (bore 4.0), the bronze front wheel bushing (0.10 press), the
+    D8 dowel and yaw pin (bonded in the model), heat-set insert pockets (D4.0 for the 3DJAKE M3 OD 4.6, D4.2 at the cage feet, D5.6 M4), the
+    carrier hub running fit (6.4 on D6), the arc slot (8.3 on D8), self-tapping M3 pilots 2.5 into printed bosses and tubes.
+    Masses and loads ASSUMED: bought and steel part masses in cg_tip (steel x volume, 1004 g), battery 120 g at z 56.4 not modelled as a part,
+    servo torque 0.47 N m at 40 % (Tekin, linear), servo stall 2.0 N m, landing 65 N per front wheel, PETG 20 MPa across the layers, TPU saddle
+    stiffness, sintered bronze data.
+    Bought parts not verified: RC4WD M3 rod ends (swivel not stated, back order; the drag link's horn end now needs 20.8 deg), Tekno M4 turnbuckle
+    ball-to-ball length (now 108.84 mm), ISO 8734 D4 x 24 part number, Gmade ball cups (candidate), servo ear geometry (MEASURE ON ARRIVAL),
+    shim washers at the carrier hub.
+    Model / kit gaps: Cowl panel and Dash panel now have registry rows (SH8, SH9) but no STL in the print kit yet; the full shell kit (SH*) not
+    re-exported since the markup covers; side covers stand 4.5 .. 5 mm proud of the pods (needs the pod top redrawn, NOTES 46); the tail opening
+    beside the rear arm (NOTES 39); the rocker is not chamfered (STL tessellation, NOTES 30); rear bearing carriers, pillow blocks and ring hub are
+    traced meshes (not chamfered, no source); one-sided rest values from tools (beam-deck 0.00 mm distance artifact).
+    Documents: the assembly manual has the shell install order (NOTES 36 / 37) but not the hood / cowl split of NOTES 44 or the moved rocker pin.
+
+51. Front arm (SU1), root neck at the inner pivot boss (register NOTES 45: 1.49, one mesh).
+    Baseline on today's arm, analyses/v2_front_arm.py (FEM_MESH switch), 2 mm from supports and loads: 13.09 / 12.85 MPa, safety 1.53 / 1.56
+    (meshes 2.6 / 2.0, settled), at (69.9, -126.5, 41.9): the front-lower edge of the inner pivot boss where the root neck (a hull from the boss
+    to the chord roots, 7.5 mm wide) left it. The neck started at +-8 mm around the axle while the boss is r 9, so the boss stood 1 mm past the
+    neck's edges: an inside corner at the root.
+    1. Neck at +-9 (tangent to the boss): 10.94 MPa, 1.83 at mesh 2.0; at mesh 2.6 the exact tangency meshed into a distorted element.
+    2. Neck at +-10 (kept): 9.59 / 9.81 MPa, safety 2.09 / 2.04 (meshes 2.6 / 2.0, 2 %), the peak shared between the upper neck (65.1, -132.3,
+       64.2) and the same inner-boss edge; 3 mm away 9.40 / 2.13. PASS (marginal). The global 28 MPa is on the held pivot bore's edge.
+    Caveat (the case's own docstring): the lever load is applied 6.8 mm inboard of the blade, the ball sits 12.2 mm inboard, so the blade's torsion
+    is understated (about 45 % by the docstring); the peak here is at the pivot boss, not in the blade, but the blade is not proven at 2.
+    The extra material lies within 10 mm of the pivot axis, inside the arm's own swing. Rest 0, collide 0, cg 3058 g, CG 92.8 mm (+3 g over
+    the commits since NOTES 42). 37 poses 0 overlaps (the three known near pairs). Kit: STLs re-exported, mesh audit 0 flagged, slice check 0
+    problems, 24.9 h, 715 g.
+
+52. Upper link (SU2): the case brought to V2 (analyses/uplink.py: outer hinge x 101, was the V1 x 105; FEM_MESH switch). Load 80 N along the link,
+    ASSUMED (V1's share of the landing; for V2 it matches a 1 g frontal hit at the tyre: 65 N x 56 mm over the 50.4 mm between the tip pin and the
+    link = 72 N; a vertical landing puts almost nothing through the link, NOTES 39). The chamfered link does not mesh (its 0.4 mm chamfers leave
+    sliver faces down to 0.0002 mm2 where the tube meets the end blocks): FUGU_FEM_NO_CHAMFER=uplink runs the FEM on the sharp link (safe side).
+    Result: 10.47 / 11.24 MPa, safety 1.91 / 1.78 (meshes 1.2 / 0.9, 7 %), at (98.0, -207.4, 95.1): the outer tongue's top inner edge at the
+    joint, where the link turns 18 deg outward in plan (the tongues lie along y for the x pins; 12 mm of tongue x sin 18 deg = 3.7 mm of offset:
+    about 300 N mm of bending in plan). OPEN. Limits: the tongue's width (6 mm) is set by the clevis gap (6.4); a taller tongue meets the clevis
+    floor (8.2 mm under the hinge) as the link swings with the arm; a shorter tongue made a sharp neck before (008fbee: 0.55). Not changed.
+    Idea: a clevis 2 mm wider with an 8 mm tongue (carrier tower and cage lug both change: an interface). The pins cannot be turned to the link's
+    plan angle: they must stay parallel to the arm's pivot (along x) for the parallelogram.
+
+53. Rear swing arm (DT11), shock clevis ears (register NOTES 45: 1.66, one mesh). Baseline on today's arm (analyses/rear_arm.py, FEM_MESH switch),
+    2 mm from supports and loads: 11.93 / 13.02 MPa, safety 1.68 / 1.54 (meshes 2.5 / 2.0, 9 %), at (10.4, 160.5, 109.6): the +x clevis ear's
+    outer face behind the shock pin, where the rear bridge tube landed on the ear's round end beside the pin's tool corridor. Change (attempt 1, my
+    own; nothing taken from V1's arm): each ear runs on at full section (6 x 17 mm) from the pin axis back to the rear bridge tube (14 mm). The shock
+    leaves its lower eye forward and up (41 deg toward -y), away from the extension; the corridor (outboard of the ears) is untouched.
+    Result: 6.79 / 7.17 MPa, safety 2.94 / 2.79 (meshes 2.5 / 2.0, 5 %), same spot. PASS. Global maxima on the held pivot bores' edges.
+    Rest 0, collide 0. Rear travel swept by hand (the 37 poses move the front end only): the arm turned -10 .. +16 deg about its pivot (y 112, z 62;
+    35 mm at the axle is 15.4 deg) against the cage, decks, pods, tail housing and bearing carriers: cage 23.9 mm, carriers 1.9 mm, tail housing
+    32 mm; 0.04 mm3 into the tail deck at -10 deg at the arm's inner plate (x 41.7, y 126, z 35 .. 41), the same in the previous commit (not from
+    this change; -10 deg is probably past the real droop: not settled which).
+    Kit: STLs re-exported, mesh audit 0 flagged; DT11 now on the floating list (the ear extension starts in mid-air in the arm's print orientation:
+    supports there, the slicer passes it); slice check 0 problems, 25.5 h, 728 g (was 24.9 h, 715 g).
+
+54. Screwed joints between printed parts, by hand (register NOTES 45: no case). ASSUMED inputs: PETG shear across the layers 12 MPa (0.6 x 20);
+    self-tapping M3 capacity = 12 x pi x pilot 2.5 x engaged length x 0.75 (thread engagement); M3 heat-set insert pull-out 300 N in PETG (published
+    values 300 .. 500 N, not tested here); handling push 20 N per screw on a removable panel; 50 N side push on a pod; 80 N nose bump on the tub.
+    | Joint | Capacity N | Load N | Safety | Load basis |
+    | Cowl panel, 2 M3 into the cowl bar (pilot 2.5 x 5) | 353 | 20 | 17.7 | handling |
+    | Dash panel, 2 M3 into the rail tops (pilot 2.5 x 5) | 353 | 20 | 17.7 | handling |
+    | Side cover, 3 M3 into 7 mm pod bosses (pilot 2.5 x 10) | 707 | 20 | 35 | handling |
+    | Side pod, 4 M3 into cage bosses (about 8 mm engaged) | 565 | 25 | 22.6 | 50 N side push over 2 screws |
+    | Hood front, 2 M3 into the hood tabs (pilot 2.5 x 6) | 424 | 20 | 21.2 | handling |
+    | Nose tub, 2 M3 per side into the cage | 565 | 40 | 14.1 | 80 N nose bump over 2 screws |
+    | Cage feet, M3 from below into the D4.2 insert in each foot | 300 | 99.5 | 3.0 | largest foot reaction, cage stop FEM (NOTES 48) |
+    | Cage feet, bearing in the 3 mm deck pockets (8.8 x 3 mm) | 528 | 99.5 | 5.3 | same |
+    | Rocker bracket clamp, M3 into its insert (4.0 x 5.7) | 300 | 150 | 2.0 | hand-tight preload in plastic about 150 N (ASSUMED) |
+    | Servo clip, M3 insert (4.0 x 8.5) | 447 | 60 | 7.5 | servo reaction at 0.47 N m on a 10 mm base, plus preload |
+    | Knuckle tie-rod stud, M4 insert (5.6 x 9), loaded sideways | - | 60.5 | FEM 2.43 | knuckle steering case (NOTES 29) |
+    All at 2 or more on these assumptions; the rocker clamp's margin is the preload itself: do not overtighten (manual note to add). Not checked
+    by hand yet: the glued roof panel, hex grille and light bar (glue strength unknown), the skid lap screws, the tail housing screws, the
+    servo holder M3 x 16. Test on the coupon: insert pull-out and self-tap strip torque in the printed PETG.
+
+55. Rear arm DT11 print orientation (orchestrator: the 291 mm2 floating area is not acceptable). Cause: not the ear extension itself. With the ears
+    extended (NOTES 53) the -x face gained bed contact (254 -> 580 mm2) and the kit's chooser switched the arm from its +x face to its -x face,
+    where a 289 mm2 region at x 42 (the outer truss) starts in mid-air. kit/build_kit.py now holds DT11 on its +x face (STRENGTH_FACES), as
+    before the change: floating 0, overhang 8503.6 mm2 (8293.9 before the extension: +210 mm2 of ordinary overhang, no island), bed contact 254.4.
+    Mesh audit 0 flagged; Bambu slice check 0 problems, 25.0 h, 717 g.
+
+56. Front arm, the lever load at its real offset (orchestrator item 5). The first case puts the 118.1 N lever reaction on the stud boss's end
+    face (6.8 mm inboard of the blade); the ball sits 12.2 mm inboard. Direct FEM (analyses/v2_front_arm_ball.py, the steel ball stud bonded in its
+    bore by the FEM-only switch FUGU_FEM_STUD_BOND=1, force on the ball): three tries, all refused by the FEM tool ("the faces are not on the outside
+    of the mesh") with the load point on the ball's front, its top, and 0.4 mm inside it; the stud itself is one clean solid with no overlap. Not
+    solved; the case and switch are kept for a later fix. NOT SETTLED BY FEM.
+    By hand on the existing settled result (fem53, meshes 2.6 / 2.0; numbers only, files removed 2026-11-27 on the owner's approval): the blade (y -112 .. -78, z > 58) reads 5.97 / 5.69 MPa at (65.2, -111.5,
+    67.9), section 17.8 x 8 mm there. Torsion share at the 6.8 mm offset: 118.1 x 6.8 / (0.25 x 17.8 x 8^2) = 2.82 MPa; at 12.2 mm 5.06 MPa; the
+    rest is bending (3.43 / 2.92 MPa). Von Mises with the real offset: 9.41 / 9.24 MPa, safety 2.13 / 2.16 (CALCULATED; it assumes the peak's
+    torsion is the section's maximum, on the safe side). The neck at the inner boss (2.09 / 2.04) also takes part of the extra 637 N mm and is not
+    re-read: OPEN until the FEM tool takes the ball load (or the load is applied as an equivalent couple).
+
+57. Beam carrier, orchestrator item 1(a): one bought sleeve in the yaw pin boss, plus the NOTES 40 attempt-2 shape. Owner's decision "Metal sleeves".
+    - Sleeve: SKF PSM 8-12-12 A51 (oil-filled sintered bronze, 8 x 12 x 12, 5 g; 123bearing.com, USD 7.67, 2 in stock on 2026-11-25; kit/hardware.py),
+      pressed into the top 12 mm of the yaw pin bore (printed bore 11.9, ASSUMED press fit, ream / coupon). The D8 yaw pin is pressed into it.
+    - Boss: radius 9 -> 11 (PIN_BOSS_R2), with a 2.5 mm cap over the sleeve. The bore is blind; the pin goes in from below.
+    - Tail web 24.8 -> 26.2 wide (TAIL_W2): its end face met the hub 1 mm short of the hub's end, an inside step that peaked.
+    - Attempt 2: 1 mm more hub wall under the carrier pin only (HUB_DROP: a cylinder 1 mm lower and 1 mm larger, tangent to the hub's top at
+      z 107.0, so the 1.45 mm to the spine bridge is unchanged).
+    - Carrier volume 49851 -> 50457 mm3 (GUARD_VOLUMES updated). The four carrier cases now carry the sleeve (bronze E 70 GPa, 100 MPa ASSUMED).
+    Two-wheel landing at the bump stop, read 2 mm from supports and loads (tools/fem_away.py), meshes 1.6 / 1.2:
+      attempt 1 (sleeve, boss, web), dowel held at its end faces:    1.97 / 1.98 (hub bottom under the pin, z 90.0)
+      attempt 1, dowel held by the slot walls (v2_beam_carrier_slot): 1.77 / 1.92
+      attempt 2 (+ hub wall), dowel held at its end faces:           1.88 / 1.83 at (+-12.9, -42.2, 94.5), where the dowel leaves the tail boss
+                                                                      (bore bottom at the boss's end face, the bonded steel-to-PETG edge)
+      attempt 2, dowel held by the slot walls:                       2.56 / 2.35, settled (8 %)  PASS
+      attempt 2 with the heave shock's 54 N counted (CARRIER_SHOCK=1, ASSUMED spring): 2.03 / 1.65 at a different spot at mesh 1.2: not settled,
+      information only.
+    The slot-wall case is the real support: the pad blocks' close arc slots hold the dowel over |x| 14.4 .. 36.4. The end-face case holds it
+    37.5 mm out and overstates its bending (lever 37.5 instead of 24.4 mm, as its docstring says); it stays as the conservative envelope.
+    Its peak is at the tail boss's dowel bore, which item 1(b) rebuilds with two bronze sleeves.
+    Kept: attempt 2. Two attempts used; the tail spot goes to 1(b).
+    Checks on the kept shape: rest 0 overlaps (123 parts), collide 0, assembly path 0 of 8, 37 poses 0 overlaps (the three known near pairs),
+    CG 92.8 mm (sliced, with battery), tip 41.0 deg, solid 3326 g. Wall thickness (thickness62, limit 1.2): two pairs of feather spots,
+    0.2 mm2 each, 0.26 .. 0.35 mm at (+-13.1, -42.7, 102.8), where the tail boss's end face meets the dowel bore; 1.73 cm2 exactly at 1.2
+    (the wall between the carrier pin bore and the dowel bore). The tail is rebuilt in 1(b): re-read there.
+
+58. Hand checks and single-event cases after item 1(a) (orchestrator items 1(b) prep, 2, 3, front arm neck). CALCULATED unless marked.
+    - Stop load (heave bump stop, the carrier's tail dowel on the pad blocks, current 8.5 mm tail):
+      two-wheel 676 N with the spring ignored; the heave shock (54 N at 4.68 mm compression; 2.6 kg ASSUMED, 60 % front, 3 N/mm ASSUMED)
+      acts on a 16.73 mm lever against the 8.50 mm tail, so it takes 106 N: 569 N on the stops, 285 N per pad block. One-wheel 561 -> 454 N
+      (227 per block). Shock force on the cage at its top eye E (0, 20.54, 97.3): (0, 52.9, 11.9) N; on the carrier at S the opposite.
+      With the 1(b) tail (r 10.4): two-wheel 552 / 466 N, one-wheel 459 / 372 N, 233 N per block.
+      kit/hardware.py calls the heave shock "about 30 N/mm assumed", tools/arm_stops.py uses 3 N/mm: the listing (below) says super soft.
+      Spring rate stays ASSUMED, on the measure-on-arrival list.
+    - Bought heave shock (RC4WD Ultimate Scale Shock 70 mm, RC4Z-D0004, store.hobbyetc.com/parts/view/29506, discontinued): "heat treated steel
+      internal coil spring (super soft)", body 8.8 mm, shaft 3.0, 72.5 extended / 55.1 compressed (17.4 travel), 11 g. The spring is inside the body:
+      no external retainer, so the 1(b) "retainer at 18 mm" requirement is met by the part as bought. No spacer, preload, ride height or CG change
+      (CG stays 92.8 mm). The model's 16.5 mm spring envelope is conservative.
+    - Upper link (SU2) loads by hand. The tip pin is on the wheel axle, so forces through the wheel centre put nothing in the link; only a
+      tangential force at the tyre does (x 56.2 / 50.4):
+        landing spin-up (mu 1, 65 N) 72.5 N; braking (no front brake, rolling resistance 0.03) 2.2 N; full-lock landing (8.0 mm offset) 10.3 N;
+        frontal hit, spin stopped by friction, half-sine pulse, J 2.39e-4 kg m2 ASSUMED (tyre 70 g, wheel 30 g), car 3.06 kg:
+          2 m/s, 15 mm stop, 50 % of the car on one wheel: 99 N; 3 m/s, 15 mm, 50 %: 222 N; 3 m/s, 100 %: 318 N; 5 m/s, 20 mm: 463 N.
+      Top speed by gearing about 6 .. 7.8 m/s (1800 KV, 15/40 x 30/8, rear tyre 139.7). The frontal hit governs; its design speed is not chosen yet.
+      The link's FEM (NOTES 52) was at 80 N: 1.91 / 1.78. Item 2 is OPEN.
+    - Front arm, the lever load as an equivalent couple (analyses/v2_front_arm_couple.py; FEM-only switch FUGU_FEM_BORE_SEG=1 splits the stud bore
+      into two half-length faces, parts/swingarm_front.py stud_bore_seg). Finding: the stud boss sits INSIDE the blade (blade x 62.2 .. 70.2,
+      bore centre at the blade's mid plane x 66.2, ball at x 54.0). The old case's load point (59.4, -81.45, 89.63) is 3.2 mm from both the
+      blade's whole inner face and the bore, so which face took the load was ambiguous. Now the 118.1 N, F (0, -94.5, 70.7), goes on the two bore
+      halves (centres x 64.2 and 68.2): 3.55 F on the mouth half, -2.55 F on the far half, which is F at the ball, x 54.0, exactly in force and moment.
+      Meshes 2.6 / 2.0, 2 mm from supports and loads (one single-node spike of 89.6 MPa at (63.9, -134.7, 57.3) on mesh 2.0 excluded, 1.5 mm):
+        blade (65.2, -111.5, 67.9):        16.72 / 15.50 MPa, safety 1.20 / 1.29 (8 %, settled)
+        neck at the inner boss (63.8, -132.6, 64.1): 13.91 / 13.95 MPa, safety 1.44 / 1.43 (settled)
+      Even spreading over each half overstates the end pressures' lever (real contact peaks at the bore's ends, a longer lever, smaller pair):
+      on the safe side. FAIL against 2.0: the arm is reinforced next (the neck was 2.04 under the old load).
+    - Cage at the stops, single events with the shock counted (analyses/v2_cage_stops_2w.py, _1w.py; old 8.5 mm tail loads; meshes 2.5 / 2.0,
+      2 mm away; the known artifacts at (+-16, 203, 174.4) and (+-46, 44, 147.5) excluded):
+        two-wheel, stop region (|x| < 40, y -60 .. -25, z 85 .. 125): 7.75 / 8.59 MPa, safety 2.58 / 2.33 at (36.4, -43, 110.9)
+        one-wheel, stop region: 10.82 / 11.32, safety 1.85 / 1.77; the block's outer face (40.7, -44.8, 106.3) 15.47 at mesh 2.0, safety 1.29
+        shock top mount (+-3.2, 27.0, 109): 13.27 / 14.40 two-wheel (1.51 / 1.39), 13.69 / 14.46 one-wheel (1.46 / 1.38)
+        feet edge (+-32.5, -22.5, 85): 1.69 / 1.54 (two-wheel), 2 mm from the held foot: the support's own edge, information
+      So the summed case's 1.04 / 1.37 / 1.39 (strut root / ear / block top) were partly the summing: single events read 1.3 .. 2.6.
+      Item 3 is done in 1(b) on the moved pad block, with the 233 N per block loads. The shock top mount is new: OPEN.
+
+59. Load basis for V2, PROVISIONAL (orchestrator, Nov 26; the drop height is the owner's call and is put to them). CALCULATED from V2's own numbers.
+    - Mass 3066 g (tools/cg_tip.py: sliced, with body, with battery), CG y -42.4; tyre contacts y -216.46 (front) and 236.43 (rear): 61.6 % front,
+      1.888 kg front (9.26 N per front wheel static), 1.178 kg rear (11.56 N).
+    - Stop distance: front heave travel from rest to the bump stop 12 mm at the wheel (the heave shock is super soft: the stops take it);
+      rear arm 122.1 mm long, +16 deg from rest = 33.9 mm. Tyre deflection 0 (ASSUMED, safe side). The damper is taken to absorb evenly over the
+      stroke (V1's assumption): load factor n = h / s + 1.
+        drop h | front g    | front N per wheel (65 used so far) | rear N
+        0.30 m | 21 .. 26  | 194 .. 241 (x 3.0 .. 3.7)          | 105 .. 114
+        0.20 m | 14 .. 18  | 133 .. 164                          | 74 .. 80
+        0.15 m | 11 .. 13.5| 102 .. 125                          | 58 .. 63
+        0.11 m | 8.3 .. 10 | 77 .. 94 (x 1.19 .. 1.45)           | 46 .. 49
+      (ranges: tyre 3 mm .. 0 mm)
+    - PROVISIONAL BASIS: rated drop 0.11 m, tyre 0: front 94 N per wheel (x 1.446 on every front landing load), rear 49 N (x 0.89 on the 55 N).
+      Front landing parts scale linearly: safety at 94 N = safety at 65 N x 65 / 94. The drop height at which a part reaches exactly 2.0:
+      F2 = 65 N x S65 / 2, h2 = 0.012 m x (F2 / 9.26 N - 1).
+    - For the owner (by hand):
+      1. TPU bump stop: the saddle is a 2 mm TPU half ring in the pad block's pocket above the dowel. With the 1(b) dowel at bump (z 100.30) and
+         the block top at z 111.5, a 4 mm saddle fits with 3.2 mm of block wall left above it (5.2 now; the wall carries the stop load: FEM).
+         95A TPU compressed 25 % (ASSUMED), contact moved earlier so the hard stop and the travel are unchanged; wheel / dowel ratio 4.28 (r 10.4):
+           2 mm: +2.1 mm stop distance: 81 N at 0.11 m, 140 N at 0.20 m, 206 N at 0.30 m
+           3 mm: +3.2 mm:               76 N,           131 N,           192 N
+           4 mm: +4.3 mm:               72 N,           123 N,           180 N
+         A thicker TPU stop alone does not bring 0.20 or 0.30 m to 94 N.
+      2. Travel for 94 N per wheel: 0.20 m needs 21.9 mm (+9.9; carrier 28.2 deg instead of 15.46), 0.30 m needs 32.8 mm (+20.8; 42.2 deg).
+         Cost: the carrier's tail and hub reach the spine bridge (1.00 mm left at 15.46 deg in 1(b)), so the spine or the carrier changes.
+         Kept at today's ride height, the clearance at full bump falls by 9.9 / 20.8 mm (the lean clearance at 10 deg is 19.31 mm today).
+         Bought back by raising the ride height (85 % of the mass sprung, ASSUMED): CG 92.8 -> 101.2 / 110.5 mm, tip 41.0 -> 38.6 / 36.1 deg.
+    - Front arm (SU1), reinforced for the couple case (NOTES 58), three attempts. Read 2 mm from supports and loads, one single-node spike
+      at (63.9, -134.7, 57.3) excluded; loads of the 65 N basis, scaled to 94 N by hand:
+        before:     blade 1.20 / 1.29 (2.6 / 2.0), neck 1.44 / 1.43
+        attempt 1:  3.5 mm outward rib on blade and strut (x 70.2 .. 73.7) beyond r 12 from the pivot: blade 1.58, neck 1.52 (mesh 2.0; 2.6 had
+                    a distorted element); the rib hit Rocker bracket 1 (22 mm3 at rest). Dropped as it was.
+        attempt 2:  rib beyond r 18, strut half width 4 -> 5 (LEVER_STRUT_W), inner upper chord U0-U1 D8 -> D9.5 (CHORD_D_ROOT_IN, the crotch
+                    fillet piece follows it): blade 1.55 / 1.48 / 1.47, neck 2.09 / 2.01 / 1.97 (meshes 2.6 / 2.3 / 2.0). The blade profile
+                    showed the front edge at 7.5 .. 8 MPa with 13.6 only in the strut crotch (x 1.7) and 11.7 at the rib's square end.
+        attempt 3 (kept): crotch fillet R 10 (LEVER_CROTCH_R), back edge +4 mm at the root tapering to 0 at the top (LEVER_BACK), rib end a
+                    45 deg ramp: blade 2.19 / 2.18 / 2.15, neck 1.93 / 1.99 / 2.08 (settled, 8 %).
+        repair of attempt 3 (the 37 poses): the ramp from r 14.5 swept into Rocker bracket 1 at the one-wheel corner +41.9 / -14.7 (0.00 mm,
+                    1.00 before), the back edge +4 came 0.75 mm to the steer horn and 0.97 mm to the Rocker there. Ramp outward from r 18
+                    cleared them but left a 135 deg concave edge: neck 1.84 / 1.01 / 1.14 (2.6 / 2.3 / 2.0), dropped. Kept: ramp from r 15.5
+                    (LEVER_RIB_R0 19.0) and back edge +2.5 (LEVER_BACK): every pose clear (arm against every part over the 37 poses: only
+                    the designed contacts, droop stop pad 0.00, pivot axle and bracket 0.16 as before, front carrier 0.35; horn, Rocker
+                    and ball stud over 1.5 mm).
+                    Couple case on five meshes 2.6 / 2.3 / 2.0 / 1.8 / 1.6: blade 2.01 / 2.03 / 2.00 / 1.99 / 1.96, neck 2.11 / 2.06 /
+                    1.80 / 1.83 / 1.88 (on the strut at U0 and on the rib beside it at r 23), settled on 1.8 / 1.6 within 3 %.
+                    The 2.08 of attempt 3 was a coarse-mesh value: on the fine meshes the arm is 1.88 at 65 N, UNDER 2.
+      At the provisional 94 N: blade 1.36, neck 1.30 (2.0 at a drop of 0.071 m and 0.067 m). Three attempts used: OPEN, also at 65 N (1.88).
+      Next options, not built: a metal lever (aluminium plate in the blade's place, bolted to the pivot boss and U0), or the ball nearer
+      the blade (LEVER_BALL_X, a beam interface change). Arm 49788 -> 53573 mm3 (+4.8 g PETG). Rest 0, collide 0, assembly path 0 of 8,
+      kit: audit 0 flagged, slice check 0 problems, 25.2 h, 724 g.
+      CLOSED, owner-accepted below 2.0 (2026-11-26, owner's words via the orchestrator: "Keep printed"): no metal lever, no
+      LEVER_BALL_X change, no beam interface change. The arm stays as built in 70ba3e2: blade 1.96 .. 1.99, neck 1.83 .. 1.88 at 65 N;
+      1.36 / 1.30 at the provisional 94 N; 2.0 at a drop of about 0.07 m. No more geometry work on the printed arm.
+
+60. Item 1(b): beam carrier tail with two bronze sleeves, pad blocks moved back, cage mesh fix. At the provisional 94 N basis (NOTES 59);
+    re-read at 123 / 164 N follows (NOTES 61, step 3).
+    Named interface change (parts/swap_interface.py, "beam carrier tail" CT_* block; docs/v2/knuckle_rocker_interface.md regenerated by
+    tools/interface_doc.py; parts/swingarm_guide.py asserts against it):
+      - tail dowel axis at (y, z) (-40.25, 97.5), r 10.40 from the carrier pin (-50.6, 98.5); D8 x 75 stock dowel, slot clearance 0.15
+      - two SKF PSM 8-12-12 A51 sleeves in the tail boss (bore 11.9 printed, 2.2 deep chamfer), boss half width 13.1, top wall 1.2 under the
+        spine (the bridge rule below sets it)
+      - arc -9.28 .. +15.46 deg; clevis plates |x| 14.4 .. 17.4; saddles |x| 18.4 .. 35.4
+      - pad block y -50.3 .. -31.7: its rear face 1.9 mm further back than before. The root lump keeps its front at y -33.6 and the stop
+        strut its root at (+-36, -28.5, 94.5) (model.py unchanged): flush with the moved face, the strut's corner came 0.1 mm from the lump
+        and left 0.04 mm2 faces.
+    Cage mesh fix (gmsh had stopped on curve 1491 / 1439, "mesh edges from different curves share nodes"; NOT the strut: it failed with
+    model.py reverted too; a small-edge diff against HEAD found the scallops of the stepped arc slot, 0.003 .. 0.27 mm):
+      1. the dowel path is exact: a ring sector about the pivot plus a round end at each angle (was a union of cylinders every 2.5 deg)
+      2. the plates take the pad block's own window (was a wider slot, D + 1.2 and 1.5 deg more each way): the two outlines on the shared plane
+         x 17.4 left 0.05 .. 0.29 mm edges; the window stops at x 38 (to x 60 its pocket met the ear gusset's corner at x 41)
+      3. a floor under the droop pockets to z 87.5 from y -44.6 (the pocket bottom is z 89.84 since 1(b); the plates and block were 0.06 /
+         0.84 mm under it). From y -47.6 its front lower corner left the beam carrier 0.62 mm at the bump stop: moved back.
+      4. the pocket and saddle faces square to the motion (_end_half: the tail's base angle -5.52 deg added; a 0.28 mm fin at
+         (+-21.7, -44.4, 99.1) before)
+      5. the plates run back to the block's rear face (y -31.7): with the window, 0.8 mm was left behind the bump pocket (0.89 .. 0.97 mm
+         thickness spots at (+-14.7 .. 16.2, -33.6 .. -34.5, 101.5))
+      Fused clevis + pad blocks: one solid, no edge under 0.3 mm, no face under 0.2 mm2. Pad block 9369.7 -> 9606.8 mm3 (GUARD_VOLUMES).
+    Clearances at both stops (scratch bridge check, built STEP): beam carrier to the spine bridge 1.00, dowel to cage 0.15 (the slot),
+    sleeves to cage 1.30.
+    FEM at 94 N, read 2 / 3 mm from supports and loads (tools/fem_away.py), the cage now meshes at 2.5 and 2.0:
+      cage two wheels (v2_cage_stops_2w): keel corner under the lump (-31.7 .. -32.2, -21.5, 85.2): 1.12 / 1.07; shock mount 1.31 / 1.21
+      cage one wheel (v2_cage_stops_1w): pad block outer face (40.7, -44.5, 104.7): 0.84 / 0.79; shock mount 1.26 / 1.17; feet 1.06 / 1.00
+      carrier, dowel held by the slot walls, meshes 1.4 / 1.2: +x lip (13, -42.8, 92.1) 0.97 / 0.92 (rising with the mesh: edge
+        concentration); -x lip 1.19 / 1.16; tail middle 2.30 / 1.35 (not settled)
+      carrier yaw case with the slot: 0.34 at the tail boss's top rim (-12.8, -41.7, 103.6), mesh 1.3 only (mesh 1.7 does not build: parts
+        almost touch). That rim is the 1.2 mm wall under the spine, held down by the 1.00 bridge rule: OPEN, the weak spot of 1(b). The
+        aluminium carrier stays the written alternative (NOTES 58).
+    Wall thickness: beam carrier 0.31 mm at (+-13.1, -36.7, 91.3), 0.41 mm2, where the tail boss's end face meets the sleeve bore (the same
+    kind of feather NOTES 57 found at the old bore): OPEN, goes with the carrier attempts at the new basis. Cage below 1.2: 0.25 cm2, none
+    at the clevis or pad blocks.
+    Checks: build ok, rest 0, collide 0, assembly path 0 of 8, 37 poses 0 overlaps (the three known near pairs: balance beam to rear deck
+    0.00, uplink pins 0.04). CG sliced with body and battery 3088 g, (3.9, -42.5, 77.3), tip 41.0 deg. Six analysis cases updated for the new
+    tail (analyses/v2_beam_carrier, _slot, _yaw, _yaw_slot, v2_cage_stops_1w, _2w).
+    Still ASSUMED: the press fit of the sleeves in a printed 11.9 bore (coupon); bronze E 70 GPa, 100 MPa; the 94 N basis (superseded by 61).
+
+61. Load basis for V2 at the owner's 0.20 m drop (owner 2026-11-26, their words "0.20 m", via the orchestrator). Replaces the provisional
+    0.11 m / 94 N basis of NOTES 59. CALCULATED by hand from V2's own numbers, the same way as NOTES 59:
+    - Mass 3066 g, CG y -42.4 (tools/cg_tip.py), 61.6 % front: 9.26 N static per front wheel, 11.56 N on the rear wheel.
+    - Damper absorbing evenly over the stroke (V1's assumption): n = h / s + 1.
+      Front: s = 12 mm at the wheel, rest to the bump stop: n = 0.20 / 0.012 + 1 = 17.67, 163.6 N per front wheel.
+      This is x 2.517 on every front landing load of the 65 N basis.
+      Rear, derived the same way and not scaled: s = 33.9 mm (rear arm 122.1 mm, +16 deg from rest): n = 0.20 / 0.0339 + 1 = 6.90,
+      79.8 N on the rear wheel. This is x 1.450 on the 55 N rear basis.
+    - BASIS: front 164 N per wheel, rear 80 N.
+    - ASSUMED:
+      - Tyre deflection 0 (no-tyre-give end, safe side): no measured tyre stiffness, so no give is counted. With 3 mm of tyre it would be
+        133 N front.
+      - Damper force even over the stroke.
+      - The heave shock takes nothing before the stops (super soft).
+      - Mass and CG as sliced. Battery and body included.
+    - Scaling: safety at 164 N = safety at 65 N x 65 / 163.6 (front landing parts); rear parts x 55 / 79.8.
+    - Drop at which a front part reaches a safety S: h = 0.012 m x (65 N x S65 / S / 9.26 N - 1).
+    - Hand facts for the owner at 0.20 m (worked in NOTES 59, restated):
+      1. TPU bump stop, the saddle made thicker with the contact moved earlier (hard stop and travel unchanged; 95A compressed 25 %, ASSUMED):
+           2 mm: 141 N per front wheel
+           3 mm: 131 N
+           4 mm: 123 N
+         The 4 mm saddle still fits, with 3.2 mm of pad block wall left above it.
+         A TPU stop takes off at most 25 % of the 164 N.
+      2. Front travel that keeps the present loads at 0.20 m:
+         - 94 N needs 21.9 mm (+9.9 mm). The carrier turns to 28.2 deg (15.46 now).
+         - 65 N needs 33.2 mm (+21.2 mm).
+         Cost, either way:
+         - The carrier's tail and hub reach the spine bridge (1.00 mm left in 1(b)), so the spine or the carrier changes.
+         - At today's ride height the clearance at full bump falls by the added travel (the lean clearance at 10 deg is 19.31 mm today).
+         - Raising the ride height to win it back (85 % of the mass sprung, ASSUMED):
+           - CG 92.8 -> 101.2 mm, tip 41.0 -> 38.6 deg (+9.9 mm).
+           - CG 92.8 -> 110.8 mm, tip about 36.0 deg (+21.2 mm, interpolated).
+         No travel or kinematics change without the owner.
+    - Front arm (owner-accepted printed, NOTES 59) at 164 N, scaled from the settled 65 N values:
+      - blade 1.96 -> 0.78
+      - neck 1.88 -> 0.75
+      Safety 1.0 is reached at a drop of 0.146 m (neck); the blade reaches it at 0.153 m. Not changed (owner).
+    - Decisions (orchestrator 2026-11-26, within the standing order):
+      1. TPU bump stop ADOPTED: 4 mm saddle, after the 1(b) commit. It is a V2-internal change: no interface, no travel change.
+         - Front basis with it: 123 N per front wheel, ASSUMED until a printed saddle is measured.
+         - TPU taken as Shore 95A, 1 mm compressed (25 % of 4 mm) at the peak. That is 305 N per block on the D8 x 17 contact,
+           2.2 MPa, a secant modulus of about 9 MPa (ASSUMED).
+         - Force taken as even over the added 1 mm, like the damper. A linear spring would peak higher.
+         - 164 N stays the no-saddle figure.
+      2. Travel: NOT pursued. The owner's order is CG first, and both options raise the CG and reach the spine bridge.
+      3. Front arm untouched. At 123 N: blade 1.04, neck 0.99.
+         Metal lever plate by hand, scaled from the 94 N figures:
+           at 123 N: 4 mm plate 4.67, 3 mm plate 2.98, printed bolt bosses 3.06
+           at 164 N: 4 mm plate 3.50, 3 mm plate 2.24, printed bolt bosses 2.30
+         The bolt boss figure uses 20 MPa printed bearing (ASSUMED).
+    - Front arm CLOSED, owner-accepted at about 1.0 at the 0.20 m basis (owner 2026-11-26, their words via the orchestrator: "Keep printed").
+      No metal lever. The arm stays as built in 70ba3e2:
+        with the 4 mm bump saddle (123 N): blade 1.04, neck 0.99
+        without it (164 N): blade 0.78, neck 0.75
+      Not reopened.
+      Consequences, written down, to be done with the saddle change:
+      - The 4 mm bump saddles (SU8L / SU8R, TPU 95A) are load-bearing for this acceptance; without them the arm is under 1. They go into
+        the kit, the BOM and the manual as REQUIRED parts, not options.
+      - The manual gets one plain line: the front arm is the first part expected to fail in a drop above about 0.15 .. 0.20 m, and it is a
+        replaceable print. Reprint SU1L / SU1R (kit/susp_drive/stl/SU1L.stl, SU1R.stl, on plate 01 Front suspension and steering).
+
+62. Pod top and side covers on one fold line (owner markup 2026-11-26, renders/v2/owner_markup_2026-11-26_pod_top_steps.webp, their words
+    "can you blend these panels in better? no steps between mating surfaces remember?" and "i mean the area where i circled"; orchestrator
+    item 7 moved ahead). Scope: the pink loop only: the pod-top strip from the front corner to the rear tip by the shock, and the flank's upper
+    band below it with the panel joint about a third along (the wing / main block joint at y -55). Lower flank, sill and cage not touched.
+    The pods are mirrored from one definition (build_side_pods: left = right mirrored in YZ), so the left side follows by itself.
+    Seam rule: one shared fold line, step under 0.7 mm everywhere, removable cover split on a fold line, flush, gap at most 0.3, screw heads
+    flush or below, wall 3.0, pose and collision checks 0. This is the redraw NOTES 46 called for, not a fourth COVER_FLUSH attempt.
+
+    Theory (written before the change). Which edges are two definitions today, and the largest step at each (tools: scratch podstep.py, rays
+    across each station from above and from outboard; a step is the offset of the surface beyond a joint from the plane of the surface before
+    it, a ledge as the offset between the two outer surfaces across the short face between them; HEAD 01de5b4 geometry):
+      a. Pod top vs side cover, y -140 .. 46. The pod's top is the hull's own top facets, opened (hollow block, open_if n_z > 0.72), so the
+         pod ends in a 3 mm rim on the top plane. The cover is a second definition: a strip lofted from sections read off that rim
+         (top_slab, a 1 mm slab) and set FIT_CUT + WALL = 3.4 mm ABOVE it. Measured: wing (y -134 .. -74) 3.8 .. 4.1 mm ledge with a 2.5 mm
+         open band under the cover's edge; main block (y -44 .. 46) 3.4 .. 3.8 mm ledge. Largest 4.08 mm at y -114.
+      b. The flank's upper fold. On the main block it is ONE hull edge, (78, -55, 145.5) .. (49.5, 134, 178), between the closed flank facet
+         and the open top facet E (n 0.455, -0.084, 0.886); the sections find it at (75.7, 148.1) at y -40. On the wing it is the edge
+         (76, -104, 140.5) .. (78, -54, 145.5). The cover's outer edge lies 1.8 mm inboard of the fold and 2.3 .. 5.3 mm above it.
+      c. Wing / main joint (the owner's vertical joint a third along). The wing's rear corners are a third definition: top corners at y -54
+         against the main block's front top corners at y -55 (a 0.06 mm step on the top, a tooth at the fold), and its lower rear corner
+         (91.5, -54, 104.5) off the main block's front flank edge (78, -55, 145.5) .. (91.5, -54.5, 102.0): the wing's flank stands 0.68 mm
+         proud of the main flank at y -53.9, z 110, falling to 0.05 mm at the fold (horizontal rays from outboard, 0.1 mm apart).
+      d. Behind the cover (y 56 .. 126) the top is the pod's own (flange fused into it): 0.04 .. 0.28 mm, inside the rule.
+    What settles it: the cover must not be drawn from the pod; both must be cut from one surface. Close the hull's top facets (the 3 mm top
+    skin the hollow block already defines), then split that skin from the walls on the mitre through each fold (the bisector of the two
+    facet planes: a point of the shell belongs to the facet whose plane is nearest). The visible joint is then the fold edge itself, step 0
+    by construction; the gap is set normal to the mitre. The wing's rear corners go onto the main block's edges, so the two blocks share
+    their fold vertex (78, -55, 145.5), the top crease at y -55 and the front flank edge.
+
+    Result (attempt 1 of 3, kept). parts/desert_shell.py POD_TOP_SPLIT (True; False keeps the old strip cover), _split_pod_top, _top_cells;
+    model.py: the split covers, the flange on the rear cover, the screws; tools/assembly_path.py, kit/registry.py (SH4 front, SH10 rear).
+      - The top facets of both hull blocks are closed (the hollow block's own 3 mm top skin). The skin is split from the walls on the mitre
+        through each fold: a point of the shell goes to the facet whose plane is nearest (closed outer facets only; the main block's front facet
+        lies inside the wing and does not compete, so its top goes with the cover). Cover = shell in the top cells; pod = shell minus the top
+        cells moved POD_TOP_GAP = 0.22 mm towards each closed facet (0.22 normal to the mitre, 0.28 across the surface at the sharpest fold,
+        the wing's 78 deg corner).
+      - Wing rear corners on the main block: top corners at y -55 (were -54), lower rear corner on the main front flank edge (90.72, -54.53,
+        104.5) (was (91.5, -54, 104.5)). Wing top and main top then meet on one edge (y -55, z 145.5), the flank's fold runs through the shared
+        vertex (78, -55, 145.5), and the wing flank meets the main flank on the main block's front edge (a 4.2 deg fold, no step).
+      - Front cover = the wing's top (y -144 .. -55.2), rear cover = the main block's top (y -55 .. 134): split on the main block's front plane
+        (the crease between the two tops), front cover POD_TOP_GAP ahead of it. The old strip cover, the open top rim, the wing edge cut-back
+        (WING_EDGE_*) and the flange fused into the pod are gone in this mode.
+      - Rear cover carries the flange (y 56 .. 104, 120 .. 128): flat WALL strip from the pod's inboard top edge (one hull edge, (49, -55,
+        145.5) .. (46, 134, 178)) in to the cage, its top at that edge's height: a 4.7 deg fold onto the cover's top, no step. Cut clear of the
+        pod by POD_TOP_GAP (it reached 0.04 mm3 into the pod at y 128 before).
+      - Screws: 5 per side, along the local top normal, 90 deg countersink 6.4 (M3 countersunk head ISO 10642 dk 6.0 sits 0.2 under the surface),
+        into a boss inside the pod clipped to the envelope POD_TOP_GAP under the cover: front cover y -130, -100; rear cover y -20, 30, 75 (75,
+        not 90: there the top is 9.6 mm wide and the countersink cut the inboard fold). Tool path along the normal clear of the cage at all 5.
+      Steps (tools/pod_seams.py, rays from above and from outboard every 0.2 mm, stations every 10 mm; worst joint of the station; HEAD 01de5b4 /
+      now, right / left):
+      y -144.0    0.01    0.01 /  0.01
+      y -134.0    3.82    0.29 /  0.29
+      y -124.0    4.02    0.29 /  0.29
+      y -114.0    4.08    0.29 /  0.29
+      y -104.0    4.06    0.29 /  0.29
+      y  -94.0    3.99    0.29 /  0.29
+      y  -84.0    3.96    0.26 /  0.26
+      y  -74.0    3.82    0.17 /  0.17
+      y  -64.0    0.23    0.03 /  0.03
+      y  -54.0    0.05    0.48 /  0.29     (before: the station misses the junction's 0.68 tooth, measured separately at y -53.9, z 110)
+      y  -44.0    3.63    0.09 /  0.09
+      y  -34.0    3.63    0.11 /  0.11
+      y  -24.0    3.64    0.15 /  0.15
+      y  -14.0    3.56    0.06 /  0.06
+      y   -4.0    3.58    0.16 /  0.16
+      y    6.0    3.03    0.04 /  0.04
+      y   16.0    3.42    0.11 /  0.11
+      y   26.0    1.38    0.15 /  0.15     (before: under-read, the ledge is 3.4 .. 3.8 all along)
+      y   36.0    3.77    0.07 /  0.07
+      y   46.0    3.78    0.17 /  0.17
+      y   56.0    0.04    0.04 /  0.04
+      y   66.0    0.07    0.12 /  0.12
+      y   76.0    0.05    2.28 /  2.28     (now: the line crosses the y 75 screw's countersink, 1 mm from its centre; y 70 / 80: 0.10 / 0.11)
+      y   86.0    0.08    0.09 /  0.09
+      y   96.0    0.08    0.08 /  0.08
+      y  106.0    0.08    0.08 /  0.08
+      y  116.0    0.28    0.28 /  0.28
+      y  126.0    0.23    0.23 /  0.23
+      Seams: under 0.5 mm at every station (the readings at the cover / pod joints are the 0.22 gap seen at the fold's crease, gap x sin(crease)).
+      Smallest distance pod to front cover 0.22, pod to rear cover 0.22, front to rear cover 0.33 (mitre / plane normal); one spot under
+      0.22: the junction's inside corner (75.9, -55.0, 142.2), 3.3 mm under the top, 0.11 mm on the diagonal (out of sight, two separate prints).
+      Thickness below 1.2: pod 1.63 -> 2.78 cm2, cover 0.10 -> 1.13 (front) + 1.64 (rear) cm2. Nearly all of it is the mitre's knife edge on
+      both parts along the visible fold: each part keeps half the inside angle there (51 deg at the wing's 78 deg crease, 72 deg on the main
+      block's 36 deg), so within about 1 mm of the edge the reading is under 1.2 (corner readings, as thickness runs 66 / 67 named them). A split on the
+      fold cannot avoid it (a joint square to one face leaves the other a 90 - crease knife: 12 deg at the wing). Two real slivers from the
+      covers' fit to the cage rail: front cover (49.7, -113.2, 139.2) 3.5 mm2 and rear cover (49.8, 31.4, 160.5) (the inboard edge 0.2 mm past
+      the rail's fit plane): OPEN, small.
+      Not touched: lower flank, sill, cage; dash panel (its edge to the front cover is outside the owner's loop). The pod's six flank / lower
+      screws (through the sloped skin along x into cage bosses and deck brackets) keep round heads: a flush countersink along x on a 27 deg
+      skin needs more than the 3 mm wall; outside the loop, OPEN.
+      Checks: build ok (127 parts: 2 more covers), rest 0, collide 0, assembly path 0 of 10 (the 4 covers up 3 and out 40), 37 poses 0 overlaps
+      (the three known near pairs; run on the build before the last screw move and flange trim, which only removed cover material inside the
+      pod's envelope). Wall 3.0 everywhere (the hollow block's own walls).
+
+    Follow-up (orchestrator 2026-11-27, after the render of 735f747):
+      - Mitre edges: no change (orchestrator's choice A of three). The two parts' edge angles at the fold add up to the inside angle (102 deg
+        at the wing, 144 deg on the main block), so the mitre's 51 / 72 deg is the bluntest both can be with the split on the fold, the outer
+        surfaces unchanged and the gap under 0.3 (a land on both edges overlaps, trimming the tip widens the gap, a lap behind the fold does
+        not change the angle at the surface). The under-1.2 reading (pod 2.84, covers 1.09 + 1.64 cm2) is those two edges: ACCEPTED, register.
+        Print: the kit's chooser (kit/build_kit.py best_orientation, axis faces) stands the front cover on its inboard end (model -x down,
+        239 mm2 on the bed, overhang 25 mm2, no floating): the fold edge runs along the top, 7 .. 26 mm up, the mitre face an upward slope
+        49 deg from vertical. At 0.2 mm layers the slicer loses the last layer or so of the tip (a 0.3 mm wide section is 0.24 mm under the
+        51 deg tip, 0.1 mm under the 72 deg one): CALCULATED, the shell kit is not sliced yet (its re-export is a later item). The rear cover
+        has no good axis face (it carries the main block's bulkhead stub under its front edge and the 4.7 deg flange): the chooser takes
+        +x down with 0 mm2 on the bed (it stands on the junction corner; overhang 142 mm2); -x: 24 mm2, 301 mm2 floating; -z / +z and its own
+        top facets: no flat contact. In every orientation the fold edge is off the bed (6 .. 38 mm up). OPEN for the shell kit re-export: a
+        tilted bed face or supports for SH10.
+      - Cover slivers closed: along the upper rail the covers stop at the rail's outer face + FIT_CUT (x 49.8, to y 46.5 where the rail's end
+        node and the upright's boss stop reaching past it, MEASURED), and beside the end node (y 36 .. 42) at x 50.3 (the fit round its hull
+        left a face 0.1 mm off the trim plane). The covers no longer meet the cage on their lift (no lift notches).
+      - Junction corner clearance 0.11 -> 0.30 (POD_TOP_CORNER_CLEAR): inside a 6 mm box the pod gives way to the rear cover's corner grown by
+        0.3 (the hull of its vertices moved along 26 directions; moved copies alone left 0.147). 0.74 mm3 off the pod.
+      - The rear cover's flange keeps POD_TOP_GAP from the pod in 124 directions (along the axes it reached 0.01 mm at the tail tip, y 128):
+        now 0.197 there (the one spot under 0.22, inside the pod at the tail tip).
+      Smallest distances: pod to front cover 0.220, pod to rear cover 0.197 (flange, tail tip), front to rear cover 0.220. Seam table unchanged
+      (outer surfaces untouched). Build ok (127 parts), rest 0, collide 0, assembly path 0 of 10, 37 poses 0 overlaps on this build (the three
+      known near pairs).
+
+64. 4 mm bump saddle (orchestrator, NOTES 61 decisions: adopted as a design change after 1(b); the 0.20 m basis is 123 N with it, ASSUMED
+    Shore 95A, 1 mm = 25 % compression).
+    - Bump saddle 2 -> 4 mm of TPU ahead of the dowel (tools/beam_kin.py tail_pin tpu_t 4.0). Droop saddle stays 2 mm (SADDLE_T_DROOP): a
+      4 mm droop pocket needs its floor down to z 84.7 for a 3.2 mm wall, and that floor met the beam carrier's lower arms (|x| 26 .. 36) at
+      the bump stop (0.00 mm, 0.38 mm3 in 9 of the 37 poses). The landing basis counts on the bump saddle only.
+    - Pocket: the slot's own width (DOWEL_R + SLOT_CLEAR = 4.15) carried on along the motion until the saddle is SADDLE_T thick, a stadium
+      (_pocket). A half disc of DOWEL_R + 4 (the 2 mm shape scaled) would have left 0.8 mm behind the bump pocket at the block's rear face.
+      Walls: over the bump pocket to the block's top 3.26 mm (rule 3.2), under the droop pocket 2.41 (as 1(b)), front / rear 4.6 .. 5.1.
+    - The pockets end at |x| 35.9 (0.5 mm past the saddle, which they now hold axially); the slot alone runs on to the dowel's end (to x 38 the
+      deeper bump pocket cut into the ear's underside). A 1.2 mm pad on the block's outer face over both pockets (x 36.4 .. 37.6, from the
+      block's underside) keeps the pocket end wall at 1.7 mm (0.5 without it).
+    - Saddles: bump 518 mm3, droop 238 mm3 per side, concave to the dowel, starting 3 mm ahead of its centre (SADDLE_CUT: their sides stay
+      1.5 mm, no feather beside the dowel); thickness: nothing under 1.2. Pad block 9606.8 -> 10011.7 mm3 (GUARD_VOLUMES).
+    - Stop angles unchanged (the contact lines did not move): rest height unchanged (CG z 77.2, was 77.3).
+    - Kit: SU8 (bump, 4 mm) and SU9 (droop, 2 mm) marked REQUIRED in kit/registry.py; manual step 5 says why (123 N with SU8, 164 N without);
+      the front arm line (first part to fail above about 0.15 .. 0.20 m, reprint SU1L / SU1R from kit/susp_drive/stl, plate 01) is in the
+      manual's OPEN list (kit/make_susp_drive.py). The generated bom.md / assembly_manual.md follow at the kit re-export.
+    Checks: build ok, clevis + pad blocks one solid without edges under 0.3 or faces under 0.2, bridge 1.00 at both stops, dowel 0.15,
+    sleeves 1.30, rest 0, collide 0, assembly path 0 of 10, 37 poses 0 overlaps (the three known near pairs), CG sliced with body and
+    battery 3086 g, (3.9, -42.4, 77.2), tip 41.0 deg. Cage under 1.2: 0.25 cm2, the spots of 1(b) (none at the pad blocks).
+
+65. Weak spot 1, cage keel 4 -> 7 mm (orchestrator's order after the saddle; the keel corner under the lump was a real section stress,
+    1.12 / 1.07 at 94 N in the 1(b) run). Attempt 1, NOT kept (stop rule: a safety came out lower). KEEL_D 7 under the block's rear and the
+    lump, the ramp from y -44.1 unchanged; clevis + pad blocks clean, rest 0, collide 0, bridge 1.00, the carrier clear of the keel at both
+    stops. Cage FEM at 94 N (the same case loads as fem100), meshes 2.5 / 2.0, read 2 / 3 mm from supports and loads:
+      two-wheel: keel / feet region (+-32.7, -20.8, 84.0) 1.19 / 1.02 (was 1.12 / 1.07 at the keel corner); stops 1.34 / 1.26; shock 1.31 / 1.20
+      one-wheel: stops, the ear's underside on the post (38.1, -43.6, 106.8) 0.76 / 0.77 (the pad block face read 0.84 / 0.79); feet
+        0.91 / 0.94 (was 1.06 / 1.00); shock 1.25 / 1.19; a 0.34 at the tail (34.2, 169.5, 164.6) on mesh 2.5 only (mesh 2.0: not there)
+    The "before" numbers are the 1(b) run (fem100), before NOTES 64 changed the pad block (pockets, 1.2 mm pad): not a clean comparison.
+    Next: a baseline cage run on 1956831, then the keel again against it. Patch kept: side-session notes v2_keel_7mm.patch.
+
+66. Register re-read at the 0.20 m basis (NOTES 61): front 123 N per wheel with the 4 mm bump saddle (NOTES 64, ASSUMED until a printed
+    saddle is measured), 164 N without it; rear 80 N. Rows compiled from NOTES 39 .. 64 and the cases' own load lines. "scaled" = the
+    settled figure times the load ratio (linear case): 65 N cases x 0.528 / 0.396, 94 N cases x 0.764 / 0.573, rear 55 N cases x 0.689.
+      | Part / spot | Kit | Before (basis) | 123 N | 164 N | Status |
+      | Rocker bracket, servo | ST2 | 4.04 / 3.84 settled; envelope 2.57 (servo 0.47 N m) | same | same | PASS, not a landing load |
+      | Front carrier | SU3 | global 8.0 / 6.3, away 25 / 22 (65 N) | 4.2 / 3.3 scaled | 3.2 / 2.5 scaled | PASS (global not settled) |
+      | Knuckle landing | SU4 | 2.71 one mesh, before chamfers and bushing (65 N) | 1.43 scaled | 1.07 scaled | OPEN, case stale: re-run |
+      | Knuckle steering | SU4 | 2.43 one mesh (servo) | same | same | PASS, re-run with the knuckle |
+      | Balance beam | SU6 | 2.13 one coarse mesh, before chamfers (65 N) | 1.12 scaled | 0.84 scaled | OPEN, case stale: re-run |
+      | Beam carrier, slot, +x lip | SU7 | 0.97 / 0.92 (94 N; edge, rising with the mesh) | 0.74 / 0.70 | 0.56 / 0.53 | OPEN (weak spot 3) |
+      | Beam carrier, slot, -x lip | SU7 | 1.19 / 1.16 settled (94 N) | 0.91 / 0.89 | 0.68 / 0.66 | OPEN (weak spot 3) |
+      | Beam carrier, tail middle | SU7 | 2.30 / 1.35 not settled (94 N) | 1.76 / 1.03 | 1.32 / 0.77 | OPEN |
+      | Beam carrier, yaw slot top rim | SU7 | 0.34 one mesh (94 N) | 0.26 | 0.19 | OPEN (weak spot 4; aluminium carrier = owner) |
+      | Beam carrier, end-face cases | SU7 | 1.88 / 1.83 (65 N), 0.54 (65 N): both before 1(b) | - | - | stale, superseded by the slot cases |
+      | Front arm blade / neck | SU1 | 1.99 / 1.96, 1.83 / 1.88 settled (65 N) | 1.04 / 0.99 | 0.78 / 0.75 | CLOSED, owner-accepted (NOTES 61) |
+      | Upper link | SU2 | 1.91 / 1.78 settled, 80 N along the link ASSUMED | ? | ? | OPEN: which load sets it (question below) |
+      | Rear swing arm, shock clevis ear | DT11 | 2.94 / 2.79 settled (55 N, shock 135 N) | 2.03 / 1.92 scaled (80 N) | same | within 15 % of 2.0: RE-RUN on two meshes |
+      | Cage at the stops (2w / 1w) | CG1 | keel 1.12 / 1.07, pad face 0.84 / 0.79, shock mount 1.21 .. 1.31, feet 1.00 .. 1.06 (94 N) | NOT linear | NOT linear | regenerate the case loads (below) |
+      | Cage global, shock clevis on the spine, NO CASE parts, joints | - | as NOTES 45 | - | - | as NOTES 45 |
+    Not linear: the cage stop cases. The heave shock takes a share of the stop load set by its compression (106 N at 65 N, 100 N at 94 N), and
+    its 63 N at the rear eye stays the same; the pad and clevis loads must come again from tools/arm_stops.py stop_forces at 123 / 164 N.
+    That is done with weak spot 2 (the stop load as the saddle's contact patch).
+    Questions for the owner / orchestrator:
+      1. Upper link: the 80 N in its case is ASSUMED; a vertical landing puts almost nothing through the link, landing spin-up at mu 1 is
+         72.5 N at 65 N (182 N at 164 N if it scales), the frontal hit governs in NOTES 58 (99 .. 463 N) and its design speed is open.
+      2. The fixed 30 N side loads (front arm, knuckle, front carrier, rear arm) are scaled with the landing here, as NOTES 59 / 61 did.
+      3. Carrier and cage rows: 123 N (saddle) is the working figure; 164 N is shown for the no-saddle case.
+    Cage joints against the SCX30 method (owner 2026-11-27 "apply what you learn to your cages"; orchestrator's decision 2026-11-27):
+    OPTION 1, the V2 cage joints stay as built. Evidence, offline replay of the frame's own _Frame code on the dumped members (short edges
+    under 0.5 mm / faces under 0.1 mm2 / slivers / volume; the built cage reads 232 / 68 / 35):
+      as built                                         228 / 68 / 35   434.8 cm3
+      literal SCX30 (rings at the node point only)    1234 / 565 / 170  400.2 cm3
+      no fill sections                                 205 / 50 / 10   418.9 cm3 (-3.7 %, V1 lost FEM with this)
+      merge nodes whose hulls cross                    174 / 58 / 37   450.0 cm3 (+3.5 %: a lump, rejected)
+      bosses and V2 bars in the node graph (+ merge)   191 / 68 / 39 built, 520.8 cm3 (+4.9 %)
+      node moves P1 (exo front) + P2 (roof)            158 / 46 / 33   461.5 cm3 (+6.1 %: the roof peak becomes a 29 cm3 blob)
+      node move P1 only (exo front, 10.6 mm)           198 / 58 / 33   433.0 cm3 (-13 %, under the 20 % bar; closes an opening)
+    The short edges come from short tubes (9 .. 20 mm, mixed 7 / 10 mm) in the exo front, roof and tail, where neighbouring node hulls cross;
+    SCX30 has none. Picture pair of the worst exo-front node (31 -> 16 short edges): side-session notes v2_cage_exo_node_before_after.png;
+    attempt-1 patch: v2_cage_joint_attempt1.patch.
+    Rear side cover (SH10) print orientation: OPEN for the shell kit re-export; to be solved there with a printed-in support rib or a flat
+    added on the hidden flange, nothing on the outer skin (orchestrator 2026-11-27).

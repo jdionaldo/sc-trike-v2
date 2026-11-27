@@ -40,11 +40,11 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 135010.9,
-  "overhang": 8293.9,
+  "volume": 136374.6,
+  "overhang": 8503.6,
   "floating": 0.0,
   "extents": [
-   78.7,
+   80.3,
    149.8,
    90.4
   ],
@@ -210,11 +210,11 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 1485.5,
-  "overhang": 90.9,
+  "volume": 1407.5,
+  "overhang": 94.6,
   "floating": 0.0,
   "extents": [
-   27.5,
+   24.0,
    20.0,
    14.0
   ],
@@ -227,11 +227,11 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 1485.5,
-  "overhang": 90.9,
+  "volume": 1407.5,
+  "overhang": 94.6,
   "floating": 0.0,
   "extents": [
-   27.5,
+   24.0,
    20.0,
    14.0
   ],
@@ -244,12 +244,12 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 6009.4,
-  "overhang": 94.4,
+  "volume": 5484.5,
+  "overhang": 97.9,
   "floating": 0.0,
   "extents": [
    37.0,
-   22.8,
+   17.3,
    17.0
   ],
   "fits_bed": true
@@ -261,12 +261,12 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 6009.4,
-  "overhang": 94.4,
+  "volume": 5484.5,
+  "overhang": 97.9,
   "floating": 0.0,
   "extents": [
    37.0,
-   22.8,
+   17.3,
    17.0
   ],
   "fits_bed": true
@@ -448,8 +448,8 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 49743.8,
-  "overhang": 3320.0,
+  "volume": 53572.5,
+  "overhang": 3299.2,
   "floating": 275.84,
   "extents": [
    68.5,
@@ -465,8 +465,8 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 49743.8,
-  "overhang": 3320.0,
+  "volume": 53572.5,
+  "overhang": 3299.2,
   "floating": 275.84,
   "extents": [
    68.5,
@@ -635,8 +635,8 @@
   "bodies": 1,
   "cavities": 0,
   "slivers": 0,
-  "volume": 49651.4,
-  "overhang": 1321.2,
+  "volume": 50266.7,
+  "overhang": 1409.3,
   "floating": 0.0,
   "extents": [
    53.1,

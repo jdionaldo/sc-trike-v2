@@ -610,6 +610,8 @@ for _sx in (1, -1):
         _n0 = _fnode(_nm % _sx); _n0.parent.children.remove(_n0)
     # printed truss arm with the spring lever on its root
     _arm = make_front_arm(_sx).fuse(_sf.lever_ref(_sx)).clean()
+    if _os.environ.get('FUGU_FEM_BORE_SEG') == '1':
+        _arm = _arm.cut(_sf.stud_bore_seg(_sx))            # FEM only: stud bore wall split at the blade's mid plane (NOTES 58)
     assert _arm.isValid() and len(_arm.Solids()) == 1, 'spring lever broke the front arm (%d solids)' % len(_arm.Solids())
     _sa2.guard('arm %d' % _sx, _arm)
     _fnode('arm %d' % _sx).obj = _arm
@@ -619,7 +621,9 @@ for _sx in (1, -1):
     for _hh in _rwd.deck_screw_holes(_sx, _piv_yz): _flat = _flat.cut(_hh)
     _tp = _fnode('tip shaft %d' % _sx); _tp.obj = _rwd.tip_pin(_ob0(_tp), _sx)
     # upper link (its outer clevis is part of the new carrier, the inner clevis goes on the cage further down)
-    _fnode('uplink %d' % _sx).obj = _chamfered(_up.link(_sx), 'Upper link %d' % _sx)
+    # FEM only (FUGU_FEM_NO_CHAMFER=uplink, NOTES 52): the link's 0.4 mm chamfers leave sliver faces (0.0002 mm2) at the tube ends that the mesher
+    # cannot take; the FEM runs on the sharp link (on the safe side). The build never sets it.
+    _fnode('uplink %d' % _sx).obj = _up.link(_sx) if _os.environ.get('FUGU_FEM_NO_CHAMFER') == 'uplink' else _chamfered(_up.link(_sx), 'Upper link %d' % _sx)
     print('front end side', _sx, 'arm mm3', round(_arm.Volume()), 'pivot block mm3', round(_pb.Volume()))
 for _sx in (1, -1):   # front wheels centred on the axle (wheel centre of the tyre): both wheels are exact mirror images
     _wn = [n for n in _ch.objects.values() if _nn(n) == 'wheel f %d' % _sx]
@@ -864,7 +868,7 @@ if DESERT:
     from parts import desert_shell as _ds, exo_cage_front as _ex
     import parts.cage as _cage_mod
     _d_tub, _d_grille, _d_led = _ds.build_nose_tub_and_inserts()
-    _d_hood = _ds.build_armored_hood()
+    _d_hood = _ds.build_armored_hood(y_end=_ds.COWL_Y_END if _ds.COWL_MODE == 'fold' else None)   # 'fold': split further down (NOTES 44)
     _d_pod = _d_pods_early      # built above, with the deck's lower brackets
     print('desert shell louvers (right pod):', _ds.LOUVER_INFO)
     _cage_mod.BOSS_TARGETS[:] = [_d_pod[1], _d_pod[-1], _d_tub]
@@ -915,96 +919,255 @@ for _sx in (1, -1):
     for _hn, _hh in (('inner', _hi), ('outer', _ho)):
         add_part('Uplink pin %s %d' % (_hn, _sx), _up.pin(_hh, _sx).translate(_off), group='Chassis/Front suspension', alpha=1, color=(0.78, 0.80, 0.84))
 # (old passive lean bridge, balance beam, front shocks and uplink lugs removed: front end rebuilt in parts/wishbone.py)
-_d_cover, _d_flange = {}, None
+_d_cover, _d_flange, _cov_full = {}, None, {}
 if DESERT:
-    # Side covers and pod flanges (parts/desert_shell.py, NOTES decision 25). Sections come from the built cage and the (untrimmed) pods.
-    from parts.cage import _interp as _cg_interp, _half as _cg_half, CAGE_BEAM as _CGB, CAGE_RAIL_X as _CRX2
-    _pr = _d_pods_early[1]
-    _secs = []
-    for _y in _ds.COVER_Y:
-        if _y <= _ds.COVER_NODE_Y:
-            _zr = _cg_interp(_cage_mod.LAST_UPPER, _y) + _cg_half(_CGB)
-        else:
-            _zr = _ds.top_slab(_cage, _y, _CRX2 - 4.0, _CRX2 + 4.0, 135.0, 172.0)[2]
-        _pt = _ds.top_slab(_pr, _y, 44.0, 100.0)
-        _zi, _zo = _zr + _ds.FIT_CUT + _ds.WALL, _pt[2] + _ds.FIT_CUT + _ds.WALL
-        # option (c), NOTES 31: the cover starts FIT_CUT off the rail's outer face (it laid over the rail and could not be lifted past the struts)
-        _secs.append((_y, [(_CRX2 + _cg_half(_CGB) + _ds.FIT_CUT, _zi), (_pt[1], _zo)]))
-        print('side cover station y %.0f: rail top %.2f, pod top x %.1f z %.2f' % (_y, _zr, _pt[1], _pt[2]))
-    _cov = _ds.strip_solid(_secs, _ds.WALL)
-    # Pod flange (thickness 54 fixes, orchestrator option C): one straight inner edge per 8 mm span at the cage's maximum reach in that span
-    # (sampled every FLANGE_SAMPLE) + FIT_CUT, so the fit cut does not shave the 45 deg plate; the top corner FLANGE_DROP under the pod top.
-    _st = []
-    for _y in _ds.FLANGE_Y:
-        _pt = _ds.top_slab(_pr, _y, 44.0, 100.0)
-        _st.append((_y, _pt[0], _pt[2]))
-    _t45 = _ds.WALL * 2 ** 0.5         # a 3 mm plate at 45 deg, from the pod's top edge down and inward to the cage
-    def _fsec(_xp, _zt, _xi):
-        # flat top FLANGE_DROP under the land from FLANGE_SEAT outboard of its inner edge, then the 45 deg plate inward, its inner end square
-        # to the plate (a vertical end made a 45 deg corner that read 0.09 mm), the underside WALL below and parallel
-        _zf, _o = _zt - _ds.FLANGE_DROP, _ds.WALL / 2 ** 0.5
-        _zc = _zf - (_xp - _xi)
-        return [(_xp + _ds.FLANGE_SEAT, _zf), (_xp, _zf), (_xi, _zc), (_xi + _o, _zc - _o), (_xp + _o, _zf - _o)]   # convex (the strip is a hull)
-    _d_flange, _fruns = None, []
-    for (_y0, _xp0, _zt0), (_y1, _xp1, _zt1) in zip(_st, _st[1:]):
-        _reach = [_ds.band_xmax(_cage, _yy, 20.0, max(_xp0, _xp1), min(_zt0, _zt1) - _ds.FLANGE_BAND, max(_zt0, _zt1) + 1.0)
-                  for _yy in [_y0 + _k * _ds.FLANGE_SAMPLE for _k in range(int((_y1 - _y0) / _ds.FLANGE_SAMPLE) + 1)]]
-        _reach = [_r for _r in _reach if _r is not None]
-        _xi = (max(_reach) if _reach else _ds.FLANGE_DEFAULT_X) + _ds.FIT_CUT
-        if _xi > min(_xp0, _xp1) - 1.0:
-            print('pod flange span y %.0f..%.0f: no gap (cage reach x %.2f, pod x %.1f / %.1f)' % (_y0, _y1, _xi, _xp0, _xp1))
-            continue
-        _p = _ds.strip_solid([(_y0, _fsec(_xp0, _zt0, _xi)), (_y1, _fsec(_xp1, _zt1, _xi))])
-        _v = _p.Volume(); _pc = _p.cut(_cage)
-        print('pod flange span y %.0f..%.0f: inner edge x %.2f (cage reach + fit), cage overlap before the fit cut %.3f mm3' % (_y0, _y1, _xi, _v - _pc.Volume()))
-        _d_flange = _p if _d_flange is None else _d_flange.fuse(_p)
-        _fruns.append([(_y0,), (_y1,)])
-    _d_flange = _d_flange.clean()
-    print('pod flange runs (y):', [(r[0][0], r[-1][0]) for r in _fruns])
-    for _sx in (1, -1):
-        _c = _cov if _sx > 0 else _cov.mirror('YZ')
-        _c = _ds.fit_cut(_c, [_cage, _d_pods_early[_sx]], [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
-        # install path (orchestrator, November 25): pods off, cover up COVER_LIFT, then outward COVER_OUT. Cage members the cover meets on the lift
-        # get a through-notch: their outline in plan (2D convex hull of each met piece's vertices, + FIT_CUT) cut straight through the cover,
-        # so there is no floor and the wall beside the notch stays 3.0 mm. Nothing met: no notch.
-        _cb = _c.BoundingBox()
-        _met = None
-        for _k in range(1, 2 * _ds.COVER_LIFT + 1):
-            _h = _c.translate(cq.Vector(0, 0, 0.5 * _k)).intersect(_cage)
-            if _h.Volume() > 0.01:
-                _met = _h if _met is None else _met.fuse(_h)
-        if _met is None:
-            print('side cover %d: free lift %d mm, no cage member met, no notch' % (_sx, _ds.COVER_LIFT))
-        else:
-            for _q in _met.Solids():
-                _vs = [(_v.X, _v.Y) for _v in _q.Vertices()]
-                from scipy.spatial import ConvexHull as _CH
-                _hl = _CH(_vs); _poly = [_vs[_i] for _i in _hl.vertices]
-                _cut = cq.Workplane('XY').workplane(offset=_cb.zmin - 1.0).polyline(_poly).close().offset2D(_ds.FIT_CUT).extrude(_cb.zlen + 2.0).val()
-                _v0 = _c.Volume(); _c = _ds.fit_cut(_c, [_cut], [])
-                _qb = _q.BoundingBox()
-                print('side cover %d: met member at x %.1f..%.1f y %.1f..%.1f z %.1f..%.1f: through-notch %.1f mm3' % (_sx, _qb.xmin, _qb.xmax, _qb.ymin, _qb.ymax, _qb.zmin, _qb.zmax, _v0 - _c.Volume()))
-        _d_cover[_sx] = _c
-    # cover screws: from above, through the cover into a boss on the inside of the pod's top edge (the rail top is no longer under the cover)
-    _cov_boss = {1: [], -1: []}
-    for _ys in _ds.COVER_POD_SCREWS_Y:
-        _pt = _ds.top_slab(_pr, _ys, 44.0, 100.0)
-        _bxc, _bzt = _pt[0] - _ds.COVER_BOSS[2], _pt[2]
+    from parts.cage import _interp as _cg_interp, _half as _cg_half, CAGE_BEAM as _CGB, CAGE_RAIL_X as _CRX2, RAIL_END_Y as _REY_   # (the dash panel uses them too)
+    if _ds.POD_TOP_SPLIT:
+        # NOTES 62 (owner markup 2026-11-26, "no steps between mating surfaces"): the side covers are the pods' own top skin, cut out of the
+        # closed hull on the mitre through its fold (parts/desert_shell.py _split_pod_top): front cover = the wing's top, rear cover = the main
+        # block's top. The rear cover carries the flange (y 48 .. 128): a flat WALL strip from the pod's inboard top edge (one hull edge) in to the
+        # cage, its top at that edge's height, so it meets the cover's top on the edge (a 4.6 deg crease, no step).
+        (_ea, _eb) = _ds.POD_TOP['edge_in']
+        _edge = lambda _y: (_ea[0] + (_eb[0] - _ea[0]) * (_y - _ea[1]) / (_eb[1] - _ea[1]), _ea[2] + (_eb[2] - _ea[2]) * (_y - _ea[1]) / (_eb[1] - _ea[1]))
+        _fsecs = []
+        for _y0, _y1 in zip(_ds.FLANGE_Y, _ds.FLANGE_Y[1:]):
+            (_xe0, _ze0), (_xe1, _ze1) = _edge(_y0), _edge(_y1)
+            _reach = [_ds.band_xmax(_cage, _yy, 20.0, max(_xe0, _xe1), min(_ze0, _ze1) - _ds.WALL - _ds.FIT_CUT, max(_ze0, _ze1) + _ds.FIT_CUT)
+                      for _yy in [_y0 + _k * _ds.FLANGE_SAMPLE for _k in range(int((_y1 - _y0) / _ds.FLANGE_SAMPLE) + 1)]]
+            _reach = [_r for _r in _reach if _r is not None]
+            _xi = (max(_reach) if _reach else _ds.FLANGE_DEFAULT_X) + _ds.FIT_CUT
+            if _xi > min(_xe0, _xe1) - 1.0:
+                print('pod flange span y %.0f..%.0f: no gap (cage reach x %.2f, pod edge x %.1f / %.1f)' % (_y0, _y1, _xi, _xe0, _xe1))
+                continue
+            _sec = lambda _xe, _ze: [(_xe + 0.6, _ze), (_xi, _ze), (_xi, _ze - _ds.WALL), (_xe + 0.6, _ze - _ds.WALL)]
+            _p = _ds.strip_solid([(_y0, _sec(_xe0, _ze0)), (_y1, _sec(_xe1, _ze1))])
+            _d_flange = _p if _d_flange is None else _d_flange.fuse(_p)
+            print('pod flange span y %.0f..%.0f: inner edge x %.2f (cage reach + fit), on the rear cover' % (_y0, _y1, _xi))
+        _rear = _ds.POD_TOP['rear']
+        if _d_flange is not None:
+            _g = _ds.POD_TOP_GAP          # the flange keeps the pod's gap too (it reached 0.04 mm3 into the pod at the tail, y 128)
+            _d_flange = _d_flange.clean()
+            import itertools as _it      # 124 directions (axes and diagonals left 0.01 / 0.16 mm at the tail tip, y 128); two runs: fit_cut would keep one
+            _fb = _d_flange.BoundingBox()
+            _pl = _d_pods_early[1].intersect(cq.Solid.makeBox(_fb.xlen + 4.0, _fb.ylen + 4.0, _fb.zlen + 4.0, cq.Vector(_fb.xmin - 2.0, _fb.ymin - 2.0, _fb.zmin - 2.0)))
+            for _dv in _it.product((-2, -1, 0, 1, 2), repeat=3):
+                _nv = sum(c * c for c in _dv) ** 0.5 or 1.0
+                _d_flange = _d_flange.cut(_pl.translate(cq.Vector(*(_g * c / _nv for c in _dv))))
+            _rear = _rear.fuse(_d_flange).clean()
+            assert _rear.isValid() and len(_rear.Solids()) == 1, 'flange did not fuse to the rear cover'
+        _pieces = {'front': _ds.POD_TOP['front'], 'rear': _rear}
+        # cover screws: along the local top normal, countersunk, into a boss inside the pod (clipped to the envelope under the covers, so its
+        # top stays POD_TOP_GAP under the cover's underside); the boss reaches outward into the flank wall
+        _cov_boss = {1: [], -1: []}
+        _r0 = _ds.COVER_BOSS[0] / 2.0
+        for _ys in _ds.POD_TOP_SCREWS_Y:
+            _k = 'front' if _ys < -55.0 else 'rear'
+            _xf = _ds.band_xmax(_ds.POD_TOP[_k], _ys, 40.0, 100.0, 100.0, 200.0)
+            _xb = _xf - _ds.WALL - _ds.POD_TOP_GAP - _r0 - 0.5
+            _pt, _n = _ds.top_point(_pieces[_k], _xb, _ys)
+            _P, _N = cq.Vector(*_pt), cq.Vector(*_n)
+            _ray = cq.Solid.makeCylinder(3.0, 80.0, _P + _N * 4.0, _N)
+            if _ray.intersect(_cage).Volume() > 1e-3:
+                print('side cover screw y %.0f: no tool path along the normal past the cage, left out' % _ys)
+                continue
+            _bh = _ds.COVER_BOSS[1] + _ds.WALL + 3.0
+            _b0 = _P - _N * (_ds.COVER_BOSS[1] + _ds.WALL)
+            _bs = cq.Solid.makeCylinder(_r0, _bh, _b0, _N).fuse(
+                  cq.Solid.makeBox(_ds.COVER_BOSS_REACH, _ds.COVER_BOSS[0], _bh, cq.Vector(_xb, _ys - _r0, _b0.z)))
+            _bs = _bs.intersect(_ds.POD_TOP['under']).cut(cq.Solid.makeCylinder(_ds.SCREW_PILOT / 2.0, _bh + 1.0, _b0 - _N * 0.5, _N))
+            _pieces[_k] = _ds.countersink(_pieces[_k], _pt, _n)
+            _cov_boss[1].append(_bs); _cov_boss[-1].append(_bs.mirror('YZ'))
+            print('side cover screw y %.0f (%s): (%.1f, %.1f, %.1f), normal (%.3f, %.3f, %.3f), countersunk %.1f, boss %.1f mm3'
+                  % (_ys, _k, _pt[0], _pt[1], _pt[2], _n[0], _n[1], _n[2], _ds.COVER_CSK_D, _bs.Volume()))
         for _sx in (1, -1):
-            # built 3 mm taller than the land and clipped to the pod's outer envelope: its top is then exactly the land's plane (thickness 58 / 59:
-            # a top 0.15 mm under the land poked through where the land slopes, 1.0 mm under it left the land's edge as a 1.0 mm lip)
-            _zb0, _bh = _bzt - _ds.COVER_BOSS[1], _ds.COVER_BOSS[1] + 3.0
-            _bs = cq.Solid.makeCylinder(_ds.COVER_BOSS[0] / 2, _bh, cq.Vector(_sx * _bxc, _ys, _zb0), cq.Vector(0, 0, 1)).fuse(
-                  cq.Solid.makeBox(_ds.COVER_BOSS_REACH, _ds.COVER_BOSS[0], _bh, cq.Vector(_sx * _bxc - (0 if _sx > 0 else _ds.COVER_BOSS_REACH), _ys - _ds.COVER_BOSS[0] / 2, _zb0)))
-            _env = _ds.POD_ENV[0] if _sx > 0 else _ds.POD_ENV[0].mirror('YZ')
-            _bs = _bs.intersect(_env).cut(cq.Solid.makeCylinder(_ds.SCREW_PILOT / 2, _bh + 1.0, cq.Vector(_sx * _bxc, _ys, _zb0 - 0.5), cq.Vector(0, 0, 1)))
-            _cov_boss[_sx].append(_bs)
-            _d_cover[_sx] = _ds.screw_hole(_d_cover[_sx], (_sx * _bxc, _ys, 120.0), (0, 0, 1), 80.0)
-            _ray = cq.Solid.makeCylinder(3.0, 80.0, cq.Vector(_sx * _bxc, _ys, _bzt + 4.0), cq.Vector(0, 0, 1))
-            assert _ray.intersect(_cage).Volume() < 1e-3, 'no tool path above the cover screw at y %.0f' % _ys
-        print('side cover screw y %.0f: x %.1f, pod top z %.1f (tool path from above clear)' % (_ys, _bxc, _bzt))
-    print('side covers mm3 %.1f each, pod flange mm3 %.1f' % (_d_cover[1].Volume(), _d_flange.Volume()))
-SHOW_CAGE = param(True, 'Show the cage (cage, roof plate, light contact block); off while the front end is redesigned', group='Cage')
+            for _k, _c in _pieces.items():
+                _c = _c if _sx > 0 else _c.mirror('YZ')
+                _v0 = _c.Volume()
+                _c = _ds.fit_cut(_c, [_cage], [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
+                # (NOTES 62 follow-up) along the upper rail the cover stops at the rail's outer face + FIT_CUT: inboard of it the fit around the
+                # rail left a thin strip beside the channel (slivers at (49.7, -113.2, 139.2) and (49.8, 31.4, 160.5))
+                _xr = _CRX2 + _cg_half(_CGB) + _ds.FIT_CUT; _yr = _REY_ + 8.5       # (to y 46.5: the rail's end node and the upright's boss reach past x 49.8 up to y 45.5, MEASURED)
+                _c = _ds.fit_cut(_c, [cq.Solid.makeBox(_xr, _yr + 160.0, 120.0, cq.Vector(0.0 if _sx > 0 else -_xr, -160.0, 100.0))], [])
+                # beside the rail's end node (y 36 .. 42) the fit around its hull left a face at x 49.9, 0.1 mm off the trim plane: the cover
+                # stops at x 50.3 there (a 0.5 mm step in its inboard edge, under the node)
+                _c = _ds.fit_cut(_c, [cq.Solid.makeBox(_xr + 0.5, 6.0, 120.0, cq.Vector(0.0 if _sx > 0 else -_xr - 0.5, _REY_ - 2.0, 100.0))], [])
+                # install path: cover up COVER_LIFT, then outward COVER_OUT (pods stay on); cage members met on the lift get a through-notch
+                _cb = _c.BoundingBox(); _met = None
+                for _j in range(1, 2 * _ds.COVER_LIFT + 1):
+                    _h = _c.translate(cq.Vector(0, 0, 0.5 * _j)).intersect(_cage)
+                    if _h.Volume() > 0.01:
+                        _met = _h if _met is None else _met.fuse(_h)
+                if _met is not None:
+                    from scipy.spatial import ConvexHull as _CH
+                    for _q in _met.Solids():
+                        _vs = [(_v.X, _v.Y) for _v in _q.Vertices()]
+                        _poly = [_vs[_i] for _i in _CH(_vs).vertices]
+                        _cut = cq.Workplane('XY').workplane(offset=_cb.zmin - 1.0).polyline(_poly).close().offset2D(_ds.FIT_CUT).extrude(_cb.zlen + 2.0).val()
+                        _c = _ds.fit_cut(_c, [_cut], [])
+                _c = _c.clean()
+                assert _c.isValid() and len(_c.Solids()) == 1, 'side cover %s %d: %d solids after the fit' % (_k, _sx, len(_c.Solids()))
+                _d_cover[(_k, _sx)] = _c
+                print('side cover %s %d: %.1f mm3 (fit to the cage %.1f, lift notches %s)' % (_k, _sx, _c.Volume(), _v0 - _c.Volume(), 'none' if _met is None else len(_met.Solids())))
+        _d_flange = None            # it is on the rear cover, not fused to the pods
+    else:
+        # Side covers and pod flanges (parts/desert_shell.py, NOTES decision 25). Sections come from the built cage and the (untrimmed) pods.
+        from parts.cage import _interp as _cg_interp, _half as _cg_half, CAGE_BEAM as _CGB, CAGE_RAIL_X as _CRX2
+        _pr = _d_pods_early[1]
+        _secs = []
+        for _y in _ds.COVER_Y:
+            if _y <= _ds.COVER_NODE_Y:
+                _zr = _cg_interp(_cage_mod.LAST_UPPER, _y) + _cg_half(_CGB)
+            else:
+                _zr = _ds.top_slab(_cage, _y, _CRX2 - 4.0, _CRX2 + 4.0, 135.0, 172.0)[2]
+            _pt = _ds.top_slab(_pr, _y, 44.0, 100.0, **(dict(dz=0.05, w=0.02) if _ds.COVER_FLUSH else {}))   # flush: the top chine itself (a 1 mm slab put the
+            # cover's outer corner 1 mm down the flank's 51 deg slope, a 2.1 mm ledge, NOTES 46)
+            _zi, _zo = _zr + _ds.FIT_CUT + _ds.WALL, _pt[2] + (0.0 if _ds.COVER_FLUSH else _ds.FIT_CUT + _ds.WALL)   # flush: outer top on the pod's top edge (NOTES 46)
+            # option (c), NOTES 31: the cover starts FIT_CUT off the rail's outer face (it laid over the rail and could not be lifted past the struts)
+            _secs.append((_y, [(_CRX2 + _cg_half(_CGB) + _ds.FIT_CUT, _zi), (_pt[1], _zo)]))
+            print('side cover station y %.0f: rail top %.2f, pod top x %.1f z %.2f' % (_y, _zr, _pt[1], _pt[2]))
+        _cov = _ds.strip_solid(_secs, _ds.WALL)
+        # Pod flange (thickness 54 fixes, orchestrator option C): one straight inner edge per 8 mm span at the cage's maximum reach in that span
+        # (sampled every FLANGE_SAMPLE) + FIT_CUT, so the fit cut does not shave the 45 deg plate; the top corner FLANGE_DROP under the pod top.
+        # Markup 2, areas 3 / 4 (owner, November 25: "molded/merged seamlessly to the existing shell"; "leaving the 45 deg plate is NOT allowed"):
+        # the flange is now a flat 3 mm top in the plane of the pod's top land, fused into the pod. The land's height is read in a 0.02 mm slice
+        # (the 0.6 mm slice read 0.05 mm high on the land's slope along y and the plate poked through: thickness 54), so FLANGE_DROP is 0.
+        _st, _land_out = [], {}
+        for _y in _ds.FLANGE_Y:
+            _pt = _ds.top_slab(_pr, _y, 44.0, 100.0, dz=0.05, w=0.02)
+            _st.append((_y, _pt[0], _pt[2])); _land_out[_y] = _pt[1]
+        def _fsec(_xp, _zt, _xi, _xo):
+            # flat top on the land's plane from FLANGE_SEAT outboard of the land's inner edge in to the cage, WALL thick, square inner end
+            _zf = _zt - _ds.FLANGE_DROP
+            _xs = min(_xp + _ds.FLANGE_SEAT, _xo - 0.2)        # under the land only, never past its outer edge
+            return [(_xs, _zf), (_xi, _zf), (_xi, _zf - _ds.WALL), (_xs, _zf - _ds.WALL)]
+        _d_flange, _fruns = None, []
+        for (_y0, _xp0, _zt0), (_y1, _xp1, _zt1) in zip(_st, _st[1:]):
+            _reach = [_ds.band_xmax(_cage, _yy, 20.0, max(_xp0, _xp1), min(_zt0, _zt1) - _ds.WALL - _ds.FIT_CUT, max(_zt0, _zt1) + _ds.FIT_CUT)
+                      for _yy in [_y0 + _k * _ds.FLANGE_SAMPLE for _k in range(int((_y1 - _y0) / _ds.FLANGE_SAMPLE) + 1)]]
+            _reach = [_r for _r in _reach if _r is not None]
+            _xi = (max(_reach) if _reach else _ds.FLANGE_DEFAULT_X) + _ds.FIT_CUT
+            if _xi > min(_xp0, _xp1) - 1.0:
+                print('pod flange span y %.0f..%.0f: no gap (cage reach x %.2f, pod x %.1f / %.1f)' % (_y0, _y1, _xi, _xp0, _xp1))
+                continue
+            _p = _ds.strip_solid([(_y0, _fsec(_xp0, _zt0, _xi, _land_out[_y0])), (_y1, _fsec(_xp1, _zt1, _xi, _land_out[_y1]))])
+            _v = _p.Volume(); _pc = _p.cut(_cage)
+            print('pod flange span y %.0f..%.0f: inner edge x %.2f (cage reach + fit), cage overlap before the fit cut %.3f mm3' % (_y0, _y1, _xi, _v - _pc.Volume()))
+            _d_flange = _p if _d_flange is None else _d_flange.fuse(_p)
+            _fruns.append([(_y0,), (_y1,)])
+        _d_flange = _d_flange.clean()
+        print('pod flange runs (y):', [(r[0][0], r[-1][0]) for r in _fruns])
+        for _sx in (1, -1):
+            _c = _cov if _sx > 0 else _cov.mirror('YZ')
+            _c = _ds.fit_cut(_c, [_cage] + ([] if _ds.COVER_FLUSH else [_d_pods_early[_sx]]), [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
+            # install path (orchestrator, November 25): pods off, cover up COVER_LIFT, then outward COVER_OUT. Cage members the cover meets on the lift
+            # get a through-notch: their outline in plan (2D convex hull of each met piece's vertices, + FIT_CUT) cut straight through the cover,
+            # so there is no floor and the wall beside the notch stays 3.0 mm. Nothing met: no notch.
+            _cb = _c.BoundingBox()
+            _met = None
+            for _k in range(1, 2 * _ds.COVER_LIFT + 1):
+                _h = _c.translate(cq.Vector(0, 0, 0.5 * _k)).intersect(_cage)
+                if _h.Volume() > 0.01:
+                    _met = _h if _met is None else _met.fuse(_h)
+            if _met is None:
+                print('side cover %d: free lift %d mm, no cage member met, no notch' % (_sx, _ds.COVER_LIFT))
+            else:
+                for _q in _met.Solids():
+                    _vs = [(_v.X, _v.Y) for _v in _q.Vertices()]
+                    from scipy.spatial import ConvexHull as _CH
+                    _hl = _CH(_vs); _poly = [_vs[_i] for _i in _hl.vertices]
+                    _cut = cq.Workplane('XY').workplane(offset=_cb.zmin - 1.0).polyline(_poly).close().offset2D(_ds.FIT_CUT).extrude(_cb.zlen + 2.0).val()
+                    _v0 = _c.Volume(); _c = _ds.fit_cut(_c, [_cut], [])
+                    _qb = _q.BoundingBox()
+                    print('side cover %d: met member at x %.1f..%.1f y %.1f..%.1f z %.1f..%.1f: through-notch %.1f mm3' % (_sx, _qb.xmin, _qb.xmax, _qb.ymin, _qb.ymax, _qb.zmin, _qb.zmax, _v0 - _c.Volume()))
+            _d_cover[_sx] = _c
+            _cov_full[_sx] = _c                  # without screw holes: the pod's rebate is cut with it (NOTES 46)
+        # cover screws: from above, through the cover into a boss on the inside of the pod's top edge (the rail top is no longer under the cover)
+        _cov_boss = {1: [], -1: []}
+        for _ys in _ds.COVER_POD_SCREWS_Y:
+            _pt = _ds.top_slab(_pr, _ys, 44.0, 100.0)
+            _bxc, _bzt = _pt[0] - _ds.COVER_BOSS[2], _pt[2]
+            for _sx in (1, -1):
+                # built 3 mm taller than the land and clipped to the pod's outer envelope: its top is then exactly the land's plane (thickness 58 / 59:
+                # a top 0.15 mm under the land poked through where the land slopes, 1.0 mm under it left the land's edge as a 1.0 mm lip)
+                _zb0, _bh = _bzt - _ds.COVER_BOSS[1], _ds.COVER_BOSS[1] + 3.0
+                _bs = cq.Solid.makeCylinder(_ds.COVER_BOSS[0] / 2, _bh, cq.Vector(_sx * _bxc, _ys, _zb0), cq.Vector(0, 0, 1)).fuse(
+                      cq.Solid.makeBox(_ds.COVER_BOSS_REACH, _ds.COVER_BOSS[0], _bh, cq.Vector(_sx * _bxc - (0 if _sx > 0 else _ds.COVER_BOSS_REACH), _ys - _ds.COVER_BOSS[0] / 2, _zb0)))
+                _env = _ds.POD_ENV[0] if _sx > 0 else _ds.POD_ENV[0].mirror('YZ')
+                _bs = _bs.intersect(_env).cut(cq.Solid.makeCylinder(_ds.SCREW_PILOT / 2, _bh + 1.0, cq.Vector(_sx * _bxc, _ys, _zb0 - 0.5), cq.Vector(0, 0, 1)))
+                _cov_boss[_sx].append(_bs)
+                _d_cover[_sx] = _ds.screw_hole(_d_cover[_sx], (_sx * _bxc, _ys, 120.0), (0, 0, 1), 80.0)
+                _ray = cq.Solid.makeCylinder(3.0, 80.0, cq.Vector(_sx * _bxc, _ys, _bzt + 4.0), cq.Vector(0, 0, 1))
+                assert _ray.intersect(_cage).Volume() < 1e-3, 'no tool path above the cover screw at y %.0f' % _ys
+            print('side cover screw y %.0f: x %.1f, pod top z %.1f (tool path from above clear)' % (_ys, _bxc, _bzt))
+        print('side covers mm3 %.1f each, pod flange mm3 %.1f' % (_d_cover[1].Volume(), _d_flange.Volume()))
+    # Cowl panel (markup 2, area 1): the hood's top planes carried back over the cowl bar, a separate part that lifts straight up.
+    # Bosses under the bulge onto the bar's top, M3 from above into a pilot in the bar (cut into the cage here, before it is registered).
+    _d_cowl = _ds.build_cowl()          # also sets COWL_ENV (the bosses are clipped to it)
+    if _ds.COWL_MODE == 'fold':         # the cowl is the hood's rear piece, split on the hood's fold at y -252 (NOTES 44)
+        _d_hood, _d_cowl = _ds.fold_split(_d_hood)
+        print('hood split on its fold at y %.1f: front %.1f mm3, rear (cowl panel) %.1f mm3' % (_ds.COWL_FOLD_Y, _d_hood.Volume(), _d_cowl.Volume()))
+    _d_cowl = _ds.fit_cut(_d_cowl, [_cage], [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
+    for _cx0, _cy in _ds.COWL_SCREWS:
+        for _sx in (1, -1):
+            _cx = _sx * _cx0
+            _bt = _ds.top_slab(_cage, _cy, _cx - 0.3, _cx + 0.3, 120.0, 150.0)[2]       # bar top under the screw
+            _zb = _bt + _ds.FIT_CUT
+            _bs = cq.Solid.makeCylinder(_ds.COWL_BOSS_D / 2, 20.0, cq.Vector(_cx, _cy, _zb), cq.Vector(0, 0, 1)).intersect(_ds.COWL_ENV[0])
+            _d_cowl = _d_cowl.fuse(_bs).clean()
+            _d_cowl = _ds.screw_hole(_d_cowl, (_cx, _cy, 100.0), (0, 0, 1), 80.0)
+            _cage = _cage.cut(cq.Solid.makeCylinder(_ds.SCREW_PILOT / 2, _ds.COWL_PILOT_DEPTH + 0.5, cq.Vector(_cx, _cy, _bt - _ds.COWL_PILOT_DEPTH), cq.Vector(0, 0, 1))).clean()
+            print('cowl screw x %.1f y %.1f: bar top %.2f, boss from z %.2f' % (_cx, _cy, _bt, _zb))
+    _v0 = _d_cowl.Volume()
+    _d_cowl = _ds.fit_cut(_d_cowl, [_cage], [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
+    print('cowl bosses trimmed to the bar (the bar top rises toward the V root), mm3 %.1f' % (_v0 - _d_cowl.Volume()))
+    assert _d_cowl.isValid() and len(_d_cowl.Solids()) == 1, 'cowl: %d solids' % len(_d_cowl.Solids())
+    assert _cage.isValid() and len(_cage.Solids()) == 1, 'cage after the cowl pilots: %d solids' % len(_cage.Solids())
+    _hit = [k for k in range(1, 61) if _d_cowl.translate(cq.Vector(0, 0, 0.5 * k)).intersect(_cage).Volume() > 0.01]
+    print('cowl panel mm3 %.1f, bbox %s, lift 30 mm: %s' % (_d_cowl.Volume(), tuple(round(v, 1) for v in (_d_cowl.BoundingBox().ymin, _d_cowl.BoundingBox().ymax, _d_cowl.BoundingBox().zmin, _d_cowl.BoundingBox().zmax)),
+                                                          'clear' if not _hit else 'meets the cage at %.1f mm' % (0.5 * _hit[0])))
+    # Dash panel (markup 2, area 2): removable, the side covers' inner-edge section (rail top + FIT_CUT, WALL thick) carried across between the
+    # covers (SHELL_GAP to each), so its top is flush with the covers' inner edge. The windscreen V legs above it get a through-notch (their plan
+    # outline + FIT_CUT): it lifts straight up between them, and from above the legs hide the notch. M3 from above into the upper rails' tops.
+    _xin = _CRX2 + _cg_half(_CGB) + _ds.FIT_CUT - _ds.SHELL_GAP
+    _dsec = []
+    for _y in _ds.DASH_Y:
+        _zt = _cg_interp(_cage_mod.LAST_UPPER, _y) + _cg_half(_CGB) + _ds.FIT_CUT + _ds.WALL
+        _dsec.append((_y, [(-_xin, _zt), (_xin, _zt)]))
+    _d_dash = _ds.strip_solid(_dsec, _ds.WALL)
+    _db = _d_dash.BoundingBox()
+    # lift space: from 0.05 over the dash's top surface up DASH_LIFT, following its slope (the rails under it are not in it)
+    _lift = _ds.strip_solid([(_y, [(_x, _z + _ds.DASH_LIFT) for _x, _z in _p]) for _y, _p in _dsec], _ds.DASH_LIFT - 0.05)
+    _over = _cage.intersect(_lift)
+    from scipy.spatial import ConvexHull as _CH
+    for _q in _over.Solids():
+        _qb0 = _q.BoundingBox(); _s = 1.0 if _qb0.center.x > 0 else -1.0
+        # the notch runs out to the dash's side edge: no sliver is left outboard of the leg
+        _vs = [(_v.X, _v.Y) for _v in _q.Vertices()] + [(_s * 60.0, _qb0.ymin), (_s * 60.0, _qb0.ymax)]
+        _hl = _CH(_vs); _poly = [_vs[_i] for _i in _hl.vertices]
+        _cut = cq.Workplane('XY').workplane(offset=_db.zmin - 1.0).polyline(_poly).close().offset2D(_ds.FIT_CUT).extrude(_db.zlen + 2.0).val()
+        _v0 = _d_dash.Volume(); _d_dash = _d_dash.cut(_cut).clean()
+        _qb = _q.BoundingBox()
+        print('dash: member over it at x %.1f..%.1f y %.1f..%.1f z %.1f..%.1f: through-notch %.1f mm3' % (_qb.xmin, _qb.xmax, _qb.ymin, _qb.ymax, _qb.zmin, _qb.zmax, _v0 - _d_dash.Volume()))
+    _sols = sorted(_d_dash.Solids(), key=lambda s: -s.Volume())
+    if len(_sols) > 1:
+        print('dash: notches left %d loose slivers outside the legs, mm3 %s (dropped: the rail under them closes that strip from above)' % (len(_sols) - 1, [round(s.Volume(), 1) for s in _sols[1:]]))
+    _d_dash = _sols[0]
+    _d_dash = _ds.fit_cut(_d_dash, [_cage], [(_ds.FIT_CUT, 0, 0), (-_ds.FIT_CUT, 0, 0), (0, _ds.FIT_CUT, 0), (0, -_ds.FIT_CUT, 0), (0, 0, _ds.FIT_CUT), (0, 0, -_ds.FIT_CUT)])
+    for _dy in _ds.DASH_SCREWS_Y:
+        for _sx in (1, -1):
+            _rt = _ds.top_slab(_cage, _dy, _sx * _CRX2 - 0.3, _sx * _CRX2 + 0.3, 120.0, 160.0)[2]
+            _d_dash = _ds.screw_hole(_d_dash, (_sx * _CRX2, _dy, 100.0), (0, 0, 1), 80.0)
+            _cage = _cage.cut(cq.Solid.makeCylinder(_ds.SCREW_PILOT / 2, _ds.DASH_PILOT_DEPTH + 0.5, cq.Vector(_sx * _CRX2, _dy, _rt - _ds.DASH_PILOT_DEPTH), cq.Vector(0, 0, 1))).clean()
+            _ray = cq.Solid.makeCylinder(3.0, 80.0, cq.Vector(_sx * _CRX2, _dy, _rt + 4.0), cq.Vector(0, 0, 1))
+            assert _ray.intersect(_cage).Volume() < 1e-3, 'no tool path above the dash screw at y %.0f' % _dy
+            print('dash screw x %.1f y %.1f: rail top %.2f (tool path from above clear)' % (_sx * _CRX2, _dy, _rt))
+    assert _d_dash.isValid() and len(_d_dash.Solids()) == 1, 'dash: %d solids' % len(_d_dash.Solids())
+    assert _cage.isValid() and len(_cage.Solids()) == 1, 'cage after the dash pilots: %d solids' % len(_cage.Solids())
+    _hit = [k for k in range(1, 61) if _d_dash.translate(cq.Vector(0, 0, 0.5 * k)).intersect(_cage).Volume() > 0.01]
+    _db = _d_dash.BoundingBox()
+    print('dash panel mm3 %.1f, x %.1f..%.1f y %.1f..%.1f z %.1f..%.1f, lift 30 mm: %s' % (_d_dash.Volume(), _db.xmin, _db.xmax, _db.ymin, _db.ymax, _db.zmin, _db.zmax,
+                                                                                          'clear' if not _hit else 'meets the cage at %.1f mm' % (0.5 * _hit[0])))
+SHOW_CAGE =param(True, 'Show the cage (cage, roof plate, light contact block); off while the front end is redesigned', group='Cage')
 if SHOW_CAGE: add_part('Cage', _cage, color=(0.05, 0.05, 0.06), group='Cage')   # matt black so it disappears behind the shell windows
 from parts.cage import cabin_nodes as _cabn, CABIN_BEAM as _CBM, _half as _hf
 if DESERT:
@@ -1028,14 +1191,41 @@ if DESERT:
     _d_tub = _ds.fit_cut(_d_tub, [cq.Solid.makeBox(120.0, _yc + 320.0, _zc, cq.Vector(-60.0, -320.0, 0.0))], [])
     print('nose tub chin cut flat at z %.2f ahead of y %.2f, mm3 %.1f' % (_zc, _yc, _v0 - _d_tub.Volume()))
     _v0 = _d_hood.Volume(); _d_hood = _ds.fit_cut(_d_hood, [_cage], _six)
+    if _ds.COWL_FUSED:      # area 1: the cowl (already fitted to the cage, with its bosses) becomes part of the hood: one solid, the facets run on
+        _vh, _vc = _d_hood.Volume(), _d_cowl.Volume()
+        _d_hood = _d_hood.fuse(_d_cowl).clean()
+        assert _d_hood.isValid() and len(_d_hood.Solids()) == 1, 'hood with cowl: %d solids' % len(_d_hood.Solids())
+        print('cowl fused into the hood: hood %.1f + cowl %.1f -> %.1f mm3, %d faces' % (_vh, _vc, _d_hood.Volume(), len(_d_hood.Faces())))
     print('hood trimmed mm3', round(_v0 - _d_hood.Volume(), 1))
-    for _sx in (1, -1):      # pod flanges (rear strip) fused before the pods are trimmed
-        _fl = _d_flange if _sx > 0 else _d_flange.mirror('YZ')
-        _v0 = _d_pod[_sx].Volume(); _t = _d_pod[_sx].fuse(_fl).clean()
+    for _sx in (1, -1):      # pod flanges (rear strip) fused before the pods are trimmed (NOTES 62: on the rear cover instead)
+        _v0 = _d_pod[_sx].Volume(); _t = _d_pod[_sx]
+        if _d_flange is not None:
+            _t = _t.fuse(_d_flange if _sx > 0 else _d_flange.mirror('YZ')).clean()
         assert _t.isValid() and len(_t.Solids()) == 1, 'pod flange did not fuse on side %d' % _sx
         for _b in _cov_boss[_sx]:
             _t = _t.fuse(_b)
         _t = _t.clean(); assert _t.isValid() and len(_t.Solids()) == 1, 'cover bosses did not fuse to pod %d' % _sx
+        if _ds.COVER_FLUSH:     # rebate: the pod gives way under its cover (cover + SHELL_GAP all round), so the cover lies flush in the pod's top edge
+            _g = _ds.SHELL_GAP
+            _t0 = _t
+            _vr = _t.Volume(); _t = _ds.fit_cut(_t, [_cov_full[_sx]], [(_g, 0, 0), (-_g, 0, 0), (0, _g, 0), (0, -_g, 0), (0, 0, _g), (0, 0, -_g)])
+            # seat (attempt 3, NOTES 46): the cover's underside cut the sloped walls into feathers; a WALL thick band under the cover, inside the pod's
+            # envelope and within WALL of the old walls, so every cut wall ends on a seat the cover rests on
+            _cv = _cov_full[_sx]
+            _band = _cv.translate(cq.Vector(0, 0, -_g - _ds.WALL)).fuse(_cv.translate(cq.Vector(0, 0, -_g - _ds.WALL / 2)))
+            _near = _t0
+            for _d in ((_ds.WALL, 0, 0), (-_ds.WALL, 0, 0), (0, _ds.WALL, 0), (0, -_ds.WALL, 0), (0, 0, _ds.WALL), (0, 0, -_ds.WALL)):
+                _near = _near.fuse(_t0.translate(cq.Vector(*_d)))
+            _env = _ds.POD_ENV[0] if _sx > 0 else _ds.POD_ENV[0].mirror('YZ')
+            _seat = _band.intersect(_env).intersect(_near)
+            _seat = _ds.fit_cut(_seat, [_cv], [(_g, 0, 0), (-_g, 0, 0), (0, _g, 0), (0, -_g, 0), (0, 0, _g), (0, 0, -_g)])
+            _vs = _t.Volume(); _t2 = _t.fuse(_seat).clean()
+            if _t2.isValid() and len(_t2.Solids()) == 1:
+                _t = _t2; print('pod', _sx, 'seat under its side cover, mm3', round(_t.Volume() - _vs, 1))
+            else:
+                print('pod', _sx, 'seat did not fuse (%d solids), left out' % len(_t2.Solids()))
+            assert _t.isValid() and len(_t.Solids()) == 1, 'pod %d after the cover rebate: %d solids' % (_sx, len(_t.Solids()))
+            print('pod', _sx, 'rebate under its side cover, mm3', round(_vr - _t.Volume(), 1))
         _d_pod[_sx] = _t; print('pod flange and cover bosses side', _sx, 'added mm3', round(_t.Volume() - _v0, 1))
     for _sx in (1, -1):
         _v0 = _d_pod[_sx].Volume(); _d_pod[_sx] = _ds.fit_cut(_d_pod[_sx], [_cage, _deck_r, _deck_t], _six)
@@ -1065,8 +1255,14 @@ if DESERT:
     for _nm, _sh in (('Nose tub', _d_tub), ('Hood deck', _d_hood), ('Side pod right', _d_pod[1]), ('Side pod left', _d_pod[-1])):
         _sh = _sh.clean(); assert _sh.isValid() and len(_sh.Solids()) == 1, _nm + ' is not one valid solid'
         add_part(_nm, _sh, color=_ds.COLOR_ARMOR, group='Desert shell')
-    for _sx, _nm in ((1, 'Side cover right'), (-1, 'Side cover left')):
-        add_part(_nm, _d_cover[_sx], color=_ds.COLOR_ARMOR, group='Desert shell')
+    if _ds.POD_TOP_SPLIT:
+        for (_k, _sx), _c in sorted(_d_cover.items()):
+            add_part('Side cover %s %s' % (_k, 'right' if _sx > 0 else 'left'), _c, color=_ds.COLOR_ARMOR, group='Desert shell')
+    else:
+        for _sx, _nm in ((1, 'Side cover right'), (-1, 'Side cover left')):
+            add_part(_nm, _d_cover[_sx], color=_ds.COLOR_ARMOR, group='Desert shell')
+    if _ds.COWL_MODE != 'fused': add_part('Cowl panel', _d_cowl, color=_ds.COLOR_ARMOR, group='Desert shell')
+    add_part('Dash panel', _d_dash, color=_ds.COLOR_ARMOR, group='Desert shell')
     add_part('Hex grille', _d_grille, color=_ds.COLOR_GRILLE, group='Desert shell')
     add_part('Nose light bar', _d_led, color=_ds.COLOR_LED, alpha=1, group='Lights')
     if _cabin and SHOW_CAGE:

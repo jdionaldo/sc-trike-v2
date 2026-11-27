@@ -24,7 +24,8 @@ def _up_then_side(sx, h=_ds.COVER_LIFT, out=_ds.COVER_OUT):
     return [(0.0, 0.0, float(k)) for k in range(1, h + 1)] + [(sx * float(k), 0.0, float(h)) for k in range(1, out + 1)]
 PATHS = {
     'Side_cover_right': _up_then_side(1.0), 'Side_cover_left': _up_then_side(-1.0),
-    'Side_cover_front_right': UP, 'Side_cover_front_left': UP, 'Side_cover_rear_right': UP, 'Side_cover_rear_left': UP,
+    'Side_cover_front_right': _up_then_side(1.0), 'Side_cover_front_left': _up_then_side(-1.0),   # NOTES 62: the pod top's two covers
+    'Side_cover_rear_right': _up_then_side(1.0), 'Side_cover_rear_left': _up_then_side(-1.0),
     'Hood_deck': UP, 'Cowl_panel': UP, 'Dash_panel': UP, 'Roof_panel': UP,
     'Rear_cover_right': UP, 'Rear_cover_left': UP,
     'Side_pod_right': _side_then_up(1.0), 'Side_pod_left': _side_then_up(-1.0),

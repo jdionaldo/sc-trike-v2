@@ -37,7 +37,8 @@ BEAM_DESIGN = {
     'stop_bump_mm':    sa.BUMP,                 # carrier bump stop at two-wheel +12 (angle printed by main())
     'stop_droop_mm':   sa.DROOP,                # carrier droop stop at two-wheel -8
     'stop_lean_deg':   sa.LEAN_DEG,             # beam yaw stops: 10 deg of lean at the worst heave inside the heave stops
-    'heave_stop_tail': (0.0, -42.1, 98.5),      # carrier tail 8.5 mm behind PC (fix round 3: its boss stays clear of the shock's spring cup): bump stop pad above it, droop stop pad below it (clevis plates)
+    'heave_stop_tail': (0.0, -40.25, 97.50),    # (NOTES 60, item 1(b)) r 10.4 behind PC, 5.5 deg below its horizontal, for two 12 mm bronze sleeves (was
+                                                # (-42.1, 98.5), r 8.5). Before: carrier tail 8.5 mm behind PC (fix round 3: its boss stays clear of the shock's spring cup): bump stop pad above it, droop stop pad below it (clevis plates)
     'yaw_stop_r':      34.5,                    # yaw stops (stop sizing round 1): a PAIR of pads each way at |x| 34.5 on the carrier's upper fork arm
                                                 # (inboard of the cage member above the rail at x 40.6..49.4, z up to 70, built model)
     # carrier upper fork arm above the beam bar (carrier frame = world at rest; it turns with the carrier, not with the beam yaw):
@@ -49,9 +50,12 @@ BEAM_DESIGN = {
                                                 # TPU faces at M -17.5 / +16.4: bar face at |x| 34.5 + its yaw travel, measured in 3D (bar 2 mm from the post = on the TPU)
     # carrier heave stop: a stock steel dowel D8 x 56 (ISO 8734, hardened, ASSUMED stock) through a 10 mm boss on the carrier tail; its ends pass
     # arc slots in the clevis plates and land on TPU saddles in pad blocks fused under the spine's front cross tube, at |x| 10..28
-    'tail_pin':        {'d': 8.0, 'len': 75.0, 'boss_len': 14.8, 'pad_x': (13.4, 35.4), 'tpu_t': 2.0,   # D8 x 75 stock dowel (ASSUMED stock length)
+    'tail_pin':        {'d': 8.0, 'len': 75.0, 'boss_len': 14.8, 'pad_x': (13.4, 35.4), 'tpu_t': 4.0,   # D8 x 75 stock dowel (ASSUMED stock length)
                         # boss walls around the D8 bore (fix round 2): thin on top (spine side, droop load only), thick below (bump tear-out)
-                        'wall_top': 2.3, 'wall_bottom': 5.0, 'wall_side': 4.0},     # fix round 3: front side wall 4.0, rear side = the 2 mm round wall
+                        'wall_top': 1.2, 'wall_bottom': 5.0, 'wall_side': 4.0,
+                        # (NOTES 60) the boss bore holds two SKF PSM 8-12-12 A51 sleeves (OD 12) on the dowel; walls are measured round the bore
+                        # fix round 3: front side wall 4.0, rear side = the round wall
+                        'bore_d': 12.0},
                         # TPU saddle faces square to the tail radius at contact: bump face normal 15.46 deg from vertical, droop 9.28 deg
     'arm_stop_mm':     (-32.9, None),           # per-arm DROOP stop on the lever blade (tools/arm_stops.py); no per-arm bump stop (coordinator, round 2)
 }
@@ -241,7 +245,7 @@ class Kin:
         # carrier and shock solids as (point, radius) samples for the spine clearance
         tail = self.PC + p['Rg'] @ (V(*self.d['heave_stop_tail']) - self.PC)
         tpd = self.d['tail_pin']
-        car = [(self.PC, PC_HUB_R), (p['S'], S_FORK_R), (tail, tpd['d'] / 2 + tpd['wall_top'])]
+        car = [(self.PC, PC_HUB_R), (p['S'], S_FORK_R), (tail, tpd.get('bore_d', tpd['d']) / 2 + tpd['wall_top'])]
         for Q in (p['C'], p['S'], tail):
             car += [(self.PC + f * (Q - self.PC), CARRIER_R) for f in np.linspace(0, 1, 11)]
         out['car_top'] = max(P[2] + r for P, r in car if SPINE_Y[0] <= P[1] <= SPINE_Y[1]) if any(
@@ -391,10 +395,10 @@ def main():
         else 'CLASH: the rail top must be at z <= %.1f under the forks (y %.0f .. %.0f) for 1 mm, or the fork\'s inboard lower corner chamfered' % (
             inb[:, 2].min() - 1.0, inb[:, 1].min(), inb[:, 1].max())))
     ct = max(r['car_top'] for r in ins); st = max(r['shock_top'] for r in ins)
-    pad = max(r['tail_z'] for r in ins) + d['tail_pin']['d'] / 2 + d['tail_pin']['wall_top']
+    pad = max(r['tail_z'] for r in ins) + d['tail_pin'].get('bore_d', d['tail_pin']['d']) / 2 + d['tail_pin']['wall_top']
     print('SPINE CLEARANCE (built underside z %.1f, y %.0f..%.0f) swept inside the stops: carrier (hub, arms, fork, tail boss top %.1f over the pin axis) top z %.2f -> %.2f mm;'
           ' tail boss top at the bump stop z %.2f -> %.2f mm; shock (eyes OD %.0f, spring OD %.1f over the rest) top z %.2f -> %.2f mm (owner rule >= 1.0)' %
-          (SPINE_UNDER, SPINE_Y[0], SPINE_Y[1], d['tail_pin']['d'] / 2 + d['tail_pin']['wall_top'], ct, SPINE_UNDER - ct, pad, SPINE_UNDER - pad, 2 * EYE_R, SHOCK['spring_od'], st,
+          (SPINE_UNDER, SPINE_Y[0], SPINE_Y[1], d['tail_pin'].get('bore_d', d['tail_pin']['d']) / 2 + d['tail_pin']['wall_top'], ct, SPINE_UNDER - ct, pad, SPINE_UNDER - pad, 2 * EYE_R, SHOCK['spring_od'], st,
            SPINE_UNDER - st))
     print('  carrier top anywhere (also ahead of the cross tube): z %.2f' % max(r['car_ytop'] for r in ins))
     print('MOTOR KEEP-OUT (built b_motor top, measured grid, x %.1f..%.1f, y >= %.2f): the carrier and beam-bar sample points over it stay %.2f mm above'

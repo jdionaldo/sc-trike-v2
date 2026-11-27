@@ -94,13 +94,14 @@ def _solid_from_planes(planes):
     return _hull(pts)
 
 
-def _hollow_block(points, wall=WALL, open_if=None, mirror_x=True):
-    """Build a hollow faceted block with exact `wall` thickness on every closed facet."""
+def _hollow_block(points, wall=WALL, open_if=None, mirror_x=True, close_if=None):
+    """Build a hollow faceted block with exact `wall` thickness on every closed facet (close_if: facets kept closed although open_if
+    says open, the pod tops of NOTES 62)."""
     pts = _both(points) if mirror_x else list(points)
     outer = _planes(pts)
     inner = outer.copy()
     for q in inner:
-        if open_if is not None and open_if(q[:3]):
+        if open_if is not None and open_if(q[:3]) and not (close_if is not None and close_if(q[:3])):
             q[3] -= 40.0
         else:
             q[3] += wall
@@ -311,8 +312,11 @@ def build_nose_tub_and_inserts():
 # =================================================================================================
 # 2. ARMORED HOOD / COWL DECK (flat outer side panels + steeper-walled center power-bulge)
 # =================================================================================================
-def build_armored_hood():
-    """Removable multi-faceted top hood matching the exact original Fugu V2 hood length
+def build_armored_hood(y_end=None):
+    """y_end (NOTES 44, cowl on the hood's fold): the rear facet rows (y -252 / -204) are extended along their own lines to y_end + 4, so the
+    skin runs on behind y -204 on exactly the hood's planes (one face per facet, no seam); model.py cuts it to the cowl's plan and splits it
+    on the fold at y -252.
+    Removable multi-faceted top hood matching the exact original Fugu V2 hood length
     (y = -304.5 .. -204.0, ending cleanly at the cowl / A-pillar base COWL_TONGUE_Y = -204.0):
     - Flatter outer side panels (|x| = 24..40.4 mm) hugging the exact upper exo-rail contour
     - Distinct concave valley crease at |x| = 24 mm where steeper (~45 deg) power-bulge walls rise
@@ -347,6 +351,12 @@ def build_armored_hood():
         # Crisp flat-crowned center ridge
         ( 0.0, -277.0, 125.0), ( 0.0, -252.0, 135.7), ( 0.0, -204.0, 144.2),
     ]
+    if y_end is not None:
+        ye = y_end + 4.0
+        ext = lambda pts, pairs: pts + [_row_at(pts[a], pts[b], ye) for a, b in pairs]
+        base_pts = ext(base_pts, ((1, 2), (4, 5)))
+        bulge_pts = ext(bulge_pts, ((1, 2), (4, 5), (7, 8)))
+        b_out, b_in = _outer_and_inner(base_pts, WALL)
     p_out, p_in = _outer_and_inner(bulge_pts, WALL)
 
     hood_outer = b_out.fuse(p_out)
@@ -364,6 +374,90 @@ def build_armored_hood():
     hood = hood.clean()
     assert hood.isValid() and len(hood.Solids()) == 1, f"Armored hood invalid ({len(hood.Solids())} solids)"
     return hood
+
+
+# --- cowl panel behind the hood (owner's markup 2, area 1, November 25: "add covers to the identified sections. make sure they are
+# molded/merged seamlessly to the existing shell"). A separate 3 mm skin on the hood's own top planes (the hood's rear rows extended
+# along their facets), 0.3 mm behind the hood. The bulge runs back over the cowl bar to just ahead of where the windscreen V legs rise
+# through it; the flat outer deck stops at the bar's front face (the bar top stands 2.5 mm over the extended deck, MEASURED).
+SHELL_GAP = 0.3                    # mm between two shell parts that come off separately (orchestrator, November 25)
+COWL_MODE = 'fold'                 # NOTES 44: 'fold' = the hood splits on its own fold at y -252 (COWL_FOLD_Y); the rear piece (hood's rear facets +
+                                   # cowl, one skin on the hood's planes) is the Cowl panel; 'separate' = fffb771's panel 0.3 mm behind the hood;
+                                   # 'fused' = cowl fused into the hood (fails on print support, NOTES 39)
+COWL_FOLD_Y = -252.0               # the hood's fold between its front and rear facet rows (crease about 4 deg): the split line, SHELL_GAP wide
+COWL_FUSED = COWL_MODE == 'fused'  # area 1 (orchestrator, November 25: "molded/merged seamlessly"): the cowl is part of the hood (one solid,
+                                   # the facets run on, no seam); False builds the separate Cowl panel 0.3 mm behind the hood (fffb771)
+COWL_Y_END = -186.0                # mm: rear edge of the bulge part (the V legs' tops reach the extended bulge's underside at y -183, MEASURED)
+COWL_BAR_FRONT = -198.0            # mm: front face of the cowl bar (probed at x 0 .. 40: first hit at y -197.5)
+COWL_DECK_X = 15.0                 # mm: plan step: the flat crown goes back over the bar, the rest stops at the bar's front face. The step is in
+                                   # the crown (its underside shoulder is at x 15.2), so the cut meets a flat 3 mm plate square. Thickness 62 / 63:
+                                   # a step at the valley (x 25) left the bar-shaved foot of the 45 deg wall as a 0.25 mm2 wedge; a vertical cut
+                                   # through the 45 deg wall (x 19) read 0.01 mm over the cut face (21.7 mm2)
+COWL_SCREWS = ((11.0, -194.0),)    # (x, y) per side: M3 down through the crown and a boss into the cowl bar's top (bar top z 136.7 there)
+COWL_BOSS_D = 7.0                  # mm boss diameter
+COWL_PILOT_DEPTH = 5.0             # mm pilot into the bar (bar 6.2 mm tall there)
+
+
+def _row_at(p_a, p_b, y):
+    """Point on the line through p_a and p_b (a facet edge of the hood) at the given y."""
+    t = (y - p_a[1]) / (p_b[1] - p_a[1])
+    return tuple(p_a[i] + t * (p_b[i] - p_a[i]) for i in range(3))
+
+
+def build_cowl():
+    """The hood's two top shells (deck and bulge), their y -252 / -204 rows extended to COWL_Y_END, hollowed like the hood (3 mm top skin,
+    open below and at the ends), cut to the cowl's plan outline. Not trimmed here (model.py fits it to the cage)."""
+    def _skin(pts_top, wall=WALL, drop=24.0):
+        pts_bot = [(x, y, z - drop) for x, y, z in pts_top]
+        outer = _planes(_both(pts_top + pts_bot))
+        inner = outer.copy()
+        for q in inner:
+            if q[2] < 0.25:
+                q[3] -= 40.0
+            else:
+                q[3] += wall
+        return _solid_from_planes(outer), _solid_from_planes(inner)
+    base = [((40.2, -252.0, 123.5), (40.4, -204.0, 132.0)), ((0.0, -252.0, 126.0), (0.0, -204.0, 134.5))]
+    bulge = [((24.5, -252.0, 124.0), (25.0, -204.0, 132.5)), ((15.5, -252.0, 134.5), (16.5, -204.0, 143.0)),
+             ((0.0, -252.0, 135.7), (0.0, -204.0, 144.2))]
+    y0 = -212.0          # rows a little ahead of the hood's end so the cut below makes the front face, not the hull
+    rows = lambda pairs: [_row_at(a, b, y0) for a, b in pairs] + [_row_at(a, b, COWL_Y_END + 4.0) for a, b in pairs]
+    b_out, b_in = _skin(rows(base))
+    p_out, p_in = _skin(rows(bulge))
+    outer = b_out.fuse(p_out)
+    cowl = outer.cut(b_in.fuse(p_in))
+    yf, yd = -204.0 + (0.0 if COWL_FUSED else SHELL_GAP), COWL_BAR_FRONT - FIT_CUT
+    plan = [(-60.0, yf), (60.0, yf), (60.0, yd), (COWL_DECK_X, yd), (COWL_DECK_X, COWL_Y_END), (-COWL_DECK_X, COWL_Y_END),
+            (-COWL_DECK_X, yd), (-60.0, yd)]
+    prism = cq.Workplane("XY").workplane(offset=100.0).polyline(plan).close().extrude(80.0).val()
+    cowl = cowl.intersect(prism).clean()
+    COWL_ENV[:] = [outer]
+    assert cowl.isValid() and len(cowl.Solids()) == 1, f"Cowl invalid ({len(cowl.Solids())} solids)"
+    return cowl
+
+
+COWL_ENV = []                      # filled by build_cowl: the cowl's outer envelope (its bosses are clipped to it)
+
+
+def fold_split(hood):
+    """COWL_MODE 'fold': the hood built with build_armored_hood(y_end=COWL_Y_END), cut to the cowl's plan behind y -204 (crown to COWL_Y_END,
+    the rest to the cowl bar's face), split on the fold at COWL_FOLD_Y with SHELL_GAP: (front hood, rear piece = the Cowl panel)."""
+    yd = COWL_BAR_FRONT - FIT_CUT
+    plan = [(-60.0, -330.0), (60.0, -330.0), (60.0, yd), (COWL_DECK_X, yd), (COWL_DECK_X, COWL_Y_END), (-COWL_DECK_X, COWL_Y_END), (-COWL_DECK_X, yd), (-60.0, yd)]
+    h = hood.intersect(cq.Workplane('XY').workplane(offset=60.0).polyline(plan).close().extrude(150.0).val()).clean()
+    front = h.intersect(cq.Solid.makeBox(140.0, 200.0, 200.0, cq.Vector(-70.0, COWL_FOLD_Y - SHELL_GAP / 2 - 200.0, 0.0))).clean()
+    rear = h.intersect(cq.Solid.makeBox(140.0, 200.0, 200.0, cq.Vector(-70.0, COWL_FOLD_Y + SHELL_GAP / 2, 0.0))).clean()
+    for n, s in (('hood front', front), ('cowl (hood rear)', rear)):
+        assert s.isValid() and len(s.Solids()) == 1, '%s: %d solids' % (n, len(s.Solids()))
+    return front, rear
+
+# --- dash panel (markup 2, area 2): removable, between the side covers (SHELL_GAP to each) from y -116 back under the roof panel's front
+# edge (y -91.6). Same section as the covers' inner edge (rail top + FIT_CUT, WALL thick): flush with them, no step from the side.
+# The windscreen V legs run 17 .. 35 mm above it at y -116 .. -104 (MEASURED): it gets a through-notch on their plan outline, lifts straight up.
+DASH_Y = (-116.0, -104.0, -92.0, -86.0)   # stations (the rail top is straight here; the covers use -128 / -104 / -80)
+DASH_LIFT = 31.0                   # mm above the dash's underside in which cage members get a through-notch (lift path 30 mm)
+DASH_SCREWS_Y = (-97.0,)           # M3 from above into the upper rails' tops at x = rail centre (tool path checked in the build)
+DASH_PILOT_DEPTH = 5.0             # mm pilot into the rail (2.5 mm, as the cage bosses)
 
 
 # =================================================================================================
@@ -486,9 +580,17 @@ def _build_side_pod_right():
     def is_open_main(n):
         return (n[0] < -0.35) or (n[2] > 0.72) or (n[1] > 0.85) or (n[2] < -0.82)
 
-    pod_main, _ = _hollow_block(main_pts, wall=WALL, open_if=is_open_main, mirror_x=False)
+    _close = _is_pod_top if POD_TOP_SPLIT else None
+    pod_main, _Pm = _hollow_block(main_pts, wall=WALL, open_if=is_open_main, mirror_x=False, close_if=_close)
     pod_main = pod_main.cut(cq.Solid.makeBox(56.0, 300.0, 210.0, cq.Vector(-10.0, -155.0, 0.0)))
 
+    # (NOTES 62) the wing's two rear top corners on the main block's front top corners (y -55, was -54): the wing top and the main top then
+    # meet on one edge (no 0.06 mm step) and the flank's fold runs through one shared vertex (78, -55, 145.5)
+    _jy = -55.0 if POD_TOP_SPLIT else -54.0
+    # (NOTES 62, owner's loop) the wing's lower rear corner on the main block's front flank edge (78, -55, 145.5) .. (91.5, -54.5, 102.0) at
+    # z 104.5: (90.72, -54.53, 104.5), was (91.5, -54, 104.5) 0.68 mm proud of the main flank at the joint (a step at y -53.9 from z 110 to the fold)
+    _ea, _eb = np.array(main_outer[0]), np.array(main_outer[4])
+    _jlow = tuple(_ea + (_eb - _ea) * (_ea[2] - 104.5) / (_ea[2] - _eb[2])) if POD_TOP_SPLIT else (91.5, -54.0, 104.5)
     # Block B: Forward-swept upper cowl-shoulder prow overlapping onto the front exo-cage rail at y = -140!
     # Stays strictly ABOVE arm_tool (z_max=100.7) and tapers inward to |x| = 49.0..55.5 ahead of y = -114
     # so it clears uplink_tool (x >= 61.0) while overlapping & bolting straight onto the exo-cage upright!
@@ -498,20 +600,20 @@ def _build_side_pod_right():
         (54.5, -144.0, 114.0),   # lower front overlap corner (bolts onto TIE_MID rail)
         # Transition shoulder behind uplink_tool (y = -112) flaring out cleanly to main flank
         (76.0, -104.0, 140.5),
-        (78.0,  -54.0, 145.5),   # joins main upper belt seamlessly
+        (78.0,    _jy, 145.5),   # joins main upper belt seamlessly
         (88.5,  -78.0, 106.0),   # lower-front prow crease (safely above z=101 arm sweep)
-        (91.5,  -54.0, 104.5),   # joins main chine seamlessly
+        _jlow,                   # joins main chine seamlessly (NOTES 62: on the main block's front flank edge)
         # Inboard backing plane (x = 49.2 clears exo-cage outer face x = 49.0 by 0.2 mm)
         (49.2, -144.0, 140.5),
         (49.2, -144.0, 114.0),
-        (49.2,  -54.0, 145.5),
+        (49.2,    _jy, 145.5),
         (49.2,  -78.0, 106.0),
         (49.2,  -54.0, 104.5),
     ]
     def is_open_wing(n):
         return (n[0] < -0.35) or (n[2] > 0.72) or (n[1] > 0.75) or (n[2] < -0.80)
 
-    pod_wing, _ = _hollow_block(wing_pts, wall=WALL, open_if=is_open_wing, mirror_x=False)
+    pod_wing, _Pw = _hollow_block(wing_pts, wall=WALL, open_if=is_open_wing, mirror_x=False, close_if=_close)
     pod_wing = pod_wing.cut(cq.Solid.makeBox(59.2, 160.0, 200.0, cq.Vector(-10.0, -160.0, 0.0)))
 
     pod = pod_main.fuse(pod_wing)
@@ -520,12 +622,13 @@ def _build_side_pod_right():
     env = _solid_from_planes(_planes(main_pts)).fuse(_solid_from_planes(_planes(wing_pts))).clean()
     # Wing top edge (orchestrator, November 25): between y -96 and -56 the top edge ended in a feather (0.15 mm at the tip, 1.2 mm reached
     # 0.4 .. 0.45 mm outboard; sections MEASURED at y -96 .. -58). Cut back to a flat land WING_EDGE_BACK outboard of the tip line.
-    (_y0, _x0), (_y1, _x1) = WING_EDGE_TIP
-    _cutp = [(40.0, _y0), (_x0 + WING_EDGE_BACK, _y0), (_x1 + WING_EDGE_BACK, _y1), (40.0, _y1)]
-    _wc = cq.Workplane("XY").workplane(offset=WING_EDGE_Z[0]).polyline(_cutp).close().extrude(WING_EDGE_Z[1] - WING_EDGE_Z[0]).val()
-    _v0 = pod.Volume(); pod = pod.cut(_wc).clean()
-    print("wing top edge cut back %.1f mm outboard of the feather tip (a land about 1.4 mm tall): %.1f mm3" % (WING_EDGE_BACK, _v0 - pod.Volume()))
-    assert 0.5 < _v0 - pod.Volume() < 60.0, "wing edge cut removed %.1f mm3 (expected the feather only)" % (_v0 - pod.Volume())
+    if not POD_TOP_SPLIT:   # (NOTES 62: with the closed top there is no open edge and no feather to cut back)
+        (_y0, _x0), (_y1, _x1) = WING_EDGE_TIP
+        _cutp = [(40.0, _y0), (_x0 + WING_EDGE_BACK, _y0), (_x1 + WING_EDGE_BACK, _y1), (40.0, _y1)]
+        _wc = cq.Workplane("XY").workplane(offset=WING_EDGE_Z[0]).polyline(_cutp).close().extrude(WING_EDGE_Z[1] - WING_EDGE_Z[0]).val()
+        _v0 = pod.Volume(); pod = pod.cut(_wc).clean()
+        print("wing top edge cut back %.1f mm outboard of the feather tip (a land about 1.4 mm tall): %.1f mm3" % (WING_EDGE_BACK, _v0 - pod.Volume()))
+        assert 0.5 < _v0 - pod.Volume() < 60.0, "wing edge cut removed %.1f mm3 (expected the feather only)" % (_v0 - pod.Volume())
     POD_ENV[:] = [env]
     # (_fill_top_flakes is not used: thickness 57 showed its 1.5 mm curtain under a 0.5 mm face is itself a fin; the y -40 .. 29 'ledge' is a
     # 1.5 mm shelf whose 68 deg inner edge reads low, MEASURED in a section, a named exception in NOTES)
@@ -535,6 +638,9 @@ def _build_side_pod_right():
                                    cq.Vector(40.0, BEAM_WINDOW_Y[0], BEAM_WINDOW_Z[0])))
     LOUVER_INFO[:] = _info
     pod = pod.clean()
+    if POD_TOP_SPLIT:
+        POD_TOP['edge_in'] = (main_inboard[0], main_inboard[1])     # the main top's inboard edge: the rear cover's flange starts on it
+        pod = _split_pod_top(pod, (_Pm, lambda n: not is_open_main(n) and n[1] > -0.85), (_Pw, lambda n: not is_open_wing(n)))
     assert pod.isValid() and len(pod.Solids()) == 1, f"Side pod invalid ({len(pod.Solids())} solids)"
     return pod
 
@@ -715,7 +821,132 @@ COVER_BOSS = (7.0, 10.0, 3.0)  # mm: boss diameter, depth under the pod top, ins
 COVER_LIFT = 3                # mm: side cover path (orchestrator, November 25): the pods stay on; the cover goes up COVER_LIFT, then outward
                               # (removal; install is the reverse). 3 mm: ten times the 0.3 mm fit gap; at 6 mm and more the outward slide hits
                               # the cage at the front upright (x 66.5..67.7, y -138.4..-133.5, z 153.9..155.6, MEASURED), at 0 .. 5 it is clear
-COVER_OUT = 40                # mm outward in x (tools/assembly_path.py). Members the cover meets on the lift get a through-notch (2D outline)
+COVER_FLUSH = False           # NOTES 46 (3 attempts, stopped; off): the cover lies IN the pod's top edge (pod rebated under it), its outer top flush with the pod's top chine
+POD_TOP_SPLIT = True          # NOTES 62 (owner markup 2026-11-26, "no steps between mating surfaces"): the pod's top is the hull's own closed
+                              # top skin (the facets that were open), and the side covers are cut out of it: the flank and the cover meet on
+                              # the hull's fold edge itself (one definition, step 0), split on the mitre through that fold. Front cover = the
+                              # wing's top, rear cover = the main block's top, split on the crease where the two meet (y -55). False: the old
+                              # strip cover 3.4 mm over the open top (4.3 .. 4.5 mm ledge, NOTES 46 / 62)
+POD_TOP_NZ = 0.72             # a hull facet whose outward normal has z over this is pod top (the rule that opened it before)
+POD_TOP_CORNER_CLEAR = 0.3   # mm (NOTES 62 follow-up) at the hidden inside corner of the wing / main junction (was 0.11)
+POD_TOP_GAP = 0.22            # mm normal to each mitre: g / sin(half the inside angle) across the outer surface, 0.28 mm at the sharpest fold (78 deg, the wing's front corner)
+POD_TOP_SCREWS_Y = (-130.0, -100.0, -20.0, 30.0, 75.0)   # mm: cover screws, along the local top normal into a boss inside the pod (the last
+                                                         # at y 75, not 90: there the top is 9.6 mm wide and the countersink cut the inboard fold)
+COVER_CSK_D = 6.4             # mm countersink at the cover's top, 90 deg: M3 countersunk head (ISO 10642 dk 6.0) sits 0.2 mm under the surface
+POD_TOP = {}                  # filled by the build (right side): 'front', 'rear' covers, 'under' (envelope under the covers, clips the bosses),
+                              # 'tops' (top planes, outward normal + offset), 'cut' (what the pod gave up)
+
+
+def _is_pod_top(n):
+    return n[2] > POD_TOP_NZ
+
+
+def _top_cells(planes, compete, depth, grow=0.0, pad=0.5):
+    """Region of the pod top skin: points within `depth` of a top facet's plane that are nearer to it than to every closed facet (the mitre
+    through each fold), inside the envelope grown by `pad`. grow > 0 moves every mitre that far towards the closed facet (the pod's side of the gap)."""
+    out = None
+    for T in planes:
+        if not _is_pod_top(T[:3]):
+            continue
+        rows = []
+        for q in planes:
+            if _is_pod_top(q[:3]) or not compete(q[:3]):
+                continue                    # top facets, open facets and facets inside the other block do not compete
+            m, c = q[:3] - T[:3], q[3] - T[3]
+            rows.append(np.r_[m, c - grow * np.linalg.norm(m)])
+        rows.append(np.r_[-T[:3], -T[3] - depth])
+        # inside the envelope, grown by pad only across the outer faces (top and competing): at an open or covered face the other block goes on
+        rows += [np.r_[q[:3], q[3] - (pad if (_is_pod_top(q[:3]) or compete(q[:3])) else 0.0)] for q in planes]
+        cell = _solid_from_planes(np.array(rows))
+        out = cell if out is None else out.fuse(cell)
+    return out.clean()
+
+
+def _halfspace(m, c, sgn, off, size=300.0):
+    """{sgn (m.x + c) >= off |m|} inside a box of half size `size`."""
+    rows = [np.r_[-sgn * np.asarray(m), -sgn * c + off * np.linalg.norm(m)]]
+    for a in range(3):
+        e = np.zeros(3); e[a] = 1.0
+        rows += [np.r_[e, -size], np.r_[-e, -size]]
+    return _solid_from_planes(np.array(rows))
+
+
+def _split_pod_top(pod, *blocks):
+    """NOTES 62: cut the closed top skin out of the pod. blocks: (outer planes, compete) of the main block and the wing; compete(n) is True for
+    a closed facet that meets the top on the outside (the main block's front facet lies inside the wing: its top goes with the cover). The covers are stored
+    in POD_TOP; the pod keeps everything else, POD_TOP_GAP clear of them."""
+    W, g = WALL, POD_TOP_GAP
+    keep = cut = under = None
+    for P, op in blocks:
+        k = _top_cells(P, op, W + 0.05)
+        c = _top_cells(P, op, W + g + 1.0, g)       # 1 mm deeper: its floor lies in the hollow, not on the walls' inner faces
+        u = P.copy()
+        for q in u:
+            if _is_pod_top(q[:3]):
+                q[3] += W + g                       # the envelope with its top W + g lower: the bosses under the covers are clipped to it
+        u = _solid_from_planes(u)
+        keep, cut, under = [s if a is None else a.fuse(s) for a, s in ((keep, k), (cut, c), (under, u))]
+    (Pm, _), (Pw, _) = blocks
+    # front / rear split: the main block's front plane. The wing's rear top corners sit on its top edge (y -55), so that edge is the crease
+    # between the wing's top and the main block's top: the split lies on that fold, POD_TOP_GAP ahead of it (normal to the plane)
+    mf = min((q for q in Pm if q[1] < -0.85), key=lambda q: abs(np.dot(q[:3], (49.0, -55.0, 145.5)) + q[3]) + abs(np.dot(q[:3], (78.0, -55.0, 145.5)) + q[3]))
+    cov = pod.intersect(keep.clean()).clean()
+    front = cov.intersect(_halfspace(mf[:3], mf[3], 1.0, g)).clean()
+    rear = cov.intersect(_halfspace(mf[:3], mf[3], -1.0, 0.0)).clean()
+    v0 = pod.Volume(); pod = pod.cut(cut.clean()).clean()
+    # (NOTES 62 follow-up) the junction's inside corner (75.9, -55.0, 142.2), 3.3 mm under the top: the wing's flank wall's inner corner met
+    # the rear cover's inner corner on the diagonal 0.11 mm apart. Inside a 6 mm box there the pod gives way to the rear cover moved
+    # POD_TOP_CORNER_CLEAR along the axes and the diagonals.
+    _loc = cq.Solid.makeBox(6.0, 6.0, 6.0, cq.Vector(72.9, -58.0, 139.2))
+    _r = rear.intersect(_loc)
+    if _r.Volume() > 1e-6:
+        import itertools as _it
+        v1 = pod.Volume()
+        # the corner of the cover is a convex wedge: its offset is the hull of its vertices moved along 26 directions (moving copies alone
+        # left the space between them uncut, 0.147 mm)
+        _pts = []
+        for _v in _r.Vertices():
+            for _d in _it.product((-1, 0, 1), repeat=3):
+                _n = math.sqrt(sum(c * c for c in _d)) or 1.0
+                _pts.append((_v.X + POD_TOP_CORNER_CLEAR * _d[0] / _n, _v.Y + POD_TOP_CORNER_CLEAR * _d[1] / _n, _v.Z + POD_TOP_CORNER_CLEAR * _d[2] / _n))
+        pod = pod.cut(_hull(_pts).intersect(_loc))
+        pod = pod.clean()
+        print('pod top split: junction corner clearance %.2f mm, %.3f mm3 off the pod' % (POD_TOP_CORNER_CLEAR, v1 - pod.Volume()))
+    for nm, s in (('front', front), ('rear', rear), ('pod', pod)):
+        assert s.isValid() and len(s.Solids()) == 1, 'pod top split: %s is %d solids' % (nm, len(s.Solids()))
+    for nm, s in (('front', front), ('rear', rear)):
+        assert pod.intersect(s).Volume() < 1e-6, 'pod top split: the pod overlaps the %s cover' % nm
+    assert front.intersect(rear).Volume() < 1e-6
+    tops = [q for P, _ in blocks for q in P if _is_pod_top(q[:3])]
+    POD_TOP.update(front=front, rear=rear, under=under.clean(), tops=tops, cut=v0 - pod.Volume())
+    print('pod top split (NOTES 62): front cover %.1f mm3 (y %.1f .. %.1f), rear cover %.1f mm3 (y %.1f .. %.1f), pod gave up %.1f mm3'
+          % (front.Volume(), front.BoundingBox().ymin, front.BoundingBox().ymax, rear.Volume(), rear.BoundingBox().ymin, rear.BoundingBox().ymax,
+             v0 - pod.Volume()))
+    return pod
+
+
+def top_point(cover, x, y, z0=120.0, z1=200.0):
+    """Point on the cover's top above (x, y) and the outward normal of the face there (a vertical probe, then the nearest face)."""
+    h = cover.intersect(cq.Solid.makeCylinder(0.05, z1 - z0, cq.Vector(x, y, z0), cq.Vector(0, 0, 1)))
+    assert h.Volume() > 1e-9, 'no cover above (%.1f, %.1f)' % (x, y)
+    p = cq.Vector(x, y, h.BoundingBox().zmax)
+    f = min(cover.Faces(), key=lambda f: f.distance(cq.Vertex.makeVertex(p.x, p.y, p.z)))
+    n = f.normalAt(p)
+    return (p.x, p.y, p.z), (n.x, n.y, n.z)
+
+
+def countersink(part, p, n, d_head=None, d_hole=SCREW_D, depth=60.0):
+    """Screw hole along -n from the surface point p with a 90 deg countersink of d_head at the surface (cut 0.5 mm above it as well)."""
+    d_head = d_head or COVER_CSK_D
+    n = cq.Vector(*n).normalized(); P = cq.Vector(*p)
+    h = (d_head - d_hole) / 2.0
+    cone = cq.Solid.makeCone(d_head / 2.0, d_hole / 2.0, h, P, -n)
+    lid = cq.Solid.makeCylinder(d_head / 2.0, 0.5, P, n)
+    shaft = cq.Solid.makeCylinder(d_hole / 2.0, depth, P, -n)
+    return part.cut(cone.fuse(lid).fuse(shaft)).clean()
+
+
+COVER_OUT = 40               # mm outward in x (tools/assembly_path.py). Members the cover meets on the lift get a through-notch (2D outline)
 # Order: pods on first, then the side covers (a pod slid in under a fitted cover hits it after 6 mm); the pods come off only after the covers.
 COVER_BOSS_DROP = 1.0         # mm: not used (thickness 59: a top under the land left a 1.0 mm lip; the boss is now clipped to the land plane)
 COVER_BOSS_REACH = 8.0        # mm: each cover screw boss is stretched this far outward into the pod wall (clipped to the pod's outside): a plain
@@ -724,21 +955,22 @@ POD_SLIDE = 30                 # mm: the pods' sideways install path (tools/asse
 FLANGE_Y = (48.0, 56.0, 64.0, 72.0, 80.0, 88.0, 96.0, 104.0, 112.0, 120.0, 128.0)
 FLANGE_EMBED = 1.0             # mm the flange starts this far inside the pod skin's top edge
 FLANGE_BAND = 25.0             # mm below the pod's top edge in which the flange looks for the cage tube it meets (the plate reaches 22 mm down)
-FLANGE_DROP = 0.15             # mm the flange's top runs under the pod's top land: at the land's height it poked through the sloped land (sliver
-                               # strip, thickness 54); 0.5 mm lower left the land's inner edge as a 0.62 mm lip over a V-gap (section y 80, thickness 57)
+FLANGE_DROP = 0.0              # mm the flange's top under the pod's top land. Was 0.15 (at the land's height it poked through: the 0.6 mm slice
+                               # read the land 0.05 mm high on its slope along y, thickness 54); now the land is read in a 0.02 mm slice and the
+                               # flat top lies in the land's plane (markup 2, areas 3 / 4: no seam step)
 FLANGE_SEAT = 2.5              # mm the flange's flat top runs outward under the land from the land's inner edge (fills the lip's underside)
 FLANGE_SAMPLE = 1.0            # mm: the cage's reach is sampled this often along each span; the span's inner edge is straight at the maximum + FIT_CUT
 # The flange is a 3 mm plate at 45 deg (prints upright without support), not a solid wedge: the wedge weighed 12.7 g per pod (CG +0.3 mm).
 FLANGE_DEFAULT_X = 41.0        # mm inner edge where no cage tube is found next to it
 
 
-def top_slab(part, y, x0, x1, z0=100.0, z1=250.0, dz=1.0):
-    """(xmin, xmax, zmax) of the topmost dz of the part in the slice at y between x0 and x1, or None."""
-    h = part.intersect(cq.Solid.makeBox(x1 - x0, 0.6, z1 - z0, cq.Vector(x0, y - 0.3, z0)))
-    if h.Volume() < 1e-6:
+def top_slab(part, y, x0, x1, z0=100.0, z1=250.0, dz=1.0, w=0.6):
+    """(xmin, xmax, zmax) of the topmost dz of the part in the slice (w thick) at y between x0 and x1, or None."""
+    h = part.intersect(cq.Solid.makeBox(x1 - x0, w, z1 - z0, cq.Vector(x0, y - w / 2, z0)))
+    if h.Volume() < 1e-9:
         return None
     zt = h.BoundingBox().zmax
-    t = h.intersect(cq.Solid.makeBox(x1 - x0, 0.6, dz, cq.Vector(x0, y - 0.3, zt - dz))).BoundingBox()
+    t = h.intersect(cq.Solid.makeBox(x1 - x0, w, dz, cq.Vector(x0, y - w / 2, zt - dz))).BoundingBox()
     return t.xmin, t.xmax, zt
 
 

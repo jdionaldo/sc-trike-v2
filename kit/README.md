@@ -29,8 +29,10 @@ Checked by `tools/assembly_path.py` (every part moves in 1 mm steps and must not
    pod skin into the cage bosses, and the two lower-edge screws into the rear deck brackets.
 2. Side covers: hold the cover 3 mm above its seat and 40 mm outboard, slide it straight in along x over the pod's top edge, lower it the
    3 mm onto the pod top, then the three M3 screws from above (y -100, -20, 30) into the bosses inside the pod's top edge.
-3. Hood deck and roof panel: straight down from 30 mm above.
+3. Hood deck, cowl panel, dash panel and roof panel: each straight down from 30 mm above. Cowl: two M3 from above at x +-11, y -194 into
+   the cowl bar. Dash: it drops in between the windscreen V legs (notched round them) onto the upper rails, two M3 from above at x +-45,
+   y -97 into the rail tops.
 
-Removal is the reverse: hood and roof first, then the cover screws and each cover up 3 mm and out 40 mm, and only then the pods.
+Removal is the reverse: hood, cowl, dash and roof first, then the cover screws and each cover up 3 mm and out 40 mm, and only then the pods.
 A pod cannot come off with its cover on: sliding out it hits the cover after 6 mm. A cover lifted 6 mm or more before it slides out hits the
 cage at the front upright (y -138 .. -133), so keep it at about 3 mm.
