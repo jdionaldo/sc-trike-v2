@@ -140,6 +140,9 @@ def docs():
     L += ["", "## 1. Bought parts", "", "Quantities from the model (`Where` names the stand-in parts). Rows with an option ID are bought only with that option. Total = packs x pack price, "
           "all rows (each option once). Sourcing notes: `../sourcing_v2_2026-11-24.md` (Version 2 front end) and Version 1's `kit/sourcing_2026-11-24.md` (rear, drive, tyres, bearings, heave shock: the same choices).", ""] + t + ["",
           "## 2. Printed parts", "", "Every file is oriented and packed: do not auto-orient in Bambu Studio. L/R parts have their own IDs (L = -x side, the left seen from behind).", "",
+          "Infill rule (owner 2026-11-27, NOTES 67): every mechanical and moving printed part prints SOLID (100 % infill) - every load class other than "
+          "'none' (kit/registry.py print_fill). The FEM safeties in NOTES assume solid sections; at the old 30 .. 70 % the printed part would not match them. "
+          "Shell and light pieces keep their infill with 5 walls, so their screw bosses and tabs print solid. TPU pads: 100 %, 3 walls. Layer 0.2 mm, 5 top / 3 bottom layers.", "",
           "| ID | Part | Material | Walls | Infill | Support | Face on the bed | Size mm | Plate |", "|---|---|---|---|---|---|---|---|---|"]
     man = json.load(open(OUT + "/kit_manifest.json"))
     plate_of = {pp["name"]: pl["title"] for pl in man["plates"] for pp in pl["parts"]}

@@ -8,7 +8,7 @@ import os, sys, json, math, glob, argparse
 import numpy as np, trimesh
 from shapely.geometry import Point
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-from registry import PARTS, key_of, is_hardware, SUB_ORDER, SUBS
+from registry import PARTS, key_of, is_hardware, SUB_ORDER, SUBS, print_fill
 import polish_stls
 
 # FUGU_BED="x,y,z": P2S 256,256,256 (default) or the user's H3C/H2C-class 330,320,325. Conservative square usable area (5 mm margin each side).
@@ -272,7 +272,7 @@ def main():
             else: log(f"{pid}: WARNING float32-rounded mesh not clean (watertight {_q.is_watertight})")
             q.export(f"{out}/stl/{pid}.stl")
             parts_json.append(dict(id=pid, design=did, stem=stem, name=d["name"] + (f" ({side})" if side else "") + (f" piece {suf.upper()}" if suf else ""),
-                                   material=d["material"], sub=d["sub"], walls=d["walls"], infill=d["infill"], support=d["support"],
+                                   material=d["material"], sub=d["sub"], walls=print_fill(d)[0], infill=print_fill(d)[1], support=d["support"],      # (the solid rule: registry.print_fill, NOTES 67)
                                    extents=[round(float(x), 1) for x in q.extents], volume_cm3=round(float(q.volume) / 1000, 2), overhang_mm2=round(oh, 1),
                                    floating_mm2=round(float(fl), 2), bed_contact_mm2=round(bed, 1), orient_face=k, spin=spin, pieces_info=info))
             log(f"{pid}: {np.round(q.extents).tolist()} overhang {oh:.0f} floating {fl:.1f} vol {q.volume / 1000:.1f} cm3")

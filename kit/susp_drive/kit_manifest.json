@@ -19,7 +19,7 @@
      "stl": "stl/SU6.stl",
      "name": "SU6",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -27,7 +27,7 @@
      "stl": "stl/SU7.stl",
      "name": "SU7",
      "walls": 6,
-     "infill": "70%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -35,7 +35,7 @@
      "stl": "stl/SU3L.stl",
      "name": "SU3L",
      "walls": 6,
-     "infill": "70%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -43,7 +43,7 @@
      "stl": "stl/SU3R.stl",
      "name": "SU3R",
      "walls": 6,
-     "infill": "70%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -99,7 +99,7 @@
      "stl": "stl/ST4L.stl",
      "name": "ST4L",
      "walls": 4,
-     "infill": "40%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -107,7 +107,7 @@
      "stl": "stl/ST4R.stl",
      "name": "ST4R",
      "walls": 4,
-     "infill": "40%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -115,7 +115,7 @@
      "stl": "stl/ST3L.stl",
      "name": "ST3L",
      "walls": 4,
-     "infill": "40%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -123,7 +123,7 @@
      "stl": "stl/ST3R.stl",
      "name": "ST3R",
      "walls": 4,
-     "infill": "40%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -131,7 +131,7 @@
      "stl": "stl/SU1L.stl",
      "name": "SU1L",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -139,7 +139,7 @@
      "stl": "stl/SU1R.stl",
      "name": "SU1R",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -147,7 +147,7 @@
      "stl": "stl/SU2L.stl",
      "name": "SU2L",
      "walls": 5,
-     "infill": "50%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -155,7 +155,7 @@
      "stl": "stl/SU2R.stl",
      "name": "SU2R",
      "walls": 5,
-     "infill": "50%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -163,7 +163,7 @@
      "stl": "stl/SU5L.stl",
      "name": "SU5L",
      "walls": 5,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -171,7 +171,7 @@
      "stl": "stl/SU5R.stl",
      "name": "SU5R",
      "walls": 5,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     }
@@ -201,7 +201,7 @@
      "stl": "stl/CH5.stl",
      "name": "CH5",
      "walls": 4,
-     "infill": "40%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -209,7 +209,7 @@
      "stl": "stl/DT5.stl",
      "name": "DT5",
      "walls": 4,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -217,7 +217,7 @@
      "stl": "stl/DT6.stl",
      "name": "DT6",
      "walls": 4,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -225,7 +225,7 @@
      "stl": "stl/DT7.stl",
      "name": "DT7",
      "walls": 4,
-     "infill": "50%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -233,7 +233,7 @@
      "stl": "stl/DT8.stl",
      "name": "DT8",
      "walls": 4,
-     "infill": "50%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -241,7 +241,7 @@
      "stl": "stl/DT11.stl",
      "name": "DT11",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -249,7 +249,7 @@
      "stl": "stl/DT10.stl",
      "name": "DT10",
      "walls": 4,
-     "infill": "80%",
+     "infill": "100%",
      "support": "auto",
      "slot": 4
     },
@@ -257,7 +257,7 @@
      "stl": "stl/DT16L.stl",
      "name": "DT16L",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "off",
      "slot": 4
     },
@@ -265,7 +265,7 @@
      "stl": "stl/DT16R.stl",
      "name": "DT16R",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "off",
      "slot": 4
     },
@@ -273,7 +273,7 @@
      "stl": "stl/DT17.stl",
      "name": "DT17",
      "walls": 6,
-     "infill": "60%",
+     "infill": "100%",
      "support": "off",
      "slot": 4
     }

@@ -2225,3 +2225,62 @@ the front wheels have no bearing in the model.
     attempt-1 patch: v2_cage_joint_attempt1.patch.
     Rear side cover (SH10) print orientation: OPEN for the shell kit re-export; to be solved there with a printed-in support rib or a flat
     added on the hidden flange, nothing on the outer skin (orchestrator 2026-11-27).
+
+67. 100 % infill on every mechanical and moving printed part (owner 2026-11-27, their words: "Make sure that all mechanical and 3D printed
+    moving parts are 100% infill so they have maximum strength"; orchestrator's plan, approved).
+    Plainly: until now the kit specified 30 .. 70 % infill on parts whose FEM assumed solid sections (cage 30 %, decks 35 %, arms and wheels
+    60 %, carriers 70 %, servo floor / clip and motor plate 40 %). Every safety quoted in these NOTES so far describes a solid part, not the
+    part the kit would have printed. With this rule the kit matches the FEM.
+    - Rule (kit/registry.py print_fill, applied by kit/build_kit.py, used by tools/cg_tip.py): every design with a load class other than
+      "none" prints 100 % (walls as listed); "none" pieces (shell skins, light parts) keep their infill with 5 walls (2.1 mm), so their screw
+      bosses and tabs print solid. TPU pads (SU8 .. SU12): unchanged, 100 %, 3 walls (the 123 N saddle basis assumed solid 95A). Manual
+      (kit/make_susp_drive.py, printed parts section) states it. Process profile unchanged: 0.2 mm layers, 5 top / 3 bottom, grid.
+    - Inventory before (kit/registry.py): SU1 60 %, SU2 50, SU3 70, SU4 100, SU5 60, SU6 60, SU7 70, ST1 100, ST2 100, ST3 / ST4 40, DT5 / 6
+      60, DT7 / 8 50, DT10 80, DT11 60, DT14 / 15 100, DT16 / 17 60, CH5 40, CH1 .. 3 35, CH4 30, CG1 30, SH / LT 15 % with 3 walls.
+    - Suspension + drivetrain kit (re-exported on 42a8a18 with the rule; kit/susp_drive), Bambu Studio slice check 0 problems:
+        plate 01-1 front suspension and steering  9.7 h 245.8 g -> 10.5 h 268.6 g
+        plate 01-2                                  3.1 h  98.0 g ->  3.4 h 111.7 g
+        plate 01-3                                  0.4 h  13.4 g ->  0.4 h  13.4 g
+        plate 02-1 drivetrain and wheels           10.4 h 323.8 g -> 11.8 h 376.9 g
+        plate 02-2                                  1.3 h  39.0 g ->  1.5 h  45.5 g
+        plate 03 stops and pads                     0.2 h   3.5 g ->  0.2 h   3.5 g
+        total                                      25.2 h 724 g   -> 27.7 h 820 g (+96 g, +2.5 h)
+      Mesh audit 0 flagged; floating areas unchanged (DT16 152.7, SU1 275.8, SU6 0.85 mm2: auto supports, as before). The STLs that changed
+      are SU7 (1(b) tail) and SU8 / SU9 (NOTES 64), which this kit export had not caught up with.
+    - Wheels (unsprung and rotating): front DT16 22.3 cm3, 28.4 g solid each, rear DT17 31.0 cm3, 39.3 g solid; about +3 g per front wheel and
+      +5 g on the rear against the old 60 % (old per-part figure estimated with the 0.88 slice factor: no per-part slice report).
+    - Motor plate CH5 (heat): solid PETG is no worse than 40 %: infill does not change PETG's softening point (about 70 C), solid adds
+      thermal mass and conduction to the plate's face and cuts creep under the motor screws.
+    - Car (tools/cg_tip.py, sliced with body and battery): 3086 g -> 3290 g (+6.6 %); CG (3.9, -42.4, 77.2) -> (4.1, -41.4, 77.4), height over
+      the ground 92.8 -> 93.1 mm, tip 41.0 -> 40.8 deg, front share 61.6 -> 61.3 %. The extra mass is mostly the cage and chassis low and
+      central: the CG hardly moves (owner's order is CG first: +0.3 mm, -0.2 deg). Solid only (every printed part 100 %): 3346 g.
+    - The mass moved more than 2 %: new 0.20 m basis (NOTES 61 method; contacts y 236.43 rear, -216.46 front): static 9.90 N per front
+      wheel, 12.48 N rear; front 174.9 N per wheel without the saddle, 131.5 N with the 4 mm bump saddle (ASSUMED as before); rear 86.1 N.
+      Front arm (owner-accepted 1.04 / 0.99 at 123 N): 0.97 / 0.93 at 131.5 N, 0.73 / 0.70 at 174.9 N. Below the accepted figure: the
+      owner's call. The NOTES 66 rows rescale by 123 / 131.5 = 0.935 (front) and 80 / 86.1 = 0.929 (rear); the rear arm now reads
+      2.94 / 2.79 x 55 / 86.1 = 1.88 / 1.78 (re-run on two meshes next).
+    - Also fixed: kit/hardware.py line 20 had unescaped quotes since 91e95a6 (the kit docs did not build).
+
+68. Cage at the stops on the new basis, and the keel against it (orchestrator 2026-11-27: baseline first, read the ear underside and the
+    feet too; the NOTES 65 reading does not count as an attempt).
+    Case loads regenerated at 131.5 N per front wheel (4 mm bump saddle, 3290 g at 61.3 % front, NOTES 67) with the stop-load script of
+    NOTES 58 / 60 (tools/arm_stops.py stop_forces; the same run at 94 N / shock ratio 1.211 gives the NOTES 60 case loads back exactly):
+      two wheels: pads 506 N per block (was 349), clevis (0, 301.6, -601.9) N per plate, heave shock 66 N at the stop, (0, 32.2, 7.2) per eye side
+      one wheel:  pads 411 N per block (was 281), clevis (-39.7, 181.7, -467.8) per plate, yaw slot walls 323 N (231 x 253 / 181), shock as above
+    (analyses/v2_cage_stops_2w.py / _1w.py; the 94 N loads are in the git history.) Not linear in the wheel load: the shock's share stays.
+    Baseline (HEAD ddf75ac geometry), meshes 2.5 / 2.0, read 2 / 3 mm from supports and loads (tools/fem_away.py):
+      two wheels: keel / feet corner under the lump (+-32.3, -22, 85.0) 0.80 / 0.78; ear underside on the post (38.1, -43.6, 106.8) 0.83 / 0.84,
+        -x 0.85 / 0.79; shock mount 1.23 / 1.15; front (+-47, 18 .. 42, 35 .. 60) 1.01 / 1.10
+      one wheel: ear underside (38.1, -43.6, 106.8) 0.49 / 0.50 (settled: the worst spot of the cage); keel / feet (36.4, -24, 85.0)
+        0.71 / 0.68; -x ear 1.25 / 1.16; shock mount 1.15 / 1.10; a 0.12 / 0.20 at the tail (34.2, 169.5, 164.6) on mesh 2.5 only (not on 2.0)
+    Keel 7 mm (KEEL_D, attempt 1 of 3): two wheels keel 0.83 / 0.70 (mesh 2.0 LOWER than 0.78), ear 0.91 / 0.92, -x ear 0.91 / 0.86;
+      one wheel keel 0.62 / 0.65 (LOWER than 0.71 / 0.68), ear 0.53 / 0.53. The deeper keel draws load into its abrupt rear end at y -21.7
+      (the corner moves to z 83.9). Stop rule: NOT kept (patch: side-session notes v2_keel_7mm.patch). Reported to the orchestrator.
+    Reading: at the 0.20 m basis the cage at the stops sits at 0.5 .. 0.8. The one-wheel case's ear underside on the post governs (0.49),
+    before the keel. Millimetre changes to the keel and the ear will not bring these to 2.
+    Process note (orchestrator 2026-11-27): kit/hardware.py carried a SyntaxError at line 20 (unescaped quotes in a note string) from
+    91e95a6 (item 1(b)) through 42a8a18 - five commits, and the GitHub snapshot of 42a8a18. The step that should have caught it: the 1(b)
+    commit edited kit/hardware.py but neither compiled it nor ran the kit docs build (kit/make_susp_drive.py --docs), and the commits after
+    it did not touch kit/ and ran no kit check. Pre-commit list from now on: every file under kit/ and tools/ compiles
+    (python -m compileall -q kit tools, errors only), and whenever a commit touches kit/, the kit docs build ends with rc 0.
+    Checked on ddf75ac: compileall clean.

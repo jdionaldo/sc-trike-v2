@@ -8,7 +8,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     120.4,
@@ -31,15 +31,15 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "70%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     53.1,
-    71.8,
+    74.5,
     80.0
    ],
-   "volume_cm3": 50.27,
-   "overhang_mm2": 1409.3,
+   "volume_cm3": 49.97,
+   "overhang_mm2": 1430.6,
    "floating_mm2": 0.0,
    "bed_contact_mm2": 211.2,
    "orient_face": 0,
@@ -100,7 +100,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "70%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     65.0,
@@ -123,7 +123,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "70%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     65.0,
@@ -195,15 +195,15 @@
    "infill": "100%",
    "support": "off",
    "extents": [
-    7.5,
-    11.6,
-    17.0
+    5.6,
+    17.0,
+    8.3
    ],
-   "volume_cm3": 0.52,
-   "overhang_mm2": 0.0,
+   "volume_cm3": 0.51,
+   "overhang_mm2": 5.0,
    "floating_mm2": 0.0,
-   "bed_contact_mm2": 14.7,
-   "orient_face": 0,
+   "bed_contact_mm2": 19.9,
+   "orient_face": 3,
    "spin": 0,
    "pieces_info": {}
   },
@@ -218,15 +218,15 @@
    "infill": "100%",
    "support": "off",
    "extents": [
-    7.5,
-    11.6,
-    17.0
+    5.6,
+    17.0,
+    8.3
    ],
-   "volume_cm3": 0.52,
-   "overhang_mm2": 0.0,
+   "volume_cm3": 0.51,
+   "overhang_mm2": 5.0,
    "floating_mm2": 0.0,
-   "bed_contact_mm2": 14.7,
-   "orient_face": 0,
+   "bed_contact_mm2": 19.9,
+   "orient_face": 3,
    "spin": 0,
    "pieces_info": {}
   },
@@ -241,15 +241,15 @@
    "infill": "100%",
    "support": "off",
    "extents": [
-    6.9,
-    11.8,
-    17.0
+    17.0,
+    7.4,
+    3.9
    ],
-   "volume_cm3": 0.52,
-   "overhang_mm2": 0.0,
+   "volume_cm3": 0.23,
+   "overhang_mm2": 9.9,
    "floating_mm2": 0.0,
-   "bed_contact_mm2": 14.7,
-   "orient_face": 0,
+   "bed_contact_mm2": 18.2,
+   "orient_face": 5,
    "spin": 0,
    "pieces_info": {}
   },
@@ -264,15 +264,15 @@
    "infill": "100%",
    "support": "off",
    "extents": [
-    6.9,
-    11.8,
-    17.0
+    17.0,
+    7.4,
+    3.9
    ],
-   "volume_cm3": 0.52,
-   "overhang_mm2": 0.0,
+   "volume_cm3": 0.23,
+   "overhang_mm2": 9.9,
    "floating_mm2": 0.0,
-   "bed_contact_mm2": 14.7,
-   "orient_face": 0,
+   "bed_contact_mm2": 18.2,
+   "orient_face": 5,
    "spin": 0,
    "pieces_info": {}
   },
@@ -376,7 +376,7 @@
    "material": "PETG",
    "sub": "ST",
    "walls": 4,
-   "infill": "40%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     24.8,
@@ -399,7 +399,7 @@
    "material": "PETG",
    "sub": "ST",
    "walls": 4,
-   "infill": "40%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     24.8,
@@ -422,7 +422,7 @@
    "material": "PETG",
    "sub": "ST",
    "walls": 4,
-   "infill": "40%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     35.5,
@@ -445,7 +445,7 @@
    "material": "PETG",
    "sub": "ST",
    "walls": 4,
-   "infill": "40%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     35.5,
@@ -560,7 +560,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     68.5,
@@ -583,7 +583,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     68.5,
@@ -652,7 +652,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 5,
-   "infill": "50%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     42.0,
@@ -675,7 +675,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 5,
-   "infill": "50%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     42.0,
@@ -698,7 +698,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 5,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     30.5,
@@ -721,7 +721,7 @@
    "material": "PETG",
    "sub": "SU",
    "walls": 5,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     30.5,
@@ -744,7 +744,7 @@
    "material": "PETG",
    "sub": "CH",
    "walls": 4,
-   "infill": "40%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     46.3,
@@ -767,7 +767,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 4,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     21.9,
@@ -790,7 +790,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 4,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     21.9,
@@ -813,7 +813,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 4,
-   "infill": "50%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     25.4,
@@ -836,7 +836,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 4,
-   "infill": "50%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     25.4,
@@ -859,7 +859,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     80.3,
@@ -882,7 +882,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 4,
-   "infill": "80%",
+   "infill": "100%",
    "support": "auto",
    "extents": [
     22.0,
@@ -905,7 +905,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "off",
    "extents": [
     53.3,
@@ -928,7 +928,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "off",
    "extents": [
     53.3,
@@ -951,7 +951,7 @@
    "material": "PETG",
    "sub": "DT",
    "walls": 6,
-   "infill": "60%",
+   "infill": "100%",
    "support": "off",
    "extents": [
     60.9,
@@ -971,17 +971,17 @@
  "unknown": [],
  "log": [
   "SU6: [120.0, 29.0, 30.0] overhang 1997 floating 0.9 vol 26.9 cm3",
-  "SU7: [53.0, 72.0, 80.0] overhang 1409 floating 0.0 vol 50.3 cm3",
+  "SU7: [53.0, 75.0, 80.0] overhang 1431 floating 0.0 vol 50.0 cm3",
   "SU12L: [9.0, 7.0, 10.0] overhang 0 floating 0.0 vol 0.3 cm3",
   "SU12R: [9.0, 7.0, 10.0] overhang 0 floating 0.0 vol 0.3 cm3",
   "SU3L: [65.0, 36.0, 16.0] overhang 650 floating 0.0 vol 14.4 cm3",
   "SU3R: [65.0, 36.0, 16.0] overhang 650 floating 0.0 vol 14.4 cm3",
   "SU4L: [39.0, 47.0, 21.0] overhang 555 floating 0.0 vol 13.4 cm3",
   "SU4R: [39.0, 47.0, 21.0] overhang 555 floating 0.0 vol 13.3 cm3",
-  "SU8L: [7.0, 12.0, 17.0] overhang 0 floating 0.0 vol 0.5 cm3",
-  "SU8R: [7.0, 12.0, 17.0] overhang 0 floating 0.0 vol 0.5 cm3",
-  "SU9L: [7.0, 12.0, 17.0] overhang 0 floating 0.0 vol 0.5 cm3",
-  "SU9R: [7.0, 12.0, 17.0] overhang 0 floating 0.0 vol 0.5 cm3",
+  "SU8L: [6.0, 17.0, 8.0] overhang 5 floating 0.0 vol 0.5 cm3",
+  "SU8R: [6.0, 17.0, 8.0] overhang 5 floating 0.0 vol 0.5 cm3",
+  "SU9L: [17.0, 7.0, 4.0] overhang 10 floating 0.0 vol 0.2 cm3",
+  "SU9R: [17.0, 7.0, 4.0] overhang 10 floating 0.0 vol 0.2 cm3",
   "ST1L: [24.0, 20.0, 14.0] overhang 95 floating 0.0 vol 1.4 cm3",
   "ST1R: [24.0, 20.0, 14.0] overhang 95 floating 0.0 vol 1.4 cm3",
   "ST2L: [37.0, 17.0, 17.0] overhang 98 floating 0.0 vol 5.5 cm3",

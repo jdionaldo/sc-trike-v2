@@ -1,9 +1,10 @@
 # Fugu V2 suspension + drivetrain kit (leading swing arms)
 
-Front swing arms, upper links, carriers, knuckle, balance beam and carrier, heave shock and stops, steering (rockers, servos, horns, drag links, tie rods), rear swing arm, belt drive, motor plate, wheels and tyres. 42 printed files on 6 plates, 25.2 h and 724 g by the Bambu Studio slice check (0 problems), the option plate included. Bought parts as listed on 2026-11-24 (16 rows VERIFIED, 34 ASSUMED, 6 UNKNOWN). Nothing bought.
+Front swing arms, upper links, carriers, knuckle, balance beam and carrier, heave shock and stops, steering (rockers, servos, horns, drag links, tie rods), rear swing arm, belt drive, motor plate, wheels and tyres. 42 printed files on 6 plates, 27.7 h and 820 g by the Bambu Studio slice check (0 problems), the option plate included. Bought parts as listed on 2026-11-24 (16 rows VERIFIED, 34 ASSUMED, 6 UNKNOWN). Nothing bought.
 
 ## Stated openly
 
+- Front arm (owner's choice, 2026-11-26, 'Keep printed'; NOTES 59, 61): the printed front arm is the first part expected to fail in a drop above about 0.15 .. 0.20 m. It is a replaceable print: reprint SU1L / SU1R (kit/susp_drive/stl/SU1L.stl, SU1R.stl, on plate 01 Front suspension and steering).
 - Strength below the target safety of 2 (PETG across layers 20 MPa; NOTES.md): rocker mount (printed: 1.02 at the steering need, 0.19 at the ASSUMED 2.0 N m stall), beam carrier (1.30 two-wheel, 1.06 one-wheel landing), front arm (1.49 at the outer bore edge), cage at the stops (0.73 at the upper ear). Only the balance beam passes (2.13).
 - No FEM of the cage with the desert shell's exo frame and the raised hoop corner: every cage FEM ran on the cage before it.
 - Owner's choice (NOTES 26): printed knuckle and rocker mount with torque-limited servos. FEM at the servo limit (0.47 N m, ASSUMED from the Tekin 40 % setting): knuckle landing 2.71, knuckle steering stall 2.43 (about 1.9 at 0.6 N m); rocker mount 0.75 (about 0.96 at the steering need 0.367 N m): the rocker mount is BELOW 2.
@@ -30,12 +31,12 @@ Totals of the bought parts per combination (servo class follows: any printed opt
 
 | Rocker mount | Knuckle | Servo | Total USD |
 |---|---|---|---|
-| R-PETG | K-PETG | S-A2 | 1046.53 |
-| R-PETG | K-STEEL | S-A2 | 1047.79 |
-| R-AL | K-PETG | S-A2 | 1116.53 |
-| R-AL | K-STEEL | S-A1 | 900.58 |
-| R-STEEL | K-PETG | S-A2 | 1126.53 |
-| R-STEEL | K-STEEL | S-A1 | 910.58 |
+| R-PETG | K-PETG | S-A2 | 1061.87 |
+| R-PETG | K-STEEL | S-A2 | 1063.13 |
+| R-AL | K-PETG | S-A2 | 1131.87 |
+| R-AL | K-STEEL | S-A1 | 915.92 |
+| R-STEEL | K-PETG | S-A2 | 1141.87 |
+| R-STEEL | K-STEEL | S-A1 | 925.92 |
 
 ## 1. Bought parts
 
@@ -43,8 +44,8 @@ Quantities from the model (`Where` names the stand-in parts). Rows with an optio
 
 | Item | Option | Qty | Where (model) | Part / retailer | Unit USD (pack) | Packs | Total USD | Status | Note |
 |---|---|---|---|---|---|---|---|---|---|
-| Heave shock 70 mm (one, between the beam carrier and the cage) | - | 1 | Heave shock body/shaft (model 68.0 mm eye to eye, D3 eye pins) | RC4WD Ultimate Scale Shock 70 mm RC4Z-D0004, Hobby ETC https://store.hobbyetc.com/parts/view/29506 (Version 1 choice) | 20.99 (2) | 1 | 20.99 | VERIFIED | V1 sourcing: 72.5 ext / 55.1 comp, stroke 17.4, eye bore 3.0 (fits the D3 pins); DISCONTINUED; no spring rate stated (about 30 N/mm assumed) |
-| Plain sleeve, oil-filled sintered bronze, 8 x 12 x 12 (SKF PSM 8-12-12 A51) | - | 1 | Yaw pin sleeve: pressed into the top 12 mm of the beam carrier's yaw pin bore (printed bore 11.9), the D8 yaw pin pressed into it (NOTES 57) | SKF PSM 8-12-12 A51, 123bearing.com https://www.123bearing.com/accessories/bushes/bronze/psm8-12-12-a51-skf (opened 2026-11-25) | 7.67 (1) | 1 | 7.67 | VERIFIED | ID 8, OD 12, length 12, 5 g; 2 in stock on 2026-11-25; press fit in PETG ASSUMED (ream / coupon) |
+| Heave shock 70 mm (one, between the beam carrier and the cage) | - | 1 | Heave shock body/shaft (model 68.0 mm eye to eye, D3 eye pins) | RC4WD Ultimate Scale Shock 70 mm RC4Z-D0004, Hobby ETC https://store.hobbyetc.com/parts/view/29506 (Version 1 choice) | 20.99 (2) | 1 | 20.99 | VERIFIED | V1 sourcing: 72.5 ext / 55.1 comp, stroke 17.4, eye bore 3.0 (fits the D3 pins); DISCONTINUED; internal spring 'super soft', body D8.8, shaft D3.0, no external retainer (NOTES 58, 60); no rate stated: 3 N/mm ASSUMED (tools/arm_stops.py), measure on arrival |
+| Plain sleeve, oil-filled sintered bronze, 8 x 12 x 12 (SKF PSM 8-12-12 A51) | - | 3 | Two in the beam carrier's tail boss, one pressed in from each end (printed bore 11.9), the D8 heave stop dowel running in them (NOTES 60). Yaw pin sleeve: pressed into the top 12 mm of the beam carrier's yaw pin bore (printed bore 11.9), the D8 yaw pin pressed into it (NOTES 57) | SKF PSM 8-12-12 A51, 123bearing.com https://www.123bearing.com/accessories/bushes/bronze/psm8-12-12-a51-skf (opened 2026-11-25) | 7.67 (1) | 3 | 23.01 | VERIFIED | ID 8, OD 12, length 12, 5 g; 2 in stock on 2026-11-25, 3 needed: a second seller or a restock to be found; press fit in PETG ASSUMED (ream / coupon) |
 | Hardened dowel pin D3 x 12 (ISO 8734 m6) | - | 6 | Uplink pin inner/outer x 2 sides (4), Shock pin front/rear (2) | McMaster 91595A112 (pack 50) https://www.mcmaster.com/products/dowel-pins/specifications-met~iso-8734/ | 9.00 (50) | 1 | 9.00 | ASSUMED | no price on the page: est.; C52 |
 | Hardened dowel pin D4 x 55 (arm tip shaft) | - | 2 | tip shaft x 2 (model D4 x 54) | McMaster 91595A188 D4 x 50 (25) or 91595A192 D4 x 60 (10) | 12.00 (10) | 1 | 12.00 | ASSUMED | 55 is not in the series: 60 mm cut and deburred to 54; no price on the page: est. |
 | Hardened dowel pin D4 x 40 (kingpin) | - | 2 | Kingpin x 2 (model D4 x 39) | McMaster 91595A185 (25) | 11.00 (25) | 1 | 11.00 | ASSUMED | no price: est. |
@@ -99,56 +100,58 @@ Quantities from the model (`Where` names the stand-in parts). Rows with an optio
 | Screws for the pillow block and bearing carrier halves | - | ? | DT5/DT6 and DT7/DT8 to the decks | generic M3 | 0.10 (1) | 0 | 0.00 | UNKNOWN | count not taken from the traced carrier meshes |
 | Rear tyre 2.2 in, about 140 mm OD | - | 1 | Rear tire on the printed wheel DT17 (bead seat 55.9) | RC4WD Mud Slinger 2 XL 2.2 RC4ZT0122 (pair, with foams) https://www.amainhobbies.com/rc4wd-mud-slinger-2-xl-2.2-scale-crawler-tires-2-rc4zt0122/p-qtqrtarqbc2xactz | 29.99 (2) | 1 | 29.99 | VERIFIED | 139.7 x 53.5 mm, ID 55.5 (0.4 mm tight on the bead seat); backorder; the model's tyre envelope is 62 mm wide |
 | Front tyre 1.9 in, about 112 mm OD (Version 2 front) | - | 2 | mock tire x 2 on the printed wheels DT16 | Pro-Line Toyo Open Country R/T G8 1.9 PRO1021114 (pair) https://www.axialadventure.com/product/1-10-toyo-open-country-r-t-g8-f-r-1.9-rock-crawling-tires-2/PRO1021114.html | 24.99 (2) | 1 | 24.99 | VERIFIED | V1 sourcing: 113 x 38 mm; DISCONTINUED; alt. RC4WD Scrambler RC4ZT0144 |
-| **All rows (every option once)** | | | | | | | **1424.29** | | |
+| **All rows (every option once)** | | | | | | | **1439.63** | | |
 
 ## 2. Printed parts
 
 Every file is oriented and packed: do not auto-orient in Bambu Studio. L/R parts have their own IDs (L = -x side, the left seen from behind).
 
+Infill rule (owner 2026-11-27, NOTES 67): every mechanical and moving printed part prints SOLID (100 % infill) - every load class other than 'none' (kit/registry.py print_fill). The FEM safeties in NOTES assume solid sections; at the old 30 .. 70 % the printed part would not match them. Shell and light pieces keep their infill with 5 walls, so their screw bosses and tabs print solid. TPU pads: 100 %, 3 walls. Layer 0.2 mm, 5 top / 3 bottom layers.
+
 | ID | Part | Material | Walls | Infill | Support | Face on the bed | Size mm | Plate |
 |---|---|---|---|---|---|---|---|---|
-| SU6 | Balance beam | PETG | 6 | 60% | auto | model +z down | 120 x 29 x 30 | Front suspension and steering (PETG) |
-| SU7 | Beam carrier (bellcrank) | PETG | 6 | 70% | auto | model +x down | 53 x 72 x 80 | Front suspension and steering (PETG) |
+| SU6 | Balance beam | PETG | 6 | 100% | auto | model +z down | 120 x 29 x 30 | Front suspension and steering (PETG) |
+| SU7 | Beam carrier (bellcrank) | PETG | 6 | 100% | auto | model +x down | 53 x 74 x 80 | Front suspension and steering (PETG) |
 | SU12L | Droop stop pad (L) | TPU 95A | 3 | 100% | off | model +z down | 9 x 7 x 10 | Stops and pads (TPU 95A) |
 | SU12R | Droop stop pad (R) | TPU 95A | 3 | 100% | off | model +z down | 9 x 7 x 10 | Stops and pads (TPU 95A) |
-| SU3L | Front carrier (L) | PETG | 6 | 70% | auto | model -y down | 65 x 36 x 16 | Front suspension and steering (PETG) |
-| SU3R | Front carrier (R) | PETG | 6 | 70% | auto | model -y down | 65 x 36 x 16 | Front suspension and steering (PETG) |
+| SU3L | Front carrier (L) | PETG | 6 | 100% | auto | model -y down | 65 x 36 x 16 | Front suspension and steering (PETG) |
+| SU3R | Front carrier (R) | PETG | 6 | 100% | auto | model -y down | 65 x 36 x 16 | Front suspension and steering (PETG) |
 | SU4L | Knuckle (PETG) (L) | PETG | 8 | 100% | auto | model +y down | 39 x 47 x 21 | Front suspension and steering (PETG) |
 | SU4R | Knuckle (PETG) (R) | PETG | 8 | 100% | auto | model +y down | 39 x 47 x 21 | Front suspension and steering (PETG) |
-| SU8L | Heave saddle, bump (L) | TPU 95A | 3 | 100% | off | model +x down | 8 x 12 x 17 | Stops and pads (TPU 95A) |
-| SU8R | Heave saddle, bump (R) | TPU 95A | 3 | 100% | off | model +x down | 8 x 12 x 17 | Stops and pads (TPU 95A) |
-| SU9L | Heave saddle, droop (L) | TPU 95A | 3 | 100% | off | model +x down | 7 x 12 x 17 | Stops and pads (TPU 95A) |
-| SU9R | Heave saddle, droop (R) | TPU 95A | 3 | 100% | off | model +x down | 7 x 12 x 17 | Stops and pads (TPU 95A) |
+| SU8L | Heave saddle, bump (L) | TPU 95A | 3 | 100% | off | model -y down | 6 x 17 x 8 | Stops and pads (TPU 95A) |
+| SU8R | Heave saddle, bump (R) | TPU 95A | 3 | 100% | off | model -y down | 6 x 17 x 8 | Stops and pads (TPU 95A) |
+| SU9L | Heave saddle, droop (L) | TPU 95A | 3 | 100% | off | model -z down | 17 x 7 x 4 | Stops and pads (TPU 95A) |
+| SU9R | Heave saddle, droop (R) | TPU 95A | 3 | 100% | off | model -z down | 17 x 7 x 4 | Stops and pads (TPU 95A) |
 | ST1L | Rocker (L) | PETG | 6 | 100% | auto | model +z down | 24 x 20 x 14 | Front suspension and steering (PETG) |
 | ST1R | Rocker (R) | PETG | 6 | 100% | auto | model +z down | 24 x 20 x 14 | Front suspension and steering (PETG) |
 | ST2L | Rocker bracket (PETG) (L) | PETG | 8 | 100% | auto | model +y down | 37 x 17 x 17 | Front suspension and steering (PETG) |
 | ST2R | Rocker bracket (PETG) (R) | PETG | 8 | 100% | auto | model +y down | 37 x 17 x 17 | Front suspension and steering (PETG) |
-| ST4L | Servo clip (L) | PETG | 4 | 40% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
-| ST4R | Servo clip (R) | PETG | 4 | 40% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
-| ST3L | Servo floor (L) | PETG | 4 | 40% | auto | model -z down | 36 x 32 x 4 | Front suspension and steering (PETG) |
-| ST3R | Servo floor (R) | PETG | 4 | 40% | auto | model -z down | 36 x 32 x 4 | Front suspension and steering (PETG) |
+| ST4L | Servo clip (L) | PETG | 4 | 100% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
+| ST4R | Servo clip (R) | PETG | 4 | 100% | auto | model +y down | 25 x 38 x 12 | Front suspension and steering (PETG) |
+| ST3L | Servo floor (L) | PETG | 4 | 100% | auto | model -z down | 36 x 32 x 4 | Front suspension and steering (PETG) |
+| ST3R | Servo floor (R) | PETG | 4 | 100% | auto | model -z down | 36 x 32 x 4 | Front suspension and steering (PETG) |
 | SU10L | Yaw stop pad, front (L) | TPU 95A | 3 | 100% | off | model +x down | 10 x 8 x 10 | Stops and pads (TPU 95A) |
 | SU10R | Yaw stop pad, front (R) | TPU 95A | 3 | 100% | off | model +x down | 10 x 8 x 10 | Stops and pads (TPU 95A) |
 | SU11L | Yaw stop pad, rear (L) | TPU 95A | 3 | 100% | off | model +x down | 10 x 8 x 10 | Stops and pads (TPU 95A) |
 | SU11R | Yaw stop pad, rear (R) | TPU 95A | 3 | 100% | off | model +x down | 10 x 8 x 10 | Stops and pads (TPU 95A) |
-| SU1L | Front swing arm with spring lever (L) | PETG | 6 | 60% | auto | model -x down | 68 x 148 x 34 | Front suspension and steering (PETG) |
-| SU1R | Front swing arm with spring lever (R) | PETG | 6 | 60% | auto | model +x down | 68 x 148 x 34 | Front suspension and steering (PETG) |
+| SU1L | Front swing arm with spring lever (L) | PETG | 6 | 100% | auto | model -x down | 68 x 148 x 34 | Front suspension and steering (PETG) |
+| SU1R | Front swing arm with spring lever (R) | PETG | 6 | 100% | auto | model +x down | 68 x 148 x 34 | Front suspension and steering (PETG) |
 | DT15 | Rear axle pulley 30T GT2 | PETG | 6 | 100% | off | model -x down | 21 x 21 x 13 | Drivetrain and wheels (PETG) |
 | DT14 | Rear pivot pulley 26T GT2 | PETG | 6 | 100% | off | model -x down | 18 x 18 x 13 | Drivetrain and wheels (PETG) |
-| SU2L | Upper link (L) | PETG | 5 | 50% | auto | model +z down | 42 x 109 x 16 | Front suspension and steering (PETG) |
-| SU2R | Upper link (R) | PETG | 5 | 50% | auto | model +z down | 42 x 109 x 16 | Front suspension and steering (PETG) |
-| SU5L | Arm pivot block (L) | PETG | 5 | 60% | auto | model -y down | 30 x 18 x 15 | Front suspension and steering (PETG) |
-| SU5R | Arm pivot block (R) | PETG | 5 | 60% | auto | model -y down | 30 x 18 x 15 | Front suspension and steering (PETG) |
-| CH5 | Motor plate | PETG | 4 | 40% | auto | model +x down | 46 x 21 x 60 | Drivetrain and wheels (PETG) |
-| DT5 | Pillow block lower | PETG | 4 | 60% | auto | model -x down | 22 x 15 x 30 | Drivetrain and wheels (PETG) |
-| DT6 | Pillow block upper | PETG | 4 | 60% | auto | model -x down | 22 x 15 x 30 | Drivetrain and wheels (PETG) |
-| DT7 | Rear bearing carrier lower | PETG | 4 | 50% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
-| DT8 | Rear bearing carrier upper | PETG | 4 | 50% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
-| DT11 | Rear swing arm | PETG | 6 | 60% | auto | model +x down | 80 x 150 x 90 | Drivetrain and wheels (PETG) |
-| DT10 | Rear ring hub | PETG | 4 | 80% | auto | model +x down | 22 x 22 x 9 | Drivetrain and wheels (PETG) |
-| DT16L | Front wheel 1.9 in (L) | PETG | 6 | 60% | off | model +x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
-| DT16R | Front wheel 1.9 in (R) | PETG | 6 | 60% | off | model -x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
-| DT17 | Rear wheel 2.2 in | PETG | 6 | 60% | off | model -x down | 61 x 61 x 46 | Drivetrain and wheels (PETG) |
+| SU2L | Upper link (L) | PETG | 5 | 100% | auto | model +z down | 42 x 109 x 16 | Front suspension and steering (PETG) |
+| SU2R | Upper link (R) | PETG | 5 | 100% | auto | model +z down | 42 x 109 x 16 | Front suspension and steering (PETG) |
+| SU5L | Arm pivot block (L) | PETG | 5 | 100% | auto | model -y down | 30 x 18 x 15 | Front suspension and steering (PETG) |
+| SU5R | Arm pivot block (R) | PETG | 5 | 100% | auto | model -y down | 30 x 18 x 15 | Front suspension and steering (PETG) |
+| CH5 | Motor plate | PETG | 4 | 100% | auto | model +x down | 46 x 21 x 60 | Drivetrain and wheels (PETG) |
+| DT5 | Pillow block lower | PETG | 4 | 100% | auto | model -x down | 22 x 15 x 30 | Drivetrain and wheels (PETG) |
+| DT6 | Pillow block upper | PETG | 4 | 100% | auto | model -x down | 22 x 15 x 30 | Drivetrain and wheels (PETG) |
+| DT7 | Rear bearing carrier lower | PETG | 4 | 100% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
+| DT8 | Rear bearing carrier upper | PETG | 4 | 100% | auto | model -x down | 25 x 66 x 34 | Drivetrain and wheels (PETG) |
+| DT11 | Rear swing arm | PETG | 6 | 100% | auto | model +x down | 80 x 150 x 90 | Drivetrain and wheels (PETG) |
+| DT10 | Rear ring hub | PETG | 4 | 100% | auto | model +x down | 22 x 22 x 9 | Drivetrain and wheels (PETG) |
+| DT16L | Front wheel 1.9 in (L) | PETG | 6 | 100% | off | model +x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
+| DT16R | Front wheel 1.9 in (R) | PETG | 6 | 100% | off | model -x down | 53 x 53 x 34 | Drivetrain and wheels (PETG) |
+| DT17 | Rear wheel 2.2 in | PETG | 6 | 100% | off | model -x down | 61 x 61 x 46 | Drivetrain and wheels (PETG) |
 
 ## 3. Plates (Bambu Studio slice check, P2S profile of the saved project, 0.4 mm nozzle)
 
@@ -156,13 +159,13 @@ Open `bambu/all_plates.3mf` or one plate file. PETG in AMS slot 4; the TPU plate
 
 | Plate file | Time | Grams | Slice check |
 |---|---|---|---|
-| plate_01_Front_suspension_and_steering_1.3mf | 9.7 h | 246 | OK |
-| plate_01_Front_suspension_and_steering_2.3mf | 3.1 h | 98 | OK |
+| plate_01_Front_suspension_and_steering_1.3mf | 10.5 h | 269 | OK |
+| plate_01_Front_suspension_and_steering_2.3mf | 3.4 h | 112 | OK |
 | plate_01_Front_suspension_and_steering_3.3mf | 0.4 h | 13 | OK |
-| plate_02_Drivetrain_and_wheels_1.3mf | 10.4 h | 324 | OK |
-| plate_02_Drivetrain_and_wheels_2.3mf | 1.3 h | 39 | OK |
+| plate_02_Drivetrain_and_wheels_1.3mf | 11.8 h | 377 | OK |
+| plate_02_Drivetrain_and_wheels_2.3mf | 1.5 h | 46 | OK |
 | plate_03_Stops_and_pads.3mf | 0.2 h | 4 | OK |
-| **Total** | **25.2 h** | **724** | 0 problems |
+| **Total** | **27.7 h** | **820** | 0 problems |
 
 ## 3b. Two paths: print, or buy / machine in metal
 
@@ -233,7 +236,7 @@ Check: puck turns on the ball without play.
 
 ### 5. Beam carrier, heave shock and stops
 
-Glue the TPU saddles SU8/SU9 into the cage pad blocks and the yaw pads SU10/SU11 onto the carrier SU7 posts (CA for TPU). Ream the pad block arc slots to 8.3 mm (REQUIREMENT: radial clearance 0.15 on the D8 dowel) and the carrier hub bore to 6.4 mm (REQUIREMENT: loose on purpose, so the dowel takes the yaw moment first). Pin the carrier into the cage clevis with the D6 x 35. Push the D8 x 75 heave stop dowel through the carrier tail and both pad block slots. Mount the heave shock between the carrier fork and the cage rear clevis with the two D3 pins.
+The TPU saddles SU8/SU9 are REQUIRED, not optional: the 4 mm bump saddle SU8 (TPU 95A) is what keeps the landing load at 123 N per front wheel from a 0.20 m drop (164 N without it; NOTES 61, 64); the droop saddle SU9 is 2 mm. Glue the TPU saddles SU8/SU9 into the cage pad blocks and the yaw pads SU10/SU11 onto the carrier SU7 posts (CA for TPU). Ream the pad block arc slots to 8.3 mm (REQUIREMENT: radial clearance 0.15 on the D8 dowel) and the carrier hub bore to 6.4 mm (REQUIREMENT: loose on purpose, so the dowel takes the yaw moment first). Pin the carrier into the cage clevis with the D6 x 35. Push the D8 x 75 heave stop dowel through the carrier tail and both pad block slots. Mount the heave shock between the carrier fork and the cage rear clevis with the two D3 pins.
 
 Hardware: D6 x 35, D8 x 75, heave shock, 2 x D3 x 12.
 

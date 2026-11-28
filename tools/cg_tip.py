@@ -186,13 +186,22 @@ def main():
         bxyz = np.array([0.0, by, top + H / 2])
     print('battery point mass %.0f g at (%.1f, %.1f, %.1f)  [%s]' % (a.battery_g, *bxyz, BATTERY_NOTE))
 
+    sys.path.insert(0, os.path.join(root, 'kit'))
+    import registry as _reg
+    _byid = {p['id']: p for p in _reg.PARTS}
     for r in rows:
         r['vol_cm3'] = r['vol']          # cm3 (mm3/1000)
+        _k = _reg.key_of(r['name'])
+        r['solid_rule'] = bool(_k) and _reg.print_fill(_byid[_k])[1] == '100%'
+    print('printed designs on the solid rule (NOTES 67):', sum(1 for r in rows if r['kind'] == 'printed' and r['solid_rule']), 'of', sum(1 for r in rows if r['kind'] == 'printed'),
+          '; not in the registry:', sorted({r['name'] for r in rows if r['kind'] == 'printed' and not _reg.key_of(r['name'])})[:20])
 
     def mass_g(r, mode):
         if r['kind'] == 'hw':
             return r['k']
         g = r['vol_cm3'] * r['k']
+        if r['kind'] == 'printed' and mode == 'sliced' and r.get('solid_rule'):
+            return g          # (NOTES 67) the kit prints every load-carrying design solid (kit/registry.py print_fill)
         return g * (fac if (r['kind'] == 'printed' and mode == 'sliced' and fac) else (0.5 if (r['kind'] == 'printed' and mode == 'sliced') else 1.0))
 
     def combine(mode, with_body, with_batt):

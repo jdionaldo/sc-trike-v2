@@ -99,6 +99,18 @@ HARDWARE_STEMS_PREFIX = ("b_", "mock_", "tip_shaft", "M6_shock_pin", "Rear_shock
                          "Heave_shock", "Carrier_pin", "Beam_yaw_pin", "Heave_stop_dowel", "Shock_pin", "Uplink_pin", "Cup_block")
 
 
+SOLID_WALLS_NONE = 5   # walls for the non-load pieces (shell skins): 5 x 0.42 = 2.1 mm, so every screw boss and tab prints solid
+
+
+def print_fill(d):
+    """(walls, infill) the kit prints a design with (owner 2026-11-27: "Make sure that all mechanical and 3D printed moving parts are 100%
+    infill so they have maximum strength"; NOTES 67). Every load class other than "none" prints solid: until now the kit gave 30 .. 70 % on parts
+    whose FEM assumed solid sections. Pieces of load "none" (shell skins, light parts) keep their infill with SOLID_WALLS_NONE walls."""
+    if d.get("load", "none") != "none":
+        return d["walls"], "100%"
+    return max(d["walls"], SOLID_WALLS_NONE), d["infill"]
+
+
 def key_of(stem):
     for p in PARTS:
         if stem in p["stems"]:
